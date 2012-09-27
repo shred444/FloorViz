@@ -204,8 +204,8 @@
 					while($row = mysql_fetch_array($channels))
 					{ ?>
 						<li>
-						<label id="channel-<?php echo $row['channel']?>">
-							<input type="checkbox" checked="checked" value="<?php echo $row['channel']?>"><?php echo $row['channel']?>
+						<label id="label-<?php echo $row['channel']?>">
+							<input type="checkbox" checked="checked" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?>
 						</label>
 						</li>
 						

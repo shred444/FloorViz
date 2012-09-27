@@ -3,7 +3,11 @@ var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 30;
 var drawingData;
-var channelcolors = ["yellow","green","blue","purple"];
+var channelcolors = [];
+channelcolors[158] = "orange";
+channelcolors[153] = "green";
+channelcolors[149] = "blue";
+channelcolors[161] = "purple";
 //var channelcolors = ["red","orange","yellow","green","blue","purple","cyan","lime", "royalblue"];
 var svg;
 
@@ -137,7 +141,7 @@ function init () {
 		//get each channel
 		var numstring = jsonChannels[i].channel.toString();
 		//assign a color to it
-		document.getElementById('channel-' + numstring).style.color = channelcolors[i];
+		document.getElementById('label-' + numstring).style.color = channelcolors[jsonChannels[i].channel];
 	}
 	
 	// load data, process it and draw it
@@ -152,12 +156,22 @@ function processData (data) {
 		//cullDirty = document.getElementById("cull-dirty").checked,
 		coasterTypes = {},
 		counter = 1;
+		
+	//get selected channels from form
+	var channel1 = document.getElementById("channel-158").checked;
+	var channel2 = document.getElementById("channel-153").checked;
+	var channel3 = document.getElementById("channel-149").checked;
+	var channel4 = document.getElementById("channel-161").checked;
 
 	data.forEach (function (data, index) {
 		var coaster,
 			className = "";
 			
-			if(data.channel == 161){
+			if(	((data.channel == 158) && channel1) ||
+				((data.channel == 153) && channel2) ||
+				((data.channel == 149) && channel3) ||
+				((data.channel == 161) && channel4)
+			){
 		//if (!(cullDirty && isDirty(data))) { // don't process it if it's dirty and we want to cull dirty data
 				coaster = {
 					id: index // so that the coasters can animate
@@ -177,9 +191,13 @@ function processData (data) {
 				counter = counter + 1;
 			}
 			coaster.type = coasterTypes[data.type];
-			processed.push (coaster); // add the coaster to the output
+			processed.push (coaster); // add the coaster to the outputs
 		//}
-		}
+		}else{
+			var temp;
+			temp++;
+			//not a selected channel
+	}
 	});
 
 	return processed; // only contains coasters we're interested in visualising
@@ -236,6 +254,10 @@ function redraw () {
 	//Create Roams
 	//-------------------------------------------------------------
 	
+	
+	var roamsChecked = document.getElementById("roams").checked;
+	
+	
 	var roams = svg.selectAll("circle").data(dataset),axes = getAxes();
 	
 	roams.enter()
@@ -249,20 +271,19 @@ function redraw () {
 	// remove points if we don't need them anymore
 	
 	// transition the points
-	roams.transition().duration(1500).ease("exp-in-out")
-		.style("opacity", 1)
+	//cells.transition().duration(1000).ease("exp-in-out")
+	//	.style("opacity", 1)
 		//.style("fill", function (d) { return colours[d.type.id]; }) // set fill colour from the colours array
 		//.attr("r", function(d) { return rRange (d[axes.radiusAxis]); })
 		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
 		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
 	
 	
-	roams.exit()
-		.transition().duration(1500).ease("exp-in-out")
+	cells.exit()
+		//.transition().duration(100).ease("exp-in-out")
 		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
 		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
-		.style("opacity", 0)
-		.attr("r", 0)
+		//.style("opacity", 0)
 		.remove();
 	
 
