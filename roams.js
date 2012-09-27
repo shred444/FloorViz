@@ -2,6 +2,7 @@
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 30;
+var drawingData;
 var channelcolors = ["yellow","green","blue","purple"];
 //var channelcolors = ["red","orange","yellow","green","blue","purple","cyan","lime", "royalblue"];
 var svg;
@@ -10,15 +11,21 @@ var svg;
 //Create scale functions
 //-------------------------------------------------------------
 var xScale = d3.scale.linear()
-.domain([60, d3.max(cellset, function(d) { return d[0]; })])
+//.domain([60, d3.max(cellset, function(d) { return d[0]; })])
+//.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
+.domain([60,400])
 .range([padding, w - padding * 2]);
 
 var yScale = d3.scale.linear()
-.domain([80, d3.max(cellset, function(d) { return d[1]; })])
+//.domain([80, d3.max(cellset, function(d) { return d[1]; })])
+//.domain([60,d3.max(drawingData, function(d) { return d[1]; })])
+.domain([60,200])
 .range([h - padding, padding]);
 
 var rScale = d3.scale.linear()
-.domain([0, d3.max(cellset, function(d) { return d[1]; })])
+//.domain([0, d3.max(cellset, function(d) { return d[1]; })])
+//.domain([0, d3.max(drawingData, function(d) { return d[3]; })])
+.domain([0,100])
 .range([2, 5]);
 
 var rssiScale = d3.scale.linear()
@@ -138,11 +145,51 @@ function init () {
 }
 
 
+// take a raw dataset and remove coasters which shouldn't be displayed
+// (i.e. if it is "dirty" or it's type isn't selected)
+function processData (data) {
+	var processed = [],
+		//cullDirty = document.getElementById("cull-dirty").checked,
+		coasterTypes = {},
+		counter = 1;
+
+	data.forEach (function (data, index) {
+		var coaster,
+			className = "";
+			
+			if(data.channel == 161){
+		//if (!(cullDirty && isDirty(data))) { // don't process it if it's dirty and we want to cull dirty data
+				coaster = {
+					id: index // so that the coasters can animate
+				};
+			for (var attribute in data) {
+				if (data.hasOwnProperty (attribute)) {
+					coaster[attribute] = data[attribute]; // populate the coaster object
+				}
+			}
+			if (typeof coasterTypes[data.type] == "undefined") { // generate a classname for the coaster based on it's type (used for styling)
+				coasterTypes[data.type] = {
+					id: counter - 1,
+					className: 'coastertype-' + counter,
+					name: data.type,
+					//slug: slugify(data.type)
+				};
+				counter = counter + 1;
+			}
+			coaster.type = coasterTypes[data.type];
+			processed.push (coaster); // add the coaster to the output
+		//}
+		}
+	});
+
+	return processed; // only contains coasters we're interested in visualising
+}
+
 // called every time a form field has changed
 function update () {
 	
-	var dataset = getChosenDataset(), // filename of the chosen dataset csv
-	processedData; // the data while will be visualised
+	var dataset = getChosenDataset(); 	// filename of the chosen dataset csv
+	var processedData; 					// the data while will be visualised
 	// if the dataset has changed from last time, load the new csv file
 	/*
 	if (dataset != currentDataset) {
@@ -161,6 +208,9 @@ function update () {
 		drawingData = cullUnwantedTypes(processedData);
 	}
 	*/
+	
+	processedData = processData(rawData);
+	drawingData = processedData;
 	redraw();
 	
 }
@@ -171,15 +221,15 @@ function redraw () {
 	//-------------------------------------------------------------
 	//Create cells	
 	//-------------------------------------------------------------
-	var cells = svg.selectAll("rect").data(rssiset);
+	var cells = svg.selectAll("rect").data(drawingData, function (d) { return d.id;});
 	cells.enter()
-		.append("rect")
-		.attr("x", 				function(d) { return xScale(d[0]); })
-		.attr("y", 				function(d) { return yScale(d[1]); })
+		.insert("rect")
+		.attr("x", 				function(d) { return xScale(d.x); })
+		.attr("y", 				function(d) { return yScale(d.y); })
 		.attr("width", 			function(d) { return 4; })
 		.attr("height", 		function(d) { return 5; })
-		.attr("fill", 			function(d) { return channelcolors[d[3]-1]; })
-		.attr("fill-opacity", 	function(d) { return rssiScale(d[2]); });
+		.attr("fill", 			function(d) { return channelcolors[d.channel]; })
+		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); });
 	
 	
 	//-------------------------------------------------------------

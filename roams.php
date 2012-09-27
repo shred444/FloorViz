@@ -54,6 +54,7 @@
 			$rowCount = mysql_num_rows($roams);
 			
 			if($debug){
+				echo "<b>Roams</b>";
 				echo "<br>Total Fields: " . $fieldCount;
 				echo "<br>Total Rows: " . $rowCount;
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
@@ -62,11 +63,12 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$cells = mysql_query("SELECT * FROM cells");
+			$cells = mysql_query("SELECT rssi.rssi_id,rssi.x,rssi.y,rssi.ap_id,rssi.rssi_val,aps.channel FROM rssi inner join aps ON rssi.ap_id = aps.ap_id");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
+				echo "<b>Cells</b>";
 				echo "<br>Total Fields: " . mysql_num_fields($cells);
 				echo "<br>Total Rows: " . mysql_num_rows($cells);
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
@@ -80,6 +82,7 @@
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
+				echo "<b>APs</b>";
 				echo "<br>Total Fields: " . mysql_num_fields($aps);
 				echo "<br>Total Rows: " . mysql_num_rows($aps);
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
@@ -93,6 +96,7 @@
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
+				echo "<b>Channels</b>";
 				echo "<br>Total Fields: " . mysql_num_fields($channels);
 				echo "<br>Total Rows: " . mysql_num_rows($channels);
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
@@ -144,12 +148,19 @@
 			$channels_json[] = $r;
 		}
 		
+		mysql_data_seek( $cells, 0);
+		$raw_data = array();
+		while($r = mysql_fetch_assoc($cells)) {
+			$raw_data[] = $r;
+		}
+		
 		?>
 		
 		<script>
 			//define json variables for use later
 			var jsonAPs=<?php echo json_encode($aps_json); ?>;
 			var jsonChannels=<?php echo json_encode($channels_json); ?>;
+			var rawData=<?php echo json_encode($raw_data); ?>;
 		</script>
 		
 		<?php
@@ -250,7 +261,7 @@
 				echo "
 				var xPos = {$row['x']};
 				var yPos = {$row['y']};
-				var rssi = {$row['RSSI']};
+				var rssi = {$row['rssi_val']};
 				cellset.push([xPos, yPos, rssi]);
 				";
 			}
