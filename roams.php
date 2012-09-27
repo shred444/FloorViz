@@ -154,13 +154,23 @@
 			$raw_data[] = $r;
 		}
 		
+		mysql_data_seek( $roams, 0);
+		$roam_data = array();
+		while($r = mysql_fetch_assoc($roams)) {
+			$roam_data[] = $r;
+		}
+		
 		?>
 		
 		<script>
 			//define json variables for use later
 			var jsonAPs=<?php echo json_encode($aps_json); ?>;
 			var jsonChannels=<?php echo json_encode($channels_json); ?>;
-			var rawData=<?php echo json_encode($raw_data); ?>;
+			rawData = new Object();
+			rawData.rssi=<?php echo json_encode($raw_data); ?>;
+			rawData.roams=<?php echo json_encode($roam_data); ?>;
+			rawData.aps=<?php echo json_encode($aps_json); ?>;
+			rawData.channels=<?php echo json_encode($channels_json); ?>;
 		</script>
 		
 		<?php

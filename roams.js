@@ -227,7 +227,7 @@ function update () {
 	}
 	*/
 	
-	processedData = processData(rawData);
+	processedData = processData(rawData.rssi);
 	drawingData = processedData;
 	redraw();
 	
