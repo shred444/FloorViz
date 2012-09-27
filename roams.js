@@ -47,7 +47,11 @@ var yAxisR = d3.svg.axis()
 .orient("right")
 .ticks(5);
 
-
+// return the name of the dataset which is currently selected
+function getChosenDataset () {
+	var select = document.getElementById("dataset");
+	return select.options[select.selectedIndex].value;
+}
 
 
 // runs once when the visualisation loads
@@ -112,10 +116,11 @@ function init () {
 
 // called every time a form field has changed
 function update () {
-	/*
+	
 	var dataset = getChosenDataset(), // filename of the chosen dataset csv
 	processedData; // the data while will be visualised
 	// if the dataset has changed from last time, load the new csv file
+	/*
 	if (dataset != currentDataset) {
 		d3.csv("data/" + dataset + ".csv", function (data) {
 			// process new data and store it in the appropriate variables

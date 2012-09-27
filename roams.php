@@ -3,15 +3,28 @@
 	
 	<script src="http://d3js.org/d3.v2.js"></script>
 	
-		<?php //database connectivity
+		<?php
+		
+			//debugging
+			$debug = FALSE;
+			if(isset($_GET['debug']))
+			{
+				if(strtoupper($_GET['debug']) == "TRUE" || strtoupper($_GET['debug']) == "T")
+				$debug = TRUE;
+		
+			}
+		
+		
+		
+		//database connectivity
 		
 			$con = mysql_connect("hwtest","jonathan","admin");
 			if (!$con)
 			{
 				die('Could not connect: ' . mysql_error());
 			}
-			echo "Connected!<br>";
-			// some code
+			if($debug)
+				echo "Connected!<br>";
 			
 			if(isset($_GET['s']))
 			{
@@ -20,13 +33,17 @@
 			}else
 			{
 				$site="amz_bfi1";
-				echo "No Site selected.<br> Using default site<br>";
+				if($debug)
+					echo "No Site selected.<br> Using default site<br>";
 			}
+			
+			
 			
 			
 			//select the database
 			mysql_select_db($site, $con);
-			echo "Site=" . $site . "<br>";
+			if($debug)
+				echo "Site=" . $site . "<br>";
 						
 			//create the query
 			$starttime = microtime(true);
@@ -35,31 +52,37 @@
 			$duration = $endtime - $starttime;
 			$fieldCount = mysql_num_fields($roams);
 			$rowCount = mysql_num_rows($roams);
-		
-			echo "<br>Total Fields: " . $fieldCount;
-			echo "<br>Total Rows: " . $rowCount;
-			echo "<br>Duration: " . number_format($duration, 2) . " ms";
-			echo "<br>";
+			
+			if($debug){
+				echo "<br>Total Fields: " . $fieldCount;
+				echo "<br>Total Rows: " . $rowCount;
+				echo "<br>Duration: " . number_format($duration, 2) . " ms";
+				echo "<br>";
+			}
 		
 			$starttime = microtime(true);
 			$cells = mysql_query("SELECT * FROM cells");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
-			echo "<br>Total Fields: " . mysql_num_fields($cells);
-			echo "<br>Total Rows: " . mysql_num_rows($cells);
-			echo "<br>Duration: " . number_format($duration, 2) . " ms";
-			echo "<br>";
+			if($debug){
+				echo "<br>Total Fields: " . mysql_num_fields($cells);
+				echo "<br>Total Rows: " . mysql_num_rows($cells);
+				echo "<br>Duration: " . number_format($duration, 2) . " ms";
+				echo "<br>";
+			}
 			
 			//get all APs
 			$starttime = microtime(true);
 			$aps = mysql_query("SELECT * FROM aps");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
-			echo "<br>Total Fields: " . mysql_num_fields($aps);
-			echo "<br>Total Rows: " . mysql_num_rows($aps);
-			echo "<br>Duration: " . number_format($duration, 2) . " ms";
-			echo "<br>";
+			if($debug){
+				echo "<br>Total Fields: " . mysql_num_fields($aps);
+				echo "<br>Total Rows: " . mysql_num_rows($aps);
+				echo "<br>Duration: " . number_format($duration, 2) . " ms";
+				echo "<br>";
+			}
 		
 			?>
 			<script>
@@ -85,7 +108,9 @@
 			$duration = $endtime - $starttime;
 		?>
 		</script>
-		Total Duration: <?php echo number_format($duration, 2) . " ms<br>"; ?>
+		<?php if($debug)
+			echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
+		?>
 			
 		<?php
 		
