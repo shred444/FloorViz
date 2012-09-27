@@ -256,17 +256,47 @@ function redraw () {
 	
 	
 	var roamsChecked = document.getElementById("roams").checked;
+	var roamData = [];
+	if(roamsChecked)
+	{
+		roamData = rawData.roams; 
+	}
 	
-	
-	var roams = svg.selectAll("circle").data(dataset),axes = getAxes();
+	var roams = svg.selectAll("circle").data(roamData);
 	
 	roams.enter()
-		.insert("circle")
-		.attr("cx", 			function(d) { return xScale(d[0]); })
-		.attr("cy", 			function(d) { return yScale(d[1]); })
-		.attr("r", 				function(d) { return d[2]; })
+		.append("circle")
+		//.attr("transform", translate)
+		.attr("cx", 			function(d) { return xScale(d.x); })
+		.attr("cy", 			function(d) { return yScale(d.y); })
+		.attr("r", 				function(d) { return 0; })
 		.attr("fill", 			function(d) { return "red"; })
 		.attr("fill-opacity", 	function(d) { return .1; });
+	
+	
+	roams.transition()
+		.duration(3000)
+		//.ease("cubic-in-out")
+		.ease("elastic", 2, .45)
+		.delay(function(d) { return Math.random() * 1000; })
+		.attr("visibility", "visible")
+		.attr("r", 10);
+		//.attr("cx", 0)
+		//.attr("cy", 0)
+		//.style("fill", function (d) { return colours[d.type.id]; }) // set fill colour from the colours array
+		//.attr("r", function(d) { return rRange (d[axes.radiusAxis]); })
+		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
+		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
+	
+	roams.exit()
+		.transition()
+			.duration(1000)
+			.ease("cubic-in-out")
+			.delay(function(d) { return Math.random() * 1000; })
+			//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
+			//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
+			.style("opacity", 0)
+			.remove();
 	
 	// remove points if we don't need them anymore
 	
@@ -280,10 +310,12 @@ function redraw () {
 	
 	
 	cells.exit()
-		//.transition().duration(100).ease("exp-in-out")
+		.transition()
+		.duration(1000)
+		.ease("linear")
 		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
 		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
-		//.style("opacity", 0)
+		.style("opacity", 0)
 		.remove();
 	
 
