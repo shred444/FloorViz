@@ -151,7 +151,9 @@
 					while($row = mysql_fetch_array($aps))
 					{ ?>
 						<li>
+						<label id="<?php echo $row['ap_id']?>">
 							<input type="checkbox" checked="checked" value="<?php echo $row['mac']?>"><?php echo $row['mac']?>
+						</label>
 						</li>
 						
 					<?php 

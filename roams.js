@@ -2,7 +2,7 @@
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 30;
-var channelcolors = ["green","yellow","orange","blue","brown","aqua","purple","cyan"];
+var channelcolors = ["red","orange","yellow","green","blue","purple","cyan","lime", "royalblue"];
 var svg;
 
 //-------------------------------------------------------------
@@ -123,6 +123,12 @@ function init () {
 		.call(yAxis); // add to the visualisation
 	*/
 	
+	//set form colors
+	for(var i=1; i<10; i++)
+	{
+		var numstring = i.toString();
+		document.getElementById(numstring).style.color = channelcolors[i-1];
+	}
 	
 	// load data, process it and draw it
 	update ();
@@ -167,16 +173,18 @@ function redraw () {
 		.append("rect")
 		.attr("x", 				function(d) { return xScale(d[0]); })
 		.attr("y", 				function(d) { return yScale(d[1]); })
-		.attr("width", 			function(d) { return 5; })
+		.attr("width", 			function(d) { return 4; })
 		.attr("height", 		function(d) { return 5; })
 		.attr("fill", 			function(d) { return channelcolors[d[3]-1]; })
 		.attr("fill-opacity", 	function(d) { return rssiScale(d[2]); });
 	
 	
 	//-------------------------------------------------------------
-	//Create circles
+	//Create Roams
 	//-------------------------------------------------------------
+	
 	var roams = svg.selectAll("circle").data(dataset),axes = getAxes();
+	
 	roams.enter()
 		.insert("circle")
 		.attr("cx", 			function(d) { return xScale(d[0]); })
