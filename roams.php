@@ -60,6 +60,7 @@
 				echo "<br>";
 			}
 		
+			//select all cells
 			$starttime = microtime(true);
 			$cells = mysql_query("SELECT * FROM cells");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
@@ -74,6 +75,7 @@
 			
 			//get all APs
 			$starttime = microtime(true);
+			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
 			$aps = mysql_query("SELECT * FROM aps");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -83,6 +85,20 @@
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
 				echo "<br>";
 			}
+			
+			//get all Channels
+			$starttime = microtime(true);
+			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
+			$channels = mysql_query("SELECT DISTINCT(channel) FROM aps;");
+			$endtime = microtime(true);
+			$duration = $endtime - $starttime;
+			if($debug){
+				echo "<br>Total Fields: " . mysql_num_fields($channels);
+				echo "<br>Total Rows: " . mysql_num_rows($channels);
+				echo "<br>Duration: " . number_format($duration, 2) . " ms";
+				echo "<br>";
+			}
+			
 		
 			?>
 			<script>
@@ -104,14 +120,30 @@
 				
 				}
 			}
+			
+			
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 		?>
 		</script>
 		<?php if($debug)
 			echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
-		?>
 			
+			
+			
+		//json encoding
+		mysql_data_seek( $aps, 0);
+		$rows = array();
+		while($r = mysql_fetch_assoc($aps)) {
+			$rows[] = $r;
+		}
+		
+		?>
+		
+		<script>
+		var jsonAPs=<?php echo json_encode($rows); ?>
+		</script>
+		
 		<?php
 		
 		mysql_close($con);
@@ -126,7 +158,7 @@
 		
 		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
 			<form id="controls">
-				
+				<h2>Facility</h2>
 				<ul style="list-style-type:none">
 					<li>
 						<select id="dataset">
@@ -145,6 +177,25 @@
 						<input type="checkbox" checked="checked" value="rssi">RSSI
 					</li>
 				</ul>
+				
+				<h2>Channels</h2>
+				<ul style="list-style-type:none">
+					<?php
+					mysql_data_seek( $channels, 0);
+					while($row = mysql_fetch_array($channels))
+					{ ?>
+						<li>
+						<label id="channel-<?php echo $row['channel']?>">
+							<input type="checkbox" checked="checked" value="<?php echo $row['channel']?>"><?php echo $row['channel']?>
+						</label>
+						</li>
+						
+					<?php 
+					} ?>
+					
+				</ul>
+				
+				<h2>Access Points</h2>
 				<ul style="list-style-type:none">
 					<?php
 					mysql_data_seek( $aps, 0);
