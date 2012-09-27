@@ -241,13 +241,22 @@ function redraw () {
 	//-------------------------------------------------------------
 	var cells = svg.selectAll("rect").data(drawingData, function (d) { return d.id;});
 	cells.enter()
-		.insert("rect")
+		.append("rect")
 		.attr("x", 				function(d) { return xScale(d.x); })
 		.attr("y", 				function(d) { return yScale(d.y); })
 		.attr("width", 			function(d) { return 4; })
 		.attr("height", 		function(d) { return 5; })
 		.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); });
+	
+	cells.exit()
+		//.transition()
+		//.duration(1000)
+		//.ease("linear")
+		//.style("opacity", 0)
+		.remove();
+	
+	
 	
 	
 	//-------------------------------------------------------------
@@ -309,14 +318,6 @@ function redraw () {
 		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
 	
 	
-	cells.exit()
-		.transition()
-		.duration(1000)
-		.ease("linear")
-		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
-		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
-		.style("opacity", 0)
-		.remove();
 	
 
 
