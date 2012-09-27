@@ -115,7 +115,7 @@
 							
 				while($rssi_results = mysql_fetch_array($rssi_per_ap))
 				{ 
-					echo "rssiset.push([{$rssi_results['x']}, {$rssi_results['y']}, {$rssi_results['rssi_val']}, {$rssi_results['ap_id']}]);
+					echo "rssiset.push([{$rssi_results['x']}, {$rssi_results['y']}, {$rssi_results['rssi_val']}, {$rssi_results['ap_id']}, {$row['channel']}]);
 					";
 				
 				}
@@ -133,15 +133,23 @@
 			
 		//json encoding
 		mysql_data_seek( $aps, 0);
-		$rows = array();
+		$aps_json = array();
 		while($r = mysql_fetch_assoc($aps)) {
-			$rows[] = $r;
+			$aps_json[] = $r;
+		}
+		
+		mysql_data_seek( $channels, 0);
+		$channels_json = array();
+		while($r = mysql_fetch_assoc($channels)) {
+			$channels_json[] = $r;
 		}
 		
 		?>
 		
 		<script>
-		var jsonAPs=<?php echo json_encode($rows); ?>
+			//define json variables for use later
+			var jsonAPs=<?php echo json_encode($aps_json); ?>;
+			var jsonChannels=<?php echo json_encode($channels_json); ?>;
 		</script>
 		
 		<?php

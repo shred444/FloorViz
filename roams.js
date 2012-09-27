@@ -2,7 +2,8 @@
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 30;
-var channelcolors = ["red","orange","yellow","green","blue","purple","cyan","lime", "royalblue"];
+var channelcolors = ["yellow","green","blue","purple"];
+//var channelcolors = ["red","orange","yellow","green","blue","purple","cyan","lime", "royalblue"];
 var svg;
 
 //-------------------------------------------------------------
@@ -124,10 +125,12 @@ function init () {
 	*/
 	
 	//set form colors
-	for(var i=1; i<10; i++)
+	for (var i=0; i<jsonChannels.length; i++)
 	{
-		var numstring = i.toString();
-		document.getElementById(numstring).style.color = channelcolors[i-1];
+		//get each channel
+		var numstring = jsonChannels[i].channel.toString();
+		//assign a color to it
+		document.getElementById('channel-' + numstring).style.color = channelcolors[i];
 	}
 	
 	// load data, process it and draw it
