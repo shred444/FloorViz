@@ -1,4 +1,3 @@
-
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
@@ -168,6 +167,11 @@ function redraw () {
 	})
 	.attr("fill", function(d) {
 		//return rScale(d[1]);
+		
+		var colors = ["green","yellow","orange","blue","brown","aqua","purple","cyan"];
+		
+		return colors[d[3]-1];
+		
 		switch(d[3])
 		{
 			case 8:

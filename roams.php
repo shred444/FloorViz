@@ -16,7 +16,7 @@
 		
 		
 		
-		//database connectivity
+			//database connectivity
 		
 			$con = mysql_connect("hwtest","jonathan","admin");
 			if (!$con)
@@ -123,13 +123,15 @@
 		<body>
 		
 		<svg id="visualization" width="1200" height="600"></svg>
-		<form id="controls" style="float:right">
-			<div>
+		
+		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
+			<form id="controls">
+				
 				<ul style="list-style-type:none">
 					<li>
 						<select id="dataset">
-							<option value="amz_bfi1">Amazon - BFI1</option>
-							<option selected="selected" value="quid_gou">Quid_GOU</option>
+							<option selected="selected" value="amz_bfi1">Amazon - BFI1</option>
+							<option value="quid_gou">Quid_GOU</option>
 							<option value="gap_bol">Gap_bol</option>
 						</select>
 					</li>
@@ -156,9 +158,9 @@
 					} ?>
 					
 				</ul>
-			</div>
-		</form>
-		
+				
+			</form>
+		</div>
 		<script>
 			//Dynamic, random dataset
 			var dataset = [];					//Initialize empty array
