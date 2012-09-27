@@ -136,7 +136,7 @@
 						</select>
 					</li>
 					<li>
-						<input type="checkbox" checked="checked" value="roams">Roams
+						<input type="checkbox" checked="checked" value="roams" id="roams">roams
 					</li>
 					<li>
 						<input type="checkbox" checked="checked" value="pings">Pings

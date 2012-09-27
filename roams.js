@@ -2,6 +2,7 @@
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 30;
+var channelcolors = ["green","yellow","orange","blue","brown","aqua","purple","cyan"];
 var svg;
 
 //-------------------------------------------------------------
@@ -52,6 +53,21 @@ function getChosenDataset () {
 	return select.options[select.selectedIndex].value;
 }
 
+// return an object containing the currently selected axis choices
+function getAxes () {
+	var roambox = document.getElementById("roams");
+	var x,// = document.querySelector("#x-axis input:checked").value,
+		y,// = document.querySelector("#y-axis input:checked").value,
+		r,// = document.querySelector("#r-axis input:checked").value,
+		roams_checked = roambox.value;
+		
+	return {
+		xAxis: x,
+		yAxis: y,
+		radiusAxis: r,
+		roams_checked: roams_checked
+	};
+}
 
 // runs once when the visualisation loads
 function init () {
@@ -146,98 +162,48 @@ function redraw () {
 	//-------------------------------------------------------------
 	//Create cells	
 	//-------------------------------------------------------------
-	svg.selectAll("rect")
-	.data(rssiset)
-	.enter()
-	.append("rect")
-	.attr("x", function(d) {
-		return xScale(d[0]);
-	})
-	.attr("y", function(d) {
-		return yScale(d[1]);
-	})
-	.attr("width", function(d) {
-		//return rScale(d[1]);
-		return 5;
-		return 5;
-	})
-	.attr("height", function(d) {
-		//return rScale(d[1]);
-		return 5;
-	})
-	.attr("fill", function(d) {
-		//return rScale(d[1]);
-		
-		var colors = ["green","yellow","orange","blue","brown","aqua","purple","cyan"];
-		
-		return colors[d[3]-1];
-		
-		switch(d[3])
-		{
-			case 8:
-				return "green";
-				break;
-			case 9:
-				return "yellow";
-				break;
-			case 10:
-				return "orange";
-				break;
-			case 11:
-				return "blue";
-				break;
-			case 12:
-				return "brown";
-				break;
-			case 13:
-				return "aqua";
-				break;
-			case 14:
-				return "purple";
-				break;
-			case 15:
-				return "cyan";
-				break;
-			default:
-				return "grey";
-		}
-	})
-	.attr("fill-opacity", function(d) {
-		return rssiScale(d[2]);
-		//return 1;
-		//return d[2]/52;
-	})
-	/*.transition().duration(1000)
-		.attr("x", function(d) {return 0 })
-		.attr("y", function(d) {return 0 })
-	*/
-	;
+	var cells = svg.selectAll("rect").data(rssiset);
+	cells.enter()
+		.append("rect")
+		.attr("x", 				function(d) { return xScale(d[0]); })
+		.attr("y", 				function(d) { return yScale(d[1]); })
+		.attr("width", 			function(d) { return 5; })
+		.attr("height", 		function(d) { return 5; })
+		.attr("fill", 			function(d) { return channelcolors[d[3]-1]; })
+		.attr("fill-opacity", 	function(d) { return rssiScale(d[2]); });
+	
+	
 	//-------------------------------------------------------------
 	//Create circles
 	//-------------------------------------------------------------
-	svg.selectAll("circle")
-	.data(dataset)
-	.enter()
-	.append("circle")
-	.attr("cx", function(d) {
-		return xScale(d[0]);
-	})
-	.attr("cy", function(d) {
-		return yScale(d[1]);
-	})
-	.attr("r", function(d) {
-		//return rScale(d[1]);
-		return d[2];
-	})
-	.attr("fill", function(d) {
-		//return rScale(d[1]);
-		return "red";
-	})
-	.attr("fill-opacity", function(d) {
-		//return rScale(d[1]);
-		return .1;
-	});
-
+	var roams = svg.selectAll("circle").data(dataset),axes = getAxes();
+	roams.enter()
+		.insert("circle")
+		.attr("cx", 			function(d) { return xScale(d[0]); })
+		.attr("cy", 			function(d) { return yScale(d[1]); })
+		.attr("r", 				function(d) { return d[2]; })
+		.attr("fill", 			function(d) { return "red"; })
+		.attr("fill-opacity", 	function(d) { return .1; });
+	
+	// remove points if we don't need them anymore
+	
+	// transition the points
+	roams.transition().duration(1500).ease("exp-in-out")
+		.style("opacity", 1)
+		//.style("fill", function (d) { return colours[d.type.id]; }) // set fill colour from the colours array
+		//.attr("r", function(d) { return rRange (d[axes.radiusAxis]); })
+		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
+		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
+	
+	
+	roams.exit()
+		.transition().duration(1500).ease("exp-in-out")
+		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
+		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
+		.style("opacity", 0)
+		.attr("r", 0)
+		.remove();
+	
 
 
 	/*
