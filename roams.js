@@ -309,32 +309,32 @@ function redraw () {
 		roamData = rawData.roams; 
 	}
 	
-	var roams = svg.selectAll("circle").data(roamData);
+	var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
 	
 	roams.enter()
 		.append("circle")
 		//.attr("transform", translate)
 		.attr("cx", 			function(d) { return xScale(d.x); })
 		.attr("cy", 			function(d) { return yScale(d.y); })
-		.attr("r", 				function(d) { return 0; })
+		.attr("r", 				function(d) { return 5; })
 		.attr("fill", 			function(d) { return "red"; })
 		.attr("fill-opacity", 	function(d) { return .1; });
 	
-	
+	/*
 	roams.transition()
 		.duration(3000)
 		//.ease("cubic-in-out")
 		.ease("elastic", 2, .45)
 		.delay(function(d) { return Math.random() * 1000; })
 		.attr("visibility", "visible")
-		.attr("r", 10);
+		.attr("r", 5);
 		//.attr("cx", 0)
 		//.attr("cy", 0)
 		//.style("fill", function (d) { return colours[d.type.id]; }) // set fill colour from the colours array
 		//.attr("r", function(d) { return rRange (d[axes.radiusAxis]); })
 		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
 		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
-	
+	*/
 	
 	roams.exit()
 		.transition()

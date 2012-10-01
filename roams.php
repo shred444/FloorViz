@@ -72,6 +72,17 @@
 					echo "No Site selected.<br> Using default site<br>";
 			}
 			
+			if(isset($_GET['table']))
+			{
+				$table=$_GET['table'];
+				mysql_select_db($table, $con);
+			}else
+			{
+				$table="rssi";
+				if($debug)
+					echo "No table selected.<br> Using default table<br>";
+			}
+			
 			
 			
 			
@@ -98,7 +109,7 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM rssi A inner join aps ON A.ap_id = aps.ap_id");
+			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.ap_id");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -242,22 +253,24 @@
 		<svg id="visualization" width="1200" height="600"></svg>
 		
 		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
-			<form id="controls">
+			<form id="controls" action="roams.php" method="get">
 				<h2>Facility</h2>
 				<ul style="list-style-type:none">
 					<li>
-						<select id="dataset" onchange="pullNewData('amz_bfi1',this.value)">
+						<select id="dataset" name="s">
 							<option selected="selected" value="amz_bfi1">Amazon - BFI1</option>
 							
 						</select>
 					</li>
 					<li>
-						<select id="tableSelector" onchange="pullNewData('amz_bfi1',this.value)">
-							<option selected="selected" value="rssi">rssi</option>
-							<option value="rssi2">rssi2</option>
+						<select id="tableSelector" name="table">
+							<option <?php if($table == "rssi") echo "selected='selected'"; ?> value="rssi">rssi</option>
+							<option <?php if($table == "rssi2") echo "selected='selected'"; ?>value="rssi2">rssi2</option>
 						</select>
 					</li>
-					
+					<li>
+						<input type="submit" value="Refresh"> 
+					</li>
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roams">roams
 					</li>
@@ -270,6 +283,8 @@
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="traffic">Traffic
 					</li>
+					
+					
 					
 				</ul>
 				<div id="dataDetails"></div>
