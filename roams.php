@@ -138,6 +138,20 @@
 				echo "<br>";
 			}
 			
+			//get all Traffic
+			$starttime = microtime(true);
+			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
+			$traffic = mysql_query("SELECT x,y,sum(record_count) as records, avg(rssi_val) as rssi_val FROM amz_bfi1.rssi group by x,y");
+			$endtime = microtime(true);
+			$duration = $endtime - $starttime;
+			if($debug){
+				echo "<b>Traffic</b>";
+				echo "<br>Total Fields: " . mysql_num_fields($traffic);
+				echo "<br>Total Rows: " . mysql_num_rows($traffic);
+				echo "<br>Duration: " . number_format($duration, 2) . " ms";
+				echo "<br>";
+			}
+			
 		
 			?>
 			<script>
@@ -195,6 +209,12 @@
 			$roam_data[] = $r;
 		}
 		
+		mysql_data_seek( $traffic, 0);
+		$traffic_data = array();
+		while($r = mysql_fetch_assoc($traffic)) {
+			$traffic_data[] = $r;
+		}
+		
 		?>
 		
 		<script>
@@ -206,6 +226,7 @@
 			rawData.roams=<?php echo json_encode($roam_data); ?>;
 			rawData.aps=<?php echo json_encode($aps_json); ?>;
 			rawData.channels=<?php echo json_encode($channels_json); ?>;
+			rawData.traffic=<?php echo json_encode($traffic_data); ?>;
 		</script>
 		
 		<?php
@@ -246,9 +267,12 @@
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="rssi">RSSI
 					</li>
+					<li>
+						<input type="checkbox" onchange="update()" checked="checked" value="traffic">Traffic
+					</li>
 					
 				</ul>
-				
+				<div id="dataDetails"></div>
 				<h2>Channels</h2>
 				<ul style="list-style-type:none">
 					<?php
@@ -284,6 +308,8 @@
 				</ul>
 				
 			</form>
+			
+			
 		</div>
 		<script>
 			//Dynamic, random dataset

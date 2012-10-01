@@ -35,7 +35,7 @@ var rScale = d3.scale.linear()
 var rssiScale = d3.scale.linear()
 //.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 //.domain([0, d3.max(cellset, function(d) { return d[2]; })])
-.domain([0,100])
+.domain([40,60])
 .range([0, 1]);
 
 //-------------------------------------------------------------
@@ -152,6 +152,7 @@ function init () {
 // take a raw dataset and remove coasters which shouldn't be displayed
 // (i.e. if it is "dirty" or it's type isn't selected)
 function processData (data) {
+	
 	var processed = [],
 		//cullDirty = document.getElementById("cull-dirty").checked,
 		coasterTypes = {},
@@ -199,6 +200,9 @@ function processData (data) {
 			//not a selected channel
 	}
 	});
+	
+	
+	document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + channel1 + channel2 + channel3 + channel4;
 
 	return processed; // only contains coasters we're interested in visualising
 }
@@ -206,7 +210,7 @@ function processData (data) {
 // called every time a form field has changed
 function update () {
 	//alert("updating");
-	var dataset = getChosenDataset(); 	// filename of the chosen dataset csv
+	//var dataset = getChosenDataset(); 	// filename of the chosen dataset csv
 	var processedData; 					// the data while will be visualised
 	// if the dataset has changed from last time, load the new csv file
 	/*
@@ -226,7 +230,7 @@ function update () {
 		drawingData = cullUnwantedTypes(processedData);
 	}
 	*/
-	
+
 	processedData = processData(rawData.rssi);
 	drawingData = processedData;
 	redraw();
@@ -234,7 +238,31 @@ function update () {
 }
 
 function redraw () {
-		
+
+		/*
+	//-------------------------------------------------------------
+	//Create traffic	
+	//-------------------------------------------------------------
+	var traffic = svg.selectAll("rect").data(rawData.traffic, function (d) { return d.id;});
+	traffic.enter()
+		.append("rect")
+		.attr("x", 				function(d) { return xScale(d.x); })
+		.attr("y", 				function(d) { return yScale(d.y); })
+		.attr("width", 			function(d) { return 4; })
+		.attr("height", 		function(d) { return 5; })
+		.attr("fill", 			function(d) { return "black"; })
+		.attr("fill-opacity", 	function(d) { return rssiScale(d.records); });
+	
+	
+	traffic.exit()
+		//.transition()
+		//.duration(1000)
+		//.ease("linear")
+		//.style("opacity", 0)
+		.remove();
+		*/
+	
+	
 
 	//-------------------------------------------------------------
 	//Create cells	
@@ -249,6 +277,7 @@ function redraw () {
 		.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); });
 	
+	
 	cells.exit()
 		//.transition()
 		//.duration(1000)
@@ -256,8 +285,8 @@ function redraw () {
 		//.style("opacity", 0)
 		.remove();
 	
-	
-	
+		
+		
 	
 	//-------------------------------------------------------------
 	//Create Roams
