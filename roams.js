@@ -35,7 +35,7 @@ var rScale = d3.scale.linear()
 var rssiScale = d3.scale.linear()
 //.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 //.domain([0, d3.max(cellset, function(d) { return d[2]; })])
-.domain([40,60])
+.domain([30,80])
 .range([0, 1]);
 
 //-------------------------------------------------------------
@@ -238,7 +238,7 @@ function update () {
 }
 
 function redraw () {
-	
+	/*
 	var grid = svg.selectAll("line.vertical").data(drawingData);
 	grid.enter()
 		.append("svg:line")
@@ -247,8 +247,8 @@ function redraw () {
 		.attr("x2", 100)
 		.attr("y2", 100)
 		.style("stroke-width", 2);
-
-		/*
+	*/
+	/*
 	//-------------------------------------------------------------
 	//Create traffic	
 	//-------------------------------------------------------------
