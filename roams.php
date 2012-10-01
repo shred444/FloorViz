@@ -2,7 +2,38 @@
 	<head>
 	
 	<script src="http://d3js.org/d3.v2.js"></script>
-	
+	<script type="text/javascript">
+	function showUser(str)
+	{
+	if (str=="")
+	  {
+	  document.getElementById("txtHint").innerHTML="";
+	  return;
+	  } 
+	if (window.XMLHttpRequest)
+	  {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	  }
+	else
+	  {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	xmlhttp.onreadystatechange=function()
+	  {
+	  //alert("received" + xmlhttp.readyState + "  " + xmlhttp.status);
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+		document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+		rawData.rssi=JSON.parse(xmlhttp.responseText);
+		update();
+		
+		}
+	  }
+	xmlhttp.open("GET","getdata.php?db="+str,true);
+	xmlhttp.send();
+	//alert("sent");
+	}
+	</script>
 		<?php
 		
 			//debugging
@@ -63,7 +94,7 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$cells = mysql_query("SELECT rssi.rssi_id,rssi.x,rssi.y,rssi.ap_id,rssi.rssi_val,aps.channel FROM rssi inner join aps ON rssi.ap_id = aps.ap_id");
+			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM rssi2 A inner join aps ON A.ap_id = aps.ap_id");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -190,10 +221,12 @@
 				<h2>Facility</h2>
 				<ul style="list-style-type:none">
 					<li>
-						<select id="dataset">
+						<select id="dataset" onchange="showUser(this.value)">
 							<option selected="selected" value="amz_bfi1">Amazon - BFI1</option>
 							<option value="quid_gou">Quid_GOU</option>
 							<option value="gap_bol">Gap_bol</option>
+							<option value="rssi">rssi</option>
+							<option value="rssi2">rssi2</option>
 						</select>
 					</li>
 					<li>
@@ -232,7 +265,7 @@
 					{ ?>
 						<li>
 						<label id="<?php echo $row['ap_id']?>">
-							<input type="checkbox" checked="checked" value="<?php echo $row['mac']?>"><?php echo $row['mac']?>
+							<input type="checkbox" checked="checked" disabled value="<?php echo $row['mac']?>"><?php echo $row['mac']?>
 						</label>
 						</li>
 						
@@ -282,7 +315,12 @@
 			?>
 		</script>
 		
+		<div id="txtHint"></div>
+		
 		
 		<script src="roams.js"></script>
+		
+		
+		
 			</body>
 		</html>		

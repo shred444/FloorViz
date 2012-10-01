@@ -205,7 +205,7 @@ function processData (data) {
 
 // called every time a form field has changed
 function update () {
-	
+	//alert("updating");
 	var dataset = getChosenDataset(); 	// filename of the chosen dataset csv
 	var processedData; 					// the data while will be visualised
 	// if the dataset has changed from last time, load the new csv file
@@ -297,15 +297,17 @@ function redraw () {
 		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
 		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
 	
+	
 	roams.exit()
 		.transition()
-			.duration(1000)
-			.ease("cubic-in-out")
-			.delay(function(d) { return Math.random() * 1000; })
+			//.duration(1000)
+			//.ease("cubic-in-out")
+			//.delay(function(d) { return Math.random() * 1000; })
 			//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
 			//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
-			.style("opacity", 0)
+			//.style("opacity", 0)
 			.remove();
+	
 	
 	// remove points if we don't need them anymore
 	
@@ -353,4 +355,4 @@ init ();
 // Callbacks
 //-------------------------------------------------------------
 document.getElementById("controls").addEventListener ("click", update, false);
-document.getElementById("controls").addEventListener ("keyup", update, false);
+//document.getElementById("controls").addEventListener ("keyup", update, false);
