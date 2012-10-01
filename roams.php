@@ -3,35 +3,37 @@
 	
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script type="text/javascript">
-	function showUser(str)
+	function showUser(db, table)
 	{
-	if (str=="")
-	  {
-	  document.getElementById("txtHint").innerHTML="";
-	  return;
-	  } 
-	if (window.XMLHttpRequest)
-	  {// code for IE7+, Firefox, Chrome, Opera, Safari
-	  xmlhttp=new XMLHttpRequest();
-	  }
-	else
-	  {// code for IE6, IE5
-	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	xmlhttp.onreadystatechange=function()
-	  {
-	  //alert("received" + xmlhttp.readyState + "  " + xmlhttp.status);
-	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-		{
-		document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
-		rawData.rssi=JSON.parse(xmlhttp.responseText);
-		update();
+		if (db=="")
+		  {
+		  document.getElementById("txtHint").innerHTML="";
+		  return;
+		  } 
+		if (window.XMLHttpRequest)
+		  {// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+		  }
+		else
+		  {// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		  }
+		xmlhttp.onreadystatechange=function()
+		  {
+		  //alert("received" + xmlhttp.readyState + "  " + xmlhttp.status);
+		  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+			//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+			rawData.rssi=JSON.parse(xmlhttp.responseText);
+			update();
+			
+			}
+		  }
 		
-		}
-	  }
-	xmlhttp.open("GET","getdata.php?db="+str,true);
-	xmlhttp.send();
-	//alert("sent");
+		var myDB = document.getElementById("dataset").value;
+		var myTable = document.getElementById("tableSelector").value;
+		xmlhttp.open("GET","getdata.php?db=" + myDB + "&table=" + myTable,true);
+		xmlhttp.send();
 	}
 	</script>
 		<?php
@@ -123,7 +125,7 @@
 			//get all Channels
 			$starttime = microtime(true);
 			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-			$channels = mysql_query("SELECT DISTINCT(channel) FROM aps;");
+			$channels = mysql_query("SELECT DISTINCT(channel) FROM aps WHERE channel !='';");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
@@ -221,14 +223,19 @@
 				<h2>Facility</h2>
 				<ul style="list-style-type:none">
 					<li>
-						<select id="dataset" onchange="showUser(this.value)">
+						<select id="dataset" onchange="showUser('amz_bfi1',this.value)">
 							<option selected="selected" value="amz_bfi1">Amazon - BFI1</option>
 							<option value="quid_gou">Quid_GOU</option>
 							<option value="gap_bol">Gap_bol</option>
-							<option value="rssi">rssi</option>
+						</select>
+					</li>
+					<li>
+						<select id="tableSelector" onchange="showUser('amz_bfi1',this.value)">
+							<option selected="selected" value="rssi">rssi</option>
 							<option value="rssi2">rssi2</option>
 						</select>
 					</li>
+					
 					<li>
 						<input type="checkbox" checked="checked" value="roams" id="roams">roams
 					</li>
