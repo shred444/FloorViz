@@ -354,5 +354,5 @@ init ();
 //-------------------------------------------------------------
 // Callbacks
 //-------------------------------------------------------------
-document.getElementById("controls").addEventListener ("click", update, false);
+//document.getElementById("controls").addEventListener ("click", update, false);
 //document.getElementById("controls").addEventListener ("keyup", update, false);

@@ -3,35 +3,37 @@
 	
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script type="text/javascript">
-	function showUser(db, table)
+	function pullNewData(db, table)
 	{
-		if (db=="")
-		  {
-		  document.getElementById("txtHint").innerHTML="";
-		  return;
-		  } 
 		if (window.XMLHttpRequest)
-		  {// code for IE7+, Firefox, Chrome, Opera, Safari
-		  xmlhttp=new XMLHttpRequest();
-		  }
+		{// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		}
 		else
-		  {// code for IE6, IE5
-		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		  }
-		xmlhttp.onreadystatechange=function()
-		  {
-		  //alert("received" + xmlhttp.readyState + "  " + xmlhttp.status);
-		  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			{
-			//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
-			rawData.rssi=JSON.parse(xmlhttp.responseText);
-			update();
-			
-			}
-		  }
+		{// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
 		
+		xmlhttp.onreadystatechange=function()
+		{
+			//alert("received" + xmlhttp.readyState + "  " + xmlhttp.status);
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				//data has been received from ajax function
+				//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+				
+								
+				rawData.rssi=JSON.parse(xmlhttp.responseText);
+				update();
+		
+			}
+		}
+		
+		//get selected table and db from html form
 		var myDB = document.getElementById("dataset").value;
 		var myTable = document.getElementById("tableSelector").value;
+		
+		//send ajax to getdata
 		xmlhttp.open("GET","getdata.php?db=" + myDB + "&table=" + myTable,true);
 		xmlhttp.send();
 	}
@@ -96,7 +98,7 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM rssi2 A inner join aps ON A.ap_id = aps.ap_id");
+			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM rssi A inner join aps ON A.ap_id = aps.ap_id");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -223,28 +225,28 @@
 				<h2>Facility</h2>
 				<ul style="list-style-type:none">
 					<li>
-						<select id="dataset" onchange="showUser('amz_bfi1',this.value)">
+						<select id="dataset" onchange="pullNewData('amz_bfi1',this.value)">
 							<option selected="selected" value="amz_bfi1">Amazon - BFI1</option>
-							<option value="quid_gou">Quid_GOU</option>
-							<option value="gap_bol">Gap_bol</option>
+							
 						</select>
 					</li>
 					<li>
-						<select id="tableSelector" onchange="showUser('amz_bfi1',this.value)">
+						<select id="tableSelector" onchange="pullNewData('amz_bfi1',this.value)">
 							<option selected="selected" value="rssi">rssi</option>
 							<option value="rssi2">rssi2</option>
 						</select>
 					</li>
 					
 					<li>
-						<input type="checkbox" checked="checked" value="roams" id="roams">roams
+						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roams">roams
 					</li>
 					<li>
-						<input type="checkbox" checked="checked" value="pings">Pings
+						<input type="checkbox" onchange="update()" checked="checked" value="pings">Pings
 					</li>
 					<li>
-						<input type="checkbox" checked="checked" value="rssi">RSSI
+						<input type="checkbox" onchange="update()" checked="checked" value="rssi">RSSI
 					</li>
+					
 				</ul>
 				
 				<h2>Channels</h2>
@@ -255,7 +257,7 @@
 					{ ?>
 						<li>
 						<label id="label-<?php echo $row['channel']?>">
-							<input type="checkbox" checked="checked" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?>
+							<input type="checkbox" onchange="update()" checked="checked" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?>
 						</label>
 						</li>
 						
