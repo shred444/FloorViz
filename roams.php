@@ -110,7 +110,7 @@
 			//select all cells
 			$starttime = microtime(true);
 			//$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.ap_id");
-			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.mac");
+			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.rssi_val,B.channel FROM {$table} A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 ORDER BY A.x, A.y");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -179,31 +179,7 @@
 			
 		
 			?>
-			<script>
-			var rssiset = [];
-			<?php
-			//get data for each ap
-			$starttime = microtime(true);
-			mysql_data_seek( $aps, 0);
-			while($row = mysql_fetch_array($aps))
-			{
-				
-				$rssi_per_ap = mysql_query("SELECT * FROM rssi WHERE ap_id=" . $row['ap_id']);
-				
-							
-				while($rssi_results = mysql_fetch_array($rssi_per_ap))
-				{ 
-					echo "rssiset.push([{$rssi_results['x']}, {$rssi_results['y']}, {$rssi_results['rssi_val']}, {$rssi_results['ap_id']}, {$row['channel']}]);
-					";
-				
-				}
-			}
 			
-			
-			$endtime = microtime(true);
-			$duration = $endtime - $starttime;
-		?>
-		</script>
 		<?php if($debug)
 			echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
 			
@@ -264,8 +240,7 @@
 		
 		</head>
 		<body>
-		
-		<svg id="visualization" width="1200" height="600"></svg>
+		<svg id="visualization" width="1000" height="500"></svg>
 		
 		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
 			<form id="controls" action="roams.php" method="get">
@@ -353,7 +328,7 @@
 			var yRange = Math.random() * 1000;	//Max range of new y values
 			
 			<?php
-			
+			/*
 			mysql_data_seek( $roams, 0);
 			while($row = mysql_fetch_array($roams)){
 				//add data points from db
@@ -364,7 +339,7 @@
 				dataset.push([xPos, yPos, radius]);
 				";
 			}
-			
+			*/
 			mysql_data_seek( $cells, 0);
 			while($row = mysql_fetch_array($cells)){
 				//add data points from db

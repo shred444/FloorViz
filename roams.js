@@ -4,6 +4,16 @@ var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 30;
 var drawingData;
 var channelcolors = [];
+channelcolors[0] = "black";
+channelcolors[1] = "orange";
+channelcolors[2] = "green";
+channelcolors[3] = "blue";
+channelcolors[4] = "purple";
+channelcolors[5] = "red";
+channelcolors[6] = "cyan";
+channelcolors[7] = "lime";
+channelcolors[8] = "pink";
+
 channelcolors[158] = "orange";
 channelcolors[153] = "green";
 channelcolors[149] = "blue";
@@ -17,13 +27,16 @@ var svg;
 var xScale = d3.scale.linear()
 //.domain([60, d3.max(cellset, function(d) { return d[0]; })])
 //.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
-.domain([60,400])
+//.domain([60,400])
+//.domain([0,d3.max(rawData.rssi, function(d) {return d.x[0]; })])
+.domain([50,350])
 .range([padding, w - padding * 2]);
 
 var yScale = d3.scale.linear()
 //.domain([80, d3.max(cellset, function(d) { return d[1]; })])
 //.domain([60,d3.max(drawingData, function(d) { return d[1]; })])
-.domain([60,200])
+//.domain([60,200])
+.domain([0,120])
 .range([h - padding, padding]);
 
 var rScale = d3.scale.linear()
@@ -36,7 +49,8 @@ var rssiScale = d3.scale.sqrt()
 //.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 //.domain([0, d3.max(cellset, function(d) { return d[2]; })])
 //.domain([30,80])
-.domain([18,60])
+//.domain([18,60])
+.domain([7,60])
 .range([0, 1]);
 
 //-------------------------------------------------------------
@@ -160,20 +174,30 @@ function processData (data) {
 		counter = 1;
 		
 	//get selected channels from form
-	var channel1 = document.getElementById("channel-158").checked;
+	/*var channel1 = document.getElementById("channel-158").checked;
 	var channel2 = document.getElementById("channel-153").checked;
 	var channel3 = document.getElementById("channel-149").checked;
 	var channel4 = document.getElementById("channel-161").checked;
-
+	*/
 	data.forEach (function (data, index) {
 		var coaster,
 			className = "";
 			
-			if(	((data.channel == 158) && channel1) ||
+			/*if(	((data.channel == 158) && channel1) ||
 				((data.channel == 153) && channel2) ||
 				((data.channel == 149) && channel3) ||
 				((data.channel == 161) && channel4)
+			){*/
+			if(	((data.channel == 1) && document.getElementById("channel-1").checked) ||
+				((data.channel == 2) && document.getElementById("channel-2").checked) ||
+				((data.channel == 3) && document.getElementById("channel-3").checked) ||
+				((data.channel == 4) && document.getElementById("channel-4").checked) ||
+				((data.channel == 5) && document.getElementById("channel-5").checked) ||
+				((data.channel == 6) && document.getElementById("channel-6").checked) ||
+				((data.channel == 7) && document.getElementById("channel-7").checked) ||
+				((data.channel == 8) && document.getElementById("channel-8").checked)
 			){
+			
 		//if (!(cullDirty && isDirty(data))) { // don't process it if it's dirty and we want to cull dirty data
 				coaster = {
 					id: index // so that the coasters can animate
@@ -203,7 +227,7 @@ function processData (data) {
 	});
 	
 	
-	document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + channel1 + channel2 + channel3 + channel4;
+	//document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + channel1 + channel2 + channel3 + channel4;
 
 	return processed; // only contains coasters we're interested in visualising
 }

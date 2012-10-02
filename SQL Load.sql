@@ -1,7 +1,7 @@
-use quid_gou;
+use amz_bfi1;
 #Create RSSI Table
 #delimiter $$
-CREATE TABLE IF NOT EXISTS`rssi` (
+CREATE TABLE IF NOT EXISTS`rssi3` (
   `rssi_id` int(11) NOT NULL auto_increment,
   `x` int(11) NOT NULL default '0',
   `y` int(11) NOT NULL default '0',
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS`rssi` (
   UNIQUE KEY `cell_id_UNIQUE` (`rssi_id`),
   KEY `fk_rssi_aps_idx` (`ap_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21850 DEFAULT CHARSET=latin1;#$$
-TRUNCATE rssi;
+#TRUNCATE rssi;
 
 #Create AP Table
 #delimiter $$
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `aps` (
   PRIMARY KEY  (`mac`),
   UNIQUE KEY `mac_UNIQUE` (`mac`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;#$$
-TRUNCATE aps;
+#TRUNCATE aps;
 
 #Create Roams Table
 #delimiter $$
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `roams` (
   KEY `fk_origin_aps_idx` (`origin_ap`),
   KEY `fk_dest_aps_idx` (`dest_ap`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;#$$
-TRUNCATE roams;
+#TRUNCATE roams;
 
 #Create temp table
 #delimiter $$
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `ztemp` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6286812 DEFAULT CHARSET=latin1;#$$
-TRUNCATE ztemp;
+#TRUNCATE ztemp;
 
 
 #Load data into ztemp from log
@@ -72,8 +72,8 @@ IGNORE 0 LINES
 
 #populate ap table
 INSERT IGNORE INTO aps (mac,channel) 
-	SELECT DISTINCT(ap),5 FROM ztemp;
+	SELECT DISTINCT(ap),0 FROM ztemp;
 
 #merge temp into rssi
-INSERT IGNORE INTO rssi (x,y,ap_id,rssi_val,record_count) 
+INSERT IGNORE INTO rssi3 (x,y,ap_id,rssi_val,record_count) 
 	SELECT t.x,t.y,t.ap,avg(t.rssi), count(t.rssi) FROM ztemp t GROUP BY t.x, t.y, t.ap;
