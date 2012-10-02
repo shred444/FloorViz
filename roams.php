@@ -49,7 +49,12 @@
 		
 			}
 		
+			if(isset($_GET['limit']))
+			{
+			
+				$LIMIT = "LIMIT " . $_GET['limit'];
 		
+			}
 		
 			//database connectivity
 		
@@ -110,7 +115,7 @@
 			//select all cells
 			$starttime = microtime(true);
 			//$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.ap_id");
-			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.rssi_val,B.channel FROM {$table} A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 ORDER BY A.x, A.y");
+			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.rssi_val,B.channel FROM {$table} A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 {$LIMIT}");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -125,7 +130,7 @@
 			//get all APs
 			$starttime = microtime(true);
 			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-			$aps = mysql_query("SELECT * FROM aps");
+			$aps = mysql_query("SELECT * FROM aps where channel>0");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
@@ -164,6 +169,7 @@
 			}
 			
 			//get all Traffic
+			/*
 			$starttime = microtime(true);
 			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
 			$traffic = mysql_query("SELECT x,y,sum(record_count) as records, avg(rssi_val) as rssi_val FROM amz_bfi1.rssi group by x,y");
@@ -176,7 +182,7 @@
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
 				echo "<br>";
 			}
-			
+			*/
 		
 			?>
 			
@@ -210,25 +216,25 @@
 			$roam_data[] = $r;
 		}
 		*/
-		
+		/*
 		mysql_data_seek( $traffic, 0);
 		$traffic_data = array();
 		while($r = mysql_fetch_assoc($traffic)) {
 			$traffic_data[] = $r;
 		}
-		
+		*/
 		?>
 		
 		<script>
 			//define json variables for use later
 			var jsonAPs=<?php echo json_encode($aps_json); ?>;
-			var jsonChannels=<?php echo json_encode($channels_json); ?>;
+			//var jsonChannels=<?php echo json_encode($channels_json); ?>;
 			rawData = new Object();
 			rawData.rssi=<?php echo json_encode($raw_data); ?>;
 			rawData.roams=<?php echo json_encode($roam_data); ?>;
 			rawData.aps=<?php echo json_encode($aps_json); ?>;
 			rawData.channels=<?php echo json_encode($channels_json); ?>;
-			rawData.traffic=<?php echo json_encode($traffic_data); ?>;
+			
 		</script>
 		
 		<?php
@@ -288,7 +294,7 @@
 					{ ?>
 						<li>
 						<label id="label-<?php echo $row['channel']?>">
-							<input type="checkbox" onchange="update()" checked="checked" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?>
+							<input type="checkbox" onchange="update()" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?>
 						</label>
 						</li>
 						

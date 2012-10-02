@@ -28,15 +28,22 @@ var xScale = d3.scale.linear()
 //.domain([60, d3.max(cellset, function(d) { return d[0]; })])
 //.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
 //.domain([60,400])
-//.domain([0,d3.max(rawData.rssi, function(d) {return d.x[0]; })])
-.domain([50,350])
+.domain(
+	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
+		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
+	])
+//.domain([50,350])
 .range([padding, w - padding * 2]);
 
 var yScale = d3.scale.linear()
 //.domain([80, d3.max(cellset, function(d) { return d[1]; })])
 //.domain([60,d3.max(drawingData, function(d) { return d[1]; })])
 //.domain([60,200])
-.domain([0,120])
+//.domain([0,120])
+.domain(
+	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.y;})),
+		Math.max.apply(Math,rawData.rssi.map(function(o){return o.y;}))
+	])
 .range([h - padding, padding]);
 
 var rScale = d3.scale.linear()
@@ -151,12 +158,12 @@ function init () {
 	*/
 	
 	//set form colors
-	for (var i=0; i<jsonChannels.length; i++)
+	for (var i=0; i<rawData.channels.length; i++)
 	{
 		//get each channel
-		var numstring = jsonChannels[i].channel.toString();
+		var numstring = rawData.channels[i].channel.toString();
 		//assign a color to it
-		document.getElementById('label-' + numstring).style.color = channelcolors[jsonChannels[i].channel];
+		document.getElementById('label-' + numstring).style.color = channelcolors[rawData.channels[i].channel];
 	}
 	
 	// load data, process it and draw it
@@ -179,6 +186,16 @@ function processData (data) {
 	var channel3 = document.getElementById("channel-149").checked;
 	var channel4 = document.getElementById("channel-161").checked;
 	*/
+	var selectedChannels = [1,2];
+	
+	rawData.channels.forEach (function (chan, index) {
+		var checked = document.getElementById("channel-" + chan.channel).checked;
+		if(checked)
+			selectedChannels.push(Number(chan.channel));
+	});
+	
+	
+	
 	data.forEach (function (data, index) {
 		var coaster,
 			className = "";
@@ -188,7 +205,17 @@ function processData (data) {
 				((data.channel == 149) && channel3) ||
 				((data.channel == 161) && channel4)
 			){*/
-			if(	((data.channel == 1) && document.getElementById("channel-1").checked) ||
+			
+			
+			
+			
+			
+			if(selectedChannels.indexOf(Number(data.channel)) >=0)
+			{
+			
+			//rawData.channels.map(function(o){return o.channel;}).indexOf("153") 
+			
+			/*if(	((data.channel == 1) && document.getElementById("channel-1").checked) ||
 				((data.channel == 2) && document.getElementById("channel-2").checked) ||
 				((data.channel == 3) && document.getElementById("channel-3").checked) ||
 				((data.channel == 4) && document.getElementById("channel-4").checked) ||
@@ -197,7 +224,7 @@ function processData (data) {
 				((data.channel == 7) && document.getElementById("channel-7").checked) ||
 				((data.channel == 8) && document.getElementById("channel-8").checked)
 			){
-			
+			*/
 		//if (!(cullDirty && isDirty(data))) { // don't process it if it's dirty and we want to cull dirty data
 				coaster = {
 					id: index // so that the coasters can animate
