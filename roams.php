@@ -109,7 +109,8 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.ap_id");
+			//$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.ap_id");
+			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.mac");
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
@@ -136,9 +137,11 @@
 			}
 			
 			//get all Channels
+			
 			$starttime = microtime(true);
 			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-			$channels = mysql_query("	SELECT B.channel as channel, 
+			$channels = mysql_query("SELECT distinct(channel) FROM aps");
+			/*$channels = mysql_query("	SELECT B.channel as channel, 
 										sum(A.record_count) as records, 
 										sum(A.record_count)/(SELECT sum(record_count) from rssi2)*100 as percent,
 										avg(A.rssi_val) as avg_rssi, 
@@ -149,6 +152,7 @@
 										WHERE B.channel != ''
 										group by B.channel 
 										order by sum(record_count) desc;");
+										*/
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
@@ -224,11 +228,12 @@
 			$raw_data[] = $r;
 		}
 		
-		mysql_data_seek( $roams, 0);
+		//mysql_data_seek( $roams, 0);
 		$roam_data = array();
-		while($r = mysql_fetch_assoc($roams)) {
+		/*while($r = mysql_fetch_assoc($roams)) {
 			$roam_data[] = $r;
 		}
+		*/
 		
 		mysql_data_seek( $traffic, 0);
 		$traffic_data = array();
@@ -268,14 +273,16 @@
 				<ul style="list-style-type:none">
 					<li>
 						<select id="dataset" name="s">
-							<option selected="selected" value="amz_bfi1">Amazon - BFI1</option>
+							<option  <?php if($site == "amz_bfi1") echo "selected='selected'"; ?> value="amz_bfi1">Amazon - BFI1</option>
+							<option  <?php if($site == "diapers") echo "selected='selected'"; ?> value="diapers">Diapers.com</option>
+							<option  <?php if($site == "quid_gou") echo "selected='selected'"; ?> value="quid_gou">quid_gou</option>
 							
 						</select>
 					</li>
 					<li>
 						<select id="tableSelector" name="table">
 							<option <?php if($table == "rssi") echo "selected='selected'"; ?> value="rssi">rssi</option>
-							<option <?php if($table == "rssi2") echo "selected='selected'"; ?>value="rssi2">rssi2</option>
+							<option <?php if($table == "rssi2") echo "selected='selected'"; ?> value="rssi2">rssi2</option>
 						</select>
 					</li>
 					<li>
@@ -322,7 +329,7 @@
 					while($row = mysql_fetch_array($aps))
 					{ ?>
 						<li>
-						<label id="<?php echo $row['ap_id']?>">
+						<label id="<?php echo $row['mac']?>">
 							<input type="checkbox" checked="checked" disabled value="<?php echo $row['mac']?>"><?php echo $row['mac']?>
 						</label>
 						</li>
