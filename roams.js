@@ -32,10 +32,11 @@ var rScale = d3.scale.linear()
 .domain([0,100])
 .range([2, 5]);
 
-var rssiScale = d3.scale.linear()
+var rssiScale = d3.scale.sqrt()
 //.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 //.domain([0, d3.max(cellset, function(d) { return d[2]; })])
-.domain([30,80])
+//.domain([30,80])
+.domain([30,60])
 .range([0, 1]);
 
 //-------------------------------------------------------------

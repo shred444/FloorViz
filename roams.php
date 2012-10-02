@@ -1,6 +1,6 @@
 <html>
 	<head>
-	
+	<LINK href="styles.css" rel="stylesheet" type="text/css">
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script type="text/javascript">
 	function pullNewData(db, table)
@@ -138,7 +138,17 @@
 			//get all Channels
 			$starttime = microtime(true);
 			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-			$channels = mysql_query("SELECT DISTINCT(channel) FROM aps WHERE channel !='';");
+			$channels = mysql_query("	SELECT B.channel as channel, 
+										sum(A.record_count) as records, 
+										sum(A.record_count)/(SELECT sum(record_count) from rssi2)*100 as percent,
+										avg(A.rssi_val) as avg_rssi, 
+										min(A.rssi_val) as min_rssi, 
+										max(A.rssi_val) as max_rssi
+										FROM amz_bfi1.rssi2 A
+										INNER JOIN aps B on A.ap_id = B.ap_id
+										WHERE B.channel != ''
+										group by B.channel 
+										order by sum(record_count) desc;");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
@@ -367,8 +377,10 @@
 		
 		<div id="txtHint"></div>
 		
+		<svg class="barchart" id="barchart" width="500" height="300"></svg>
 		
 		<script src="roams.js"></script>
+		<script src="bar.js"></script>
 		
 		
 		

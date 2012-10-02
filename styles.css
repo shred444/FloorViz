@@ -1,0 +1,16 @@
+.barchart {
+  font: 10px sans-serif;
+  /*background-color: steelblue;*/
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+.barchart rect  {
+	stroke: white;
+	fill: steelblue;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #ffffff;
+}
