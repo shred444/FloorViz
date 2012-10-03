@@ -1,3 +1,9 @@
+if (!window.console) console = {};
+console.log = console.log || function(){};
+console.warn = console.warn || function(){};
+console.error = console.error || function(){};
+console.info = console.info || function(){};
+
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
@@ -24,15 +30,36 @@ var svg;
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
+var myXMax = 0, myXMin = 9999;
+	rawData.rssi.forEach (function (data, index) {
+		if(Number(data.x)>myXMax){
+			myXMax=data.x;
+		}
+		if(Number(data.x)<myXMin){
+			myXMin=data.x;
+		}
+	});
+var myYMax = 0, myYMin = 9999;
+	rawData.rssi.forEach (function (data, index) {
+		if(Number(data.y)>myYMax){
+			myYMax=data.y;
+		}
+		if(Number(data.y)<myYMin){
+			myYMin=data.y;
+		}
+	});
+
 var xScale = d3.scale.linear()
+
 //.domain([60, d3.max(cellset, function(d) { return d[0]; })])
 //.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
 //.domain([60,400])
-.domain(
+/*.domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
 		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
 	])
-//.domain([50,350])
+*/
+.domain([myXMin,myXMax])
 .range([padding, w - padding * 2]);
 
 var yScale = d3.scale.linear()
@@ -40,10 +67,12 @@ var yScale = d3.scale.linear()
 //.domain([60,d3.max(drawingData, function(d) { return d[1]; })])
 //.domain([60,200])
 //.domain([0,120])
-.domain(
+/*.domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.y;})),
 		Math.max.apply(Math,rawData.rssi.map(function(o){return o.y;}))
 	])
+*/
+.domain([myYMin,myYMax])
 .range([h - padding, padding]);
 
 var rScale = d3.scale.linear()
@@ -186,7 +215,7 @@ function processData (data) {
 	var channel3 = document.getElementById("channel-149").checked;
 	var channel4 = document.getElementById("channel-161").checked;
 	*/
-	var selectedChannels = [1,2];
+	var selectedChannels = [];
 	
 	rawData.channels.forEach (function (chan, index) {
 		var checked = document.getElementById("channel-" + chan.channel).checked;
@@ -194,7 +223,8 @@ function processData (data) {
 			selectedChannels.push(Number(chan.channel));
 	});
 	
-	
+	document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + selectedChannels;
+
 	
 	data.forEach (function (data, index) {
 		var coaster,
@@ -285,8 +315,68 @@ function update () {
 
 	processedData = processData(rawData.rssi);
 	drawingData = processedData;
+	//makeScales();
 	redraw();
 	
+}
+
+function makeScales()
+{
+	
+	var myXMax = 0, myXMin = 9999;
+	rawData.rssi.forEach (function (data, index) {
+		if(Number(data.x)>myXMax){
+			myXMax=data.x;
+		}
+		if(Number(data.x)<myXMin){
+			myXMin=data.x;
+		}
+	});
+	
+	xScale = d3.scale.linear()
+	//.domain([60, d3.max(cellset, function(d) { return d[0]; })])
+	//.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
+	//.domain([60,400])
+	/*.domain(
+		[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
+			Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
+		])
+	*/
+	.domain([myXMin,myXMax])
+	.range([padding, w - padding * 2]);
+	
+	var myYMax = 0, myYMin = 9999;
+	rawData.rssi.forEach (function (data, index) {
+		if(Number(data.y)>myYMax){
+			myYMax=data.y;
+		}
+		if(Number(data.y)<myYMin){
+			myYMin=data.y;
+		}
+	});
+	
+	yScale = d3.scale.linear()
+	//.domain([60, d3.max(cellset, function(d) { return d[0]; })])
+	//.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
+	//.domain([60,400])
+	/*.domain(
+		[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
+			Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
+		])
+	*/
+	.domain([myYMin,myYMax])
+	.range([padding, w - padding * 2]);
+	xAxis = d3.svg.axis()
+	.scale(xScale)
+	.orient("bottom")
+	.ticks(5);
+
+	//Define Y axis
+	yAxis = d3.svg.axis()
+	.scale(yScale)
+	.orient("left")
+	.ticks(5);
+	console.log("making scales X:" + myXMin + "," + myXMax + "  Y:" + myYMin + "," + myYMax);
 }
 
 function redraw () {
