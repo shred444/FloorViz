@@ -1,4 +1,4 @@
-use amz_bfi1;
+use quid_gou;
 
 #Create AP Table
 #delimiter $$

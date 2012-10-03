@@ -272,14 +272,16 @@
 		</head>
 		<body>
 		<div id="header">
-		<form id="controls" action="roams.php" method="get">
+		<form id="facility" action="roams.php" method="get">
 				
 				<ul style="list-style-type:none">
 					<li>
+						<a id="logo" href="/" title="Kiva Systems">Kiva Systems</a>
+					</li>
+					<li>
 						<select id="dataset" name="s">
 							<option  <?php if($site == "amz_bfi1") echo "selected='selected'"; ?> value="amz_bfi1">Amazon - BFI1</option>
-							<option  <?php if($site == "diapers") echo "selected='selected'"; ?> value="diapers">Diapers.com</option>
-							<option  <?php if($site == "quid_gou") echo "selected='selected'"; ?> value="quid_gou">quid_gou</option>
+							<option  <?php if($site == "quid_gou") echo "selected='selected'"; ?> value="quid_gou">Quidsi - Diapers.com</option>
 							
 						</select>
 					</li>
@@ -305,9 +307,9 @@
 		</div>
 		<svg id="visualization" width="1000" height="500"></svg>
 		
-		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
-			<form id="controls" action="roams.php" method="get">
-				<h2>Facility</h2>
+		<div id="sidebar">
+			<form id="controls" method="get">
+				<h2>Details</h2>
 				<ul style="list-style-type:none">
 					
 					<li>
@@ -335,7 +337,7 @@
 					{ ?>
 						<li>
 						<label id="label-<?php echo $row['channel']?>">
-							<input type="checkbox" onchange="update()" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?> - <?php echo $row['mac']?>
+							<input type="checkbox" checked onchange="update()" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?> - <?php echo $row['mac']?>
 						</label>
 						</li>
 						
