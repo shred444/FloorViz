@@ -54,6 +54,9 @@
 			
 				$LIMIT = "LIMIT " . $_GET['limit'];
 		
+			}else
+			{
+				$LIMIT = "";
 			}
 		
 			//database connectivity
@@ -77,15 +80,15 @@
 					echo "No Site selected.<br> Using default site<br>";
 			}
 			
-			if(isset($_GET['table']))
+			if(isset($_GET['dataset']))
 			{
-				$table=$_GET['table'];
-				mysql_select_db($table, $con);
+				$dataset=$_GET['dataset'];
+				mysql_select_db($dataset, $con);
 			}else
 			{
-				$table="rssi";
+				$dataset="";
 				if($debug)
-					echo "No table selected.<br> Using default table<br>";
+					echo "No dataset selected.<br> Using default table<br>";
 			}
 			
 			
@@ -114,13 +117,14 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			//$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.ap_id,A.rssi_val,aps.channel FROM {$table} A inner join aps ON A.ap_id = aps.ap_id");
-			$cells = mysql_query("SELECT A.rssi_id,A.x,A.y,A.rssi_val,B.channel FROM {$table} A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 {$LIMIT}");
+			$query = "SELECT A.rssi_id,A.x,A.y,A.rssi_val,A.br_val,B.channel FROM rssi A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 AND dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") {$LIMIT}";
+			$cells = mysql_query($query);
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			if($debug){
 				echo "<b>Cells</b>";
+				echo "Query: " . $query;
 				echo "<br>Total Fields: " . mysql_num_fields($cells);
 				echo "<br>Total Rows: " . mysql_num_rows($cells);
 				echo "<br>Duration: " . number_format($duration, 2) . " ms";
@@ -141,11 +145,25 @@
 				echo "<br>";
 			}
 			
+			//get all Datasets
+			$starttime = microtime(true);
+			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
+			$datasets = mysql_query("SELECT * FROM datasets");
+			$endtime = microtime(true);
+			$duration = $endtime - $starttime;
+			if($debug){
+				echo "<b>Datasets</b>";
+				echo "<br>Total Fields: " . mysql_num_fields($datasets);
+				echo "<br>Total Rows: " . mysql_num_rows($datasets);
+				echo "<br>Duration: " . number_format($duration, 2) . " ms";
+				echo "<br>";
+			}
+			
 			//get all Channels
 			
 			$starttime = microtime(true);
 			//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-			$channels = mysql_query("SELECT distinct(channel) FROM aps");
+			$channels = mysql_query("SELECT * FROM aps");
 			/*$channels = mysql_query("	SELECT B.channel as channel, 
 										sum(A.record_count) as records, 
 										sum(A.record_count)/(SELECT sum(record_count) from rssi2)*100 as percent,
@@ -210,6 +228,12 @@
 			$raw_data[] = $r;
 		}
 		
+		mysql_data_seek( $datasets, 0);
+		$datasets_json = array();
+		while($r = mysql_fetch_assoc($datasets)) {
+			$raw_data[] = $r;
+		}
+		
 		//mysql_data_seek( $roams, 0);
 		$roam_data = array();
 		/*while($r = mysql_fetch_assoc($roams)) {
@@ -234,6 +258,7 @@
 			rawData.roams=<?php echo json_encode($roam_data); ?>;
 			rawData.aps=<?php echo json_encode($aps_json); ?>;
 			rawData.channels=<?php echo json_encode($channels_json); ?>;
+			rawData.datasets=<?php echo json_encode($datasets_json); ?>;
 			
 		</script>
 		
@@ -246,11 +271,9 @@
 		
 		</head>
 		<body>
-		<svg id="visualization" width="1000" height="500"></svg>
-		
-		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
-			<form id="controls" action="roams.php" method="get">
-				<h2>Facility</h2>
+		<div id="header">
+		<form id="controls" action="roams.php" method="get">
+				
 				<ul style="list-style-type:none">
 					<li>
 						<select id="dataset" name="s">
@@ -261,14 +284,32 @@
 						</select>
 					</li>
 					<li>
-						<select id="tableSelector" name="table">
-							<option <?php if($table == "rssi") echo "selected='selected'"; ?> value="rssi">rssi</option>
-							<option <?php if($table == "rssi2") echo "selected='selected'"; ?> value="rssi2">rssi2</option>
+						<select id="tableSelector" name="dataset">
+						<?php
+							mysql_data_seek( $datasets, 0);
+							while($row = mysql_fetch_array($datasets))
+							{ ?>
+								<option <?php if($dataset == $row['name']) echo "selected='selected'"; ?> value="<?php echo $row['name']; ?>"><?php echo $row['name']; ?></option>
+							<?php }?>
 						</select>
 					</li>
 					<li>
 						<input type="submit" value="Refresh"> 
 					</li>
+					
+					
+					
+					
+				</ul>
+			</form>
+		</div>
+		<svg id="visualization" width="1000" height="500"></svg>
+		
+		<div style="float:right; padding-right:50px; background-color: #DDDDDD;">
+			<form id="controls" action="roams.php" method="get">
+				<h2>Facility</h2>
+				<ul style="list-style-type:none">
+					
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roams">roams
 					</li>
@@ -294,7 +335,7 @@
 					{ ?>
 						<li>
 						<label id="label-<?php echo $row['channel']?>">
-							<input type="checkbox" onchange="update()" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?>
+							<input type="checkbox" onchange="update()" value="<?php echo $row['channel']?>" id="channel-<?php echo $row['channel']?>"><?php echo $row['channel']?> - <?php echo $row['mac']?>
 						</label>
 						</li>
 						
