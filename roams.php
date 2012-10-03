@@ -83,7 +83,6 @@
 			if(isset($_GET['dataset']))
 			{
 				$dataset=$_GET['dataset'];
-				mysql_select_db($dataset, $con);
 			}else
 			{
 				$dataset="";
@@ -91,6 +90,15 @@
 					echo "No dataset selected.<br> Using default table<br>";
 			}
 			
+			if(isset($_GET['floor']))
+			{
+				$FLOOR=$_GET['floor'];
+			}else
+			{
+				$FLOOR="1";
+				if($debug)
+					echo "No dataset selected.<br> Using default table<br>";
+			}
 			
 			
 			
@@ -117,7 +125,8 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$query = "SELECT A.rssi_id,A.x,A.y,A.rssi_val,A.br_val,B.channel FROM rssi A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 AND dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") {$LIMIT}";
+			$query = "SELECT A.rssi_id, A.x,A.y,A.rssi_val,avg(A.br_val),B.channel FROM rssi A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 AND dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") 
+			GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";
 			$cells = mysql_query($query);
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
@@ -259,7 +268,7 @@
 			rawData.aps=<?php echo json_encode($aps_json); ?>;
 			rawData.channels=<?php echo json_encode($channels_json); ?>;
 			rawData.datasets=<?php echo json_encode($datasets_json); ?>;
-			
+			var floor = <?php echo $FLOOR; ?>
 		</script>
 		
 		<?php
@@ -275,8 +284,8 @@
 		<form id="facility" action="roams.php" method="get">
 				
 				<ul style="list-style-type:none">
-					<li>
-						<a id="logo" href="/" title="Kiva Systems">Kiva Systems</a>
+					<li id="logo">
+						Facility:
 					</li>
 					<li>
 						<select id="dataset" name="s">

@@ -423,12 +423,11 @@ function redraw () {
 		.append("rect")
 		.attr("x", 				function(d) { return xScale(d.x); })
 		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			function(d) { return 4; })
-		.attr("height", 		function(d) { return 5; })
+		.attr("width", 			function(d) { return 4 * floor; })
+		.attr("height", 		function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); });
-		
-	
+			
 	cells.exit()
 		//.transition()
 		//.duration(1000)
@@ -437,8 +436,6 @@ function redraw () {
 		.remove();
 	
 		
-		
-	
 	//-------------------------------------------------------------
 	//Create Roams
 	//-------------------------------------------------------------

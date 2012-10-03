@@ -26,10 +26,10 @@
 	height: 30px;
 	}
 	
-#header a#logo {
-	width: 200px;
+#header li#logo {
+	padding-right:10px;
 	height:56px;
-	background: url('logo.gif');
+	/*background: url('logo.gif');*/
 	}
 
 #sidebar {
