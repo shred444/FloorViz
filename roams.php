@@ -125,8 +125,18 @@
 		
 			//select all cells
 			$starttime = microtime(true);
-			$query = "SELECT A.rssi_id, A.x,A.y,A.rssi_val,avg(A.br_val),B.channel FROM rssi A inner join aps B ON A.ap_id = B.mac WHERE A.x>0 AND dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") 
-			GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";
+			$counter = mysql_query("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\");");
+			$cellCount = mysql_num_rows($counter);
+			if($cellCount > 10000)
+			{
+				$FLOOR = $cellCount / 30000;
+			}
+			$query = "	SELECT A.rssi_id, A.x,A.y,A.rssi_val,avg(A.br_val),B.channel 
+						FROM rssi A 
+						INNER JOIN aps B ON A.ap_id = B.mac 
+						WHERE A.x>0 AND dataset_id = 
+						(SELECT data_id FROM datasets where name=\"{$dataset}\") 
+						GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";
 			$cells = mysql_query($query);
 			//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
 			$endtime = microtime(true);
