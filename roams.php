@@ -76,6 +76,8 @@
 			}else
 			{
 				$site="amz_bfi1";
+				//select the database
+				mysql_select_db($site, $con);
 				if($debug)
 					echo "No Site selected.<br> Using default site<br>";
 			}
@@ -102,14 +104,13 @@
 			
 			
 			
-			//select the database
-			mysql_select_db($site, $con);
+			
 			if($debug)
 				echo "Site=" . $site . "<br>";
 						
-			//create the query
+			//select all Roams
 			$starttime = microtime(true);
-			$roams = mysql_query("SELECT * FROM roams");
+			$roams = mysql_query("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
 			$endtime = microtime(true);
 			$duration = $endtime - $starttime;
 			$fieldCount = mysql_num_fields($roams);
@@ -253,12 +254,12 @@
 			$raw_data[] = $r;
 		}
 		
-		//mysql_data_seek( $roams, 0);
+		mysql_data_seek( $roams, 0);
 		$roam_data = array();
-		/*while($r = mysql_fetch_assoc($roams)) {
+		while($r = mysql_fetch_assoc($roams)) {
 			$roam_data[] = $r;
 		}
-		*/
+		
 		/*
 		mysql_data_seek( $traffic, 0);
 		$traffic_data = array();
