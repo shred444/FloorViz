@@ -522,7 +522,7 @@ function redraw () {
 		.attr("fill", "black");
 		//end labels
 	*/
-	
+	console.log("Redraw Complete");
 	
 }
 // let's kick it all off!
@@ -533,3 +533,38 @@ init ();
 //-------------------------------------------------------------
 //document.getElementById("controls").addEventListener ("click", update, false);
 //document.getElementById("controls").addEventListener ("keyup", update, false);
+
+
+function populateDatasets (form){
+    var result = ""; 
+	selectedSite = document.getElementById(form).site.value;
+	datasetField = document.getElementById(form).dataset;
+	//selectField = document.getElementById(FieldID);
+	datasetField.options.length = 0;
+	//selectField.disabled = false;
+	
+	
+	result = datasets[selectedSite];
+	
+	for (j=0; j<result.length; j++) {
+		datasetField.options[j] = new Option(result[j], result[j]);
+	}
+	
+	/*
+    for (var i = 0; i < form.plotFam.length; i++) { 
+        if (form.plotFam.options[i].selected) { 
+            famName = form.plotFam.options[i].text; 
+			if (families[famName]) {
+				result = families[famName];
+				
+				for (j=0; j<result.length; j++) {
+					selectField.options[selectField.length] = new Option(result[j], result[j]);
+				}
+			}
+        } 
+    }
+	*/
+	
+	console.log("Populated Datasets");
+}
+

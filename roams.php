@@ -279,6 +279,24 @@
 			rawData.channels=<?php echo json_encode($channels_json); ?>;
 			rawData.datasets=<?php echo json_encode($datasets_json); ?>;
 			var floor = <?php echo $FLOOR; ?>
+			
+			var datasets = new Array();
+			<?php
+			
+			$databases = array("quid_gou","amz_bfi1");
+			foreach ($databases as $db)
+			{
+				echo "var temp = new Array();";
+				$result = mysql_query("SELECT * FROM {$db}.datasets");
+				while($r = mysql_fetch_assoc($result)) {
+					echo "temp.push('{$r['name']}');";
+				}
+				echo "datasets['{$db}'] = temp;";
+			}
+			?>
+			
+ 
+			
 		</script>
 		
 		<?php
@@ -298,14 +316,14 @@
 						Facility:
 					</li>
 					<li>
-						<select id="dataset" name="s">
+						<select id="site" name="site" onchange="populateDatasets('facility')">
 							<option  <?php if($site == "amz_bfi1") echo "selected='selected'"; ?> value="amz_bfi1">Amazon - BFI1</option>
 							<option  <?php if($site == "quid_gou") echo "selected='selected'"; ?> value="quid_gou">Quidsi - Diapers.com</option>
 							
 						</select>
 					</li>
 					<li>
-						<select id="tableSelector" name="dataset">
+						<select id="dataset" name="dataset">
 						<?php
 							mysql_data_seek( $datasets, 0);
 							while($row = mysql_fetch_array($datasets))
