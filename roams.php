@@ -69,9 +69,9 @@
 			if($debug)
 				echo "Connected!<br>";
 			
-			if(isset($_GET['s']))
+			if(isset($_GET['site']))
 			{
-				$site=$_GET['s'];
+				$site=$_GET['site'];
 				mysql_select_db($site, $con);
 			}else
 			{
@@ -254,7 +254,7 @@
 			$raw_data[] = $r;
 		}
 		
-		mysql_data_seek( $roams, 0);
+		//mysql_data_seek( $roams, 0);
 		$roam_data = array();
 		while($r = mysql_fetch_assoc($roams)) {
 			$roam_data[] = $r;
