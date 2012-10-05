@@ -1,3 +1,14 @@
+#Define variables
+TARFILE="" #"efcrssi.tar.gz"
+EXTRACTDIR="/tmp/rssi_extracted"
+GREPFILE="myRSSI.log"
+ROAMFILE="myRoams.log"
+PYTHONSCRIPT="/tmp/extract_rssi_logs.py"
+SITE="" #"amz_bfi1"
+DATASET="DATASET3"
+SQLFILE="/tmp/sqlInit.sql"
+
+
 function printUsage
 {
     echo " Usage: $0 [-t <location of tar>] [-s <site name>] [driveID] ..."
@@ -44,18 +55,71 @@ while (( "$#" )); do
     elif [ $1 == '-t' ]; then
 	#get tar ball location
         shift
-        TAR_FILE=$1
-	if ! [ -f "$TAR_FILE" ]; then
-		echo "ERROR: tar file = $TAR_FILE  <DOES NOT EXIST>"
+        TARFILE=$1
+	if ! [ -f "$TARFILE" ]; then
+		echo "ERROR: tar file = $TARFILE  <DOES NOT EXIST>"
 		exit
 	fi
     fi
     shift
 done
 
-if [ "$SITE" == "" -o "$TAR_FILE" == "" ]; then
+
+#check all arguements before continuing
+if [ "$SITE" == "" -o "$TARFILE" == "" ]; then
 	echo "ERROR: Missing arguement"
 	printUsage;
 	exit
 fi
+
+#Display all variables
+echo "--- Variables ---"
+echo "	SITE = $SITE"
+echo "	TARFILE = $TARFILE"
+
+
+
+#Perform unarchiving
+cd /tmp
+
+#setup mysql
+MYSQL=`echo mysql -h hwtest -u jonathan -padmin`
+
+#remove extract folder
+echo "Removing old data"
+rm $EXTRACTDIR -f -r
+
+#create extracted folder
+mkdir $EXTRACTDIR
+echo "$EXTRACTDIR Created"
+
+#copy tar to extracted folder
+cp $TARFILE $EXTRACTDIR
+
+#move into folder
+cd $EXTRACTDIR
+
+#untar file
+tar -xzvf $TARFILE
+echo "Untar Complete"
+
+#unarchive all drives
+python $PYTHONSCRIPT -s $EXTRACTDIR -l $EXTRACTDIR
+echo "Drive Unarchive Complete"
+
+#grep 'OK'
+grep -r --include "rssi.log.*" --exclude "my*" "OK" . > $GREPFILE
+echo "OKs Grep Complete"
+
+#grep 'Roam'
+grep -r --include "rssi.log.*" --exclude "my*" "Roam" . > $ROAMFILE
+echo "Roams Grep Complete"
+
+#run SQL
+#Select database
+echo "use $SITE;" | $MYSQL
+
+#MYSQL < $SQLFILE
+
+#call init script
 
