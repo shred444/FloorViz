@@ -1,4 +1,4 @@
-use quid_gou;
+#use quid_gou;
 
 #Create AP Table
 #delimiter $$
@@ -90,8 +90,9 @@ IGNORE 0 LINES
 (@dummy, @dummy, @dummy, collect_time, x, y, ap, rssi, br, @dummy);
 
 #populate dataset table
+set @currentDate = concat(MONTH(NOW()),'-',DAY(NOW()),'-',YEAR(NOW()));
 INSERT IGNORE INTO datasets (name,logdate) 
-	VALUES ("Dataset1", NOW());
+	VALUES (@currentDate, NOW());
 set @dataset = LAST_INSERT_ID();
 
 #populate ap table

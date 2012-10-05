@@ -6,7 +6,7 @@ ROAMFILE="myRoams.log"
 PYTHONSCRIPT="/tmp/extract_rssi_logs.py"
 SITE="" #"amz_bfi1"
 DATASET="DATASET3"
-SQLFILE="/tmp/sqlInit.sql"
+SQLFILE="/home/jcohn/sqlInit.sql"
 
 
 function printUsage
@@ -115,11 +115,8 @@ echo "OKs Grep Complete"
 grep -r --include "rssi.log.*" --exclude "my*" "Roam" . > $ROAMFILE
 echo "Roams Grep Complete"
 
-#run SQL
-#Select database
-echo "use $SITE;" | $MYSQL
 
-#MYSQL < $SQLFILE
+#Select database and run sql script
+echo "use $SITE; source $SQLFILE;" | $MYSQL
 
-#call init script
-
+echo "script complete";
