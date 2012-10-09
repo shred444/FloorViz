@@ -4,6 +4,13 @@ console.warn = console.warn || function(){};
 console.error = console.error || function(){};
 console.info = console.info || function(){};
 
+Array.max = function( array ){
+    return Math.max.apply( Math, array );
+};
+Array.min = function( array ){
+    return Math.min.apply( Math, array );
+};
+
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
@@ -78,15 +85,19 @@ var yScale = d3.scale.linear()
 var rScale = d3.scale.linear()
 //.domain([0, d3.max(cellset, function(d) { return d[1]; })])
 //.domain([0, d3.max(drawingData, function(d) { return d[3]; })])
+
 .domain([0,100])
 .range([2, 5]);
-
-var rssiScale = d3.scale.sqrt()
+var rssiMin = Array.min(rawData.rssi.map(function(o){return o.rssi_val;}));
+var rssiMax = Array.max(rawData.rssi.map(function(o){return o.rssi_val;}));
+var rssiScale = d3.scale.linear()
 //.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 //.domain([0, d3.max(cellset, function(d) { return d[2]; })])
 //.domain([30,80])
 //.domain([18,60])
-.domain([7,60])
+
+//.domain([7,60])
+.domain([rssiMin,rssiMax])
 .range([0, 1]);
 
 //-------------------------------------------------------------

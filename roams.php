@@ -39,7 +39,7 @@
 	}
 	</script>
 		<?php
-		
+			$databases = array("quid_gou","amz_bfi1","hwmhs","amazon_qa");
 			//debugging
 			$debug = FALSE;
 			if(isset($_GET['debug']))
@@ -251,7 +251,7 @@
 		mysql_data_seek( $datasets, 0);
 		$datasets_json = array();
 		while($r = mysql_fetch_assoc($datasets)) {
-			$raw_data[] = $r;
+			$datasets_json[] = $r;
 		}
 		
 		//mysql_data_seek( $roams, 0);
@@ -284,7 +284,6 @@
 			var datasets = new Array();
 			<?php
 			
-			$databases = array("quid_gou","amz_bfi1");
 			foreach ($databases as $db)
 			{
 				echo "var temp = new Array();";
@@ -320,6 +319,8 @@
 						<select id="site" name="site" onchange="populateDatasets('facility')">
 							<option  <?php if($site == "amz_bfi1") echo "selected='selected'"; ?> value="amz_bfi1">Amazon - BFI1</option>
 							<option  <?php if($site == "quid_gou") echo "selected='selected'"; ?> value="quid_gou">Quidsi - Diapers.com</option>
+							<option  <?php if($site == "amazon_qa") echo "selected='selected'"; ?> value="amazon_qa">Amazon - QA</option>
+							<option  <?php if($site == "hwmhs") echo "selected='selected'"; ?> value="hwmhs">Kiva - HWMHS</option>
 							
 						</select>
 					</li>
@@ -354,13 +355,13 @@
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roams">roams
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" value="pings">Pings
+						<input type="checkbox" onchange="update()" checked="checked" disabled value="pings">Pings
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" value="rssi">RSSI
+						<input type="checkbox" onchange="update()" checked="checked" disabled value="rssi">RSSI
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" value="traffic">Traffic
+						<input type="checkbox" onchange="update()" checked="checked" disabled value="traffic">Traffic
 					</li>
 					
 					
