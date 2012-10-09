@@ -424,7 +424,7 @@ function redraw () {
 		.remove();
 		*/
 	
-	
+	that = this;
 
 	//-------------------------------------------------------------
 	//Create cells	
@@ -432,12 +432,27 @@ function redraw () {
 	var cells = svg.selectAll("rect").data(drawingData, function (d) { return d.id;});
 	cells.enter()
 		.append("rect")
+		.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
 		.attr("x", 				function(d) { return xScale(d.x); })
+		.attr("class",			"cell")
+		.attr("title", 			"hello")
 		.attr("y", 				function(d) { return yScale(d.y); })
 		.attr("width", 			function(d) { return 4 * floor; })
 		.attr("height", 		function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return channelcolors[d.channel]; })
-		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); });
+		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); })
+		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
+		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
+		.append("svg:title");
+		
+	//mouseover title
+	cells.select("title")
+       .text(function(d) { return "x:"+d.x + " y:"+d.y; });
+			
+	rect.filter(function(d) { return d.x in drawingData; })
+       //.attr("class", function(d) { return "day q" + color(data[d]) + "-9"; })
+		.select("title")
+       .text(function(d) { return "hello: "; });		
 			
 	cells.exit()
 		//.transition()
