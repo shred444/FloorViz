@@ -222,10 +222,10 @@ function processData (data) {
 	rssiMax = rssi_avg + rssi_dev;
 	
 	//reformat the scale???
-	/*rssiScale = d3.scale.linear()
+	rssiScale = d3.scale.linear()
 		.domain([rssiMin,rssiMax])
 		.range([0, 1]);
-	*/
+	
 	data.forEach (function (data, index) {
 		var coaster,
 		className = "";

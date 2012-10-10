@@ -90,14 +90,34 @@ function get_all_data()
 		$FLOOR = $myCounter->rowCount / 30000;
 	}
 	
+
+	
 	//get all cells
 	$myCells = new php_query();
-	$myCells->runQuery("SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
+	
+	$noOutliers = "
+	SELECT A.*, B.*, dev.* 
+	FROM rssi A
+	JOIN ( 
+		SELECT d.rssi_id, Avg(d.rssi_val) as average, 2*STDDEV(d.rssi_val) StdDeviation
+        FROM rssi d
+		WHERE x>0
+         ) dev
+	INNER JOIN aps B ON A.ap_id = B.mac
+	WHERE
+		A.x>0 AND
+		A.rssi_val BETWEEN dev.average-dev.StdDeviation AND dev.average+dev.StdDeviation AND
+		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")";
+	
+	$yesOutliers="SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
 				FROM rssi A 
 				INNER JOIN aps B ON A.ap_id = B.mac 
 				WHERE A.x>0 AND dataset_id = 
 				(SELECT data_id FROM datasets where name=\"{$dataset}\") 
-				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}");		
+				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";		
+	
+	$myCells->runQuery($noOutliers);
+		
 	$raw_data = $myCells->JSON_data;
 	$myCells->createJSVar("rawData.rssi");
 	

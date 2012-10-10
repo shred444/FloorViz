@@ -1,6 +1,7 @@
 <html>
 	<head>
 	<LINK href="styles.css" rel="stylesheet" type="text/css">
+	<LINK href="barstyles.css" rel="stylesheet" type="text/css">
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script type="text/javascript">
 	function pullNewData(db, table)
