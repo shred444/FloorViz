@@ -218,14 +218,14 @@ function processData (data) {
 	console.log("Average: "+getAverageFromNumArr(rssi_data,4));
 	console.log("StdDev: "+getStandardDeviation(rssi_data,4));
 	console.log("Variance: "+getVariance(rssi_data,4));
-	rssiMin = rssi_avg - rssi_dev;
-	rssiMax = rssi_avg + rssi_dev;
+	//rssiMin = rssi_avg - rssi_dev;
+	//rssiMax = rssi_avg + rssi_dev;
 	
 	//reformat the scale???
-	rssiScale = d3.scale.linear()
+	/*rssiScale = d3.scale.linear()
 		.domain([rssiMin,rssiMax])
 		.range([0, 1]);
-	
+	*/
 	data.forEach (function (data, index) {
 		var coaster,
 		className = "";

@@ -3,7 +3,7 @@
 function get_url_variables()
 {
 	//set global scope
-	global $LIMIT, $FLOOR, $site, $dataset, $con, $debug;
+	global $LIMIT, $FLOOR, $site, $dataset, $con, $debug, $STD;
 	
 	if(isset($_GET['debug']))
 	{
@@ -65,11 +65,23 @@ function get_url_variables()
 		if($debug)
 			echo "No dataset selected.<br> Using default table<br>";
 	}
+	
+	if(isset($_GET['std']))
+	{
+		$STD=$_GET['std'];
+		if($debug)
+			echo "STD SET to " . $STD;
+	}else
+	{
+		$STD="1";
+		if($debug)
+			echo "STD SET to " . $STD;
+	}
 }
 
 function get_all_data()
 {
-	global $LIMIT, $FLOOR, $site, $dataset, $con, $debug;
+	global $LIMIT, $FLOOR, $site, $dataset, $con, $debug, $STD;
 	global $aps_json, $raw_data, $roam_data, $channels_json, $datasets_json;
 	global $myRoams, $myCount, $myCells, $myAPs, $myDatasets, $myChannels;
 	
@@ -95,11 +107,11 @@ function get_all_data()
 	//get all cells
 	$myCells = new php_query();
 	
-	$noOutliers = "
-	SELECT A.*, B.*, dev.* 
+	$removedOutliers = "
+	SELECT A.*, B.channel, dev.* 
 	FROM rssi A
 	JOIN ( 
-		SELECT d.rssi_id, Avg(d.rssi_val) as average, 2*STDDEV(d.rssi_val) StdDeviation
+		SELECT d.rssi_id, Avg(d.rssi_val) as average, {$STD}*STDDEV(d.rssi_val) StdDeviation
         FROM rssi d
 		WHERE x>0
          ) dev
@@ -109,14 +121,14 @@ function get_all_data()
 		A.rssi_val BETWEEN dev.average-dev.StdDeviation AND dev.average+dev.StdDeviation AND
 		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")";
 	
-	$yesOutliers="SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
-				FROM rssi A 
-				INNER JOIN aps B ON A.ap_id = B.mac 
-				WHERE A.x>0 AND dataset_id = 
-				(SELECT data_id FROM datasets where name=\"{$dataset}\") 
-				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";		
+	$allowOutliers="
+	SELECT A.*,B.channel
+	FROM rssi A 
+	INNER JOIN aps B ON A.ap_id = B.mac 
+	WHERE A.x>0 AND dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") 
+	GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";		
 	
-	$myCells->runQuery($noOutliers);
+	$myCells->runQuery($removedOutliers);
 		
 	$raw_data = $myCells->JSON_data;
 	$myCells->createJSVar("rawData.rssi");
