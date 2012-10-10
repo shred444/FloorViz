@@ -80,14 +80,14 @@ function get_all_data()
 	$myRoams = new php_query();
 	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
 	$roam_data = $myRoams->JSON_data;
-	/*
+	
 	//count # of results
 	$myCounter = new php_query();
-	$myCounter->runQuery("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\"");
+	$myCounter->runQuery("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\")");
 	if($myCounter->rowCount > 10000){
 		$FLOOR = $myCounter->rowCount / 30000;
 	}
-	*/
+	
 	//get all cells
 	$myCells = new php_query();
 	$myCells->runQuery("SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
@@ -117,24 +117,7 @@ function get_all_data()
 	$myRSSIHist = new php_query();
 	$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) FROM rssi GROUP BY floor(rssi_val/5);");
 	$rssiHist_json = $myRSSIHist->JSON_data;
-	
-	/*if($debug)
-		echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
-	*/
-	function convertToJSON($query){
-		//json encoding
-		mysql_data_seek( $query, 0);
-		$json_data = array();
-		while($r = mysql_fetch_assoc($query)) {
-			$json_data[] = $r;
-		}
-		return $json_data;
-	}
-		
-	
-	
-	
-	
+
 }
 
 ?>
