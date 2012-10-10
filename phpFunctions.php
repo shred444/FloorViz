@@ -219,48 +219,11 @@ function get_all_data()
 		return $json_data;
 	}
 		
-	//json encoding
-	/*mysql_data_seek( $aps, 0);
-	$aps_json = array();
-	while($r = mysql_fetch_assoc($aps)) {
-		$aps_json[] = $r;
-	}
-	*/
 	$aps_json = convertToJSON($aps);
-/*
-	mysql_data_seek( $channels, 0);
-	$channels_json = array();
-	while($r = mysql_fetch_assoc($channels)) {
-		$channels_json[] = $r;
-	}
-	*/
 	$channels_json = convertToJSON($channels);
-	
-	mysql_data_seek( $cells, 0);
-	$raw_data = array();
-	while($r = mysql_fetch_assoc($cells)) {
-		$raw_data[] = $r;
-	}
-
-	mysql_data_seek( $datasets, 0);
-	$datasets_json = array();
-	while($r = mysql_fetch_assoc($datasets)) {
-		$datasets_json[] = $r;
-	}
-
-	//mysql_data_seek( $roams, 0);
-	$roam_data = array();
-	while($r = mysql_fetch_assoc($roams)) {
-		$roam_data[] = $r;
-	}
-
-	/*
-	mysql_data_seek( $traffic, 0);
-	$traffic_data = array();
-	while($r = mysql_fetch_assoc($traffic)) {
-		$traffic_data[] = $r;
-	}
-	*/
+	$raw_data = convertToJSON($cells);
+	$datasets_json = convertToJSON($datasets);
+	$roam_data = convertToJSON($roams);
 	
 	
 }
