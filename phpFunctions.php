@@ -75,9 +75,13 @@ function get_all_data()
 		
 	if($debug)
 		echo "Site=" . $site . "<br>";
-				
+		
+	
+	
+	
+	
 	//select all Roams
-	$starttime = microtime(true);
+	/*$starttime = microtime(true);
 	$roams = mysql_query("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
 	$endtime = microtime(true);
 	$duration = $endtime - $starttime;
@@ -91,33 +95,32 @@ function get_all_data()
 		echo "<br>Duration: " . number_format($duration, 2) . " ms";
 		echo "<br>";
 	}
-
-	//select all cells
-	$starttime = microtime(true);
-	$counter = mysql_query("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\");");
-	$cellCount = mysql_num_rows($counter);
-	if($cellCount > 10000)
-	{
-		$FLOOR = $cellCount / 30000;
+	*/
+	
+	$myRoams = new php_query();
+	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
+	$roam_data = $myRoams->JSON_data;
+	
+	//$myRoams = querySQL("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
+	
+	//$roam_data = convertToJSON($myRoams->result);
+	
+	$myCounter = new php_query();
+	$myCounter->runQuery("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\"");
+	if($myCounter->rowCount > 10000){
+		$FLOOR = $myCounter->rowCount / 30000;
 	}
-	$query = "	SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
+	
+	$myCells = new php_query();
+	$myCells->runQuery("SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
 				FROM rssi A 
 				INNER JOIN aps B ON A.ap_id = B.mac 
 				WHERE A.x>0 AND dataset_id = 
 				(SELECT data_id FROM datasets where name=\"{$dataset}\") 
-				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";
-	$cells = mysql_query($query);
-	//$cells = mysql_query("SELECT cell_id, x, y, AVG(RSSI) as RSSI FROM cells GROUP BY x,y");
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	if($debug){
-		echo "<b>Cells</b>";
-		echo "Query: " . $query;
-		echo "<br>Total Fields: " . mysql_num_fields($cells);
-		echo "<br>Total Rows: " . mysql_num_rows($cells);
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
+				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}");
+							
+	$raw_data = $myCells->JSON_data;
+	
 	
 	//get all APs
 	$starttime = microtime(true);
@@ -197,8 +200,8 @@ function get_all_data()
 	$duration = $endtime - $starttime;
 	if($debug){
 		echo "<b>Traffic</b>";
-		echo "<br>Total Fields: " . mysql_num_fields($traffic);
-		echo "<br>Total Rows: " . mysql_num_rows($traffic);
+		echo "<br>Total Fields: " . mysql_num_fields($rssiHist);
+		echo "<br>Total Rows: " . mysql_num_rows($rssiHist);
 		echo "<br>Duration: " . number_format($duration, 2) . " ms";
 		echo "<br>";
 	}
@@ -221,9 +224,8 @@ function get_all_data()
 		
 	$aps_json = convertToJSON($aps);
 	$channels_json = convertToJSON($channels);
-	$raw_data = convertToJSON($cells);
+	
 	$datasets_json = convertToJSON($datasets);
-	$roam_data = convertToJSON($roams);
 	
 	
 }

@@ -41,6 +41,7 @@
 		<?php
 		
 			include('phpFunctions.php');
+			include('classes.php');
 			$databases = array("quid_gou","amz_bfi1","hwmhs","amazon_qa");
 			
 			//get all the variables from the URL bar
