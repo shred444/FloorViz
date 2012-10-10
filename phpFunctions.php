@@ -100,7 +100,7 @@ function get_all_data()
 	{
 		$FLOOR = $cellCount / 30000;
 	}
-	$query = "	SELECT A.rssi_id, A.x,A.y,A.rssi_val,avg(A.br_val),B.channel 
+	$query = "	SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
 				FROM rssi A 
 				INNER JOIN aps B ON A.ap_id = B.mac 
 				WHERE A.x>0 AND dataset_id = 

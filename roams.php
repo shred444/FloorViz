@@ -231,7 +231,7 @@
 		<div id="txtHint"></div>
 		
 		<svg class="barchart" id="barchart" width="500" height="300"></svg>
-		
+		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
 		<script src="bar.js"></script>
 		

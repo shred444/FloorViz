@@ -100,6 +100,18 @@ var rssiScale = d3.scale.linear()
 .domain([rssiMin,rssiMax])
 .range([0, 1]);
 
+var rssiColorScale = d3.scale.ordinal()
+//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
+//.domain([0, d3.max(cellset, function(d) { return d[2]; })])
+//.domain([30,80])
+//.domain([18,60])
+
+//.domain([7,60])
+      .domain([0,1,2,3,4,5,6,7,8,9,10])
+      .range(["#A50026", "#D73027", "#F46D43", "#FDAE61", "#FEE08B", "#D9EF8B", "#A6D96A", "#66BD63", "#1A9850", "#006837"]);
+	  
+	  //0xA50026; 0xD73027; 0xF46D43; 0xFDAE61; 0xFEE08B; 0xD9EF8B; 0xA6D96A; 0x66BD63; 0x1A9850; 0x006837
+
 //-------------------------------------------------------------
 // Create All Axis
 //-------------------------------------------------------------
@@ -228,48 +240,47 @@ function processData (data) {
 	*/
 	var selectedChannels = [];
 	
-	rawData.channels.forEach (function (chan, index) {
-		var checked = document.getElementById("channel-" + chan.channel).checked;
-		if(checked)
-			selectedChannels.push(Number(chan.channel));
-	});
+	if(document.getElementById("roams").checked){
+		//roams checkbox checked
+		
+		rawData.channels.forEach (function (chan, index) {
+			var checked = document.getElementById("channel-" + chan.channel).checked;
+			if(checked)
+				selectedChannels.push(Number(chan.channel));
+		});
+	}
 	
 	document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + selectedChannels;
 
+	console.log("All Data:");
+	console.log(data);
+	var rssi_data = data.map(function(o){ return Number(o.rssi_val); });
+	var rssi_avg = getAverageFromNumArr(rssi_data,4);
+	var rssi_dev = getStandardDeviation(rssi_data,4);
+	
+	console.log(rssi_data);
+	console.log("Average: "+getAverageFromNumArr(rssi_data,4));
+	console.log("StdDev: "+getStandardDeviation(rssi_data,4));
+	console.log("Variance: "+getVariance(rssi_data,4));
+	rssiMin = rssi_avg - rssi_dev;
+	rssiMax = rssi_avg + rssi_dev;
+	
+	//reformat the scale???
+	rssiScale = d3.scale.linear()
+		.domain([rssiMin,rssiMax])
+		.range([0, 1]);
 	
 	data.forEach (function (data, index) {
 		var coaster,
-			className = "";
+		className = "";
 			
-			/*if(	((data.channel == 158) && channel1) ||
-				((data.channel == 153) && channel2) ||
-				((data.channel == 149) && channel3) ||
-				((data.channel == 161) && channel4)
-			){*/
+	
+		if(selectedChannels.indexOf(Number(data.channel)) >=0)
+		{
 			
-			
-			
-			
-			
-			if(selectedChannels.indexOf(Number(data.channel)) >=0)
-			{
-			
-			//rawData.channels.map(function(o){return o.channel;}).indexOf("153") 
-			
-			/*if(	((data.channel == 1) && document.getElementById("channel-1").checked) ||
-				((data.channel == 2) && document.getElementById("channel-2").checked) ||
-				((data.channel == 3) && document.getElementById("channel-3").checked) ||
-				((data.channel == 4) && document.getElementById("channel-4").checked) ||
-				((data.channel == 5) && document.getElementById("channel-5").checked) ||
-				((data.channel == 6) && document.getElementById("channel-6").checked) ||
-				((data.channel == 7) && document.getElementById("channel-7").checked) ||
-				((data.channel == 8) && document.getElementById("channel-8").checked)
-			){
-			*/
-		//if (!(cullDirty && isDirty(data))) { // don't process it if it's dirty and we want to cull dirty data
-				coaster = {
-					id: index // so that the coasters can animate
-				};
+			coaster = {
+				id: index // so that the coasters can animate
+			};
 			for (var attribute in data) {
 				if (data.hasOwnProperty (attribute)) {
 					coaster[attribute] = data[attribute]; // populate the coaster object
@@ -285,16 +296,19 @@ function processData (data) {
 				counter = counter + 1;
 			}
 			coaster.type = coasterTypes[data.type];
+			if(coaster.rssi_val>rssiMax){
+				coaster.rssi_val = rssiMax;
+			}else if(coaster.rssi_val<rssiMin){
+				coaster.rssi_val = rssiMin;
+			}
 			processed.push (coaster); // add the coaster to the outputs
-		//}
-		}else{
-			var temp;
-			temp++;
-			//not a selected channel
-	}
+		
+		}//else, not part of the dataset
 	});
 	
 	
+	console.log("Cut Data: ")
+	console.log(processed);
 	//document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + channel1 + channel2 + channel3 + channel4;
 
 	return processed; // only contains coasters we're interested in visualising
@@ -327,6 +341,7 @@ function update () {
 	processedData = processData(rawData.rssi);
 	drawingData = processedData;
 	//makeScales();
+	console.log("rssiMin="+rssiMin + "   rssiMax="+rssiMax);
 	redraw();
 	
 }
@@ -434,26 +449,29 @@ function redraw () {
 		.append("rect")
 		.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
 		.attr("x", 				function(d) { return xScale(d.x); })
-		.attr("class",			"cell")
-		.attr("title", 			"hello")
+		//.attr("class",			"level1")
 		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			function(d) { return 4 * floor; })
-		.attr("height", 		function(d) { return 4 * floor; })
-		.attr("fill", 			function(d) { return channelcolors[d.channel]; })
-		.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); })
+		.attr("width", 			20)//function(d) { return 4 * floor; })
+		.attr("height", 		20)//function(d) { return 4 * floor; })
+		.attr("fill", 			function(d) { return rssiColorScale(Math.round(rssiScale(d.rssi_val)*10)-1); })
+		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
+		//.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); })
 		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
 		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
-		.append("svg:title");
+		.append("svg:title")
+		.append("text")
+		.attr("text-anchor", "middle")
+		.text("h");
 		
 	//mouseover title
 	cells.select("title")
-       .text(function(d) { return "x:"+d.x + " y:"+d.y; });
-			
-	rect.filter(function(d) { return d.x in drawingData; })
+       .text(function(d) { return "x:"+d.x + " y:"+d.y +"rssi:"+d.rssi_val+"["+Math.round(rssiScale(d.rssi_val)*10) +"] br: " + d.br_val + " count:" +d.record_count; });
+	/*		
+	cells.filter(function(d) { return d.x in drawingData; })
        //.attr("class", function(d) { return "day q" + color(data[d]) + "-9"; })
 		.select("title")
        .text(function(d) { return "hello: "; });		
-			
+	*/		
 	cells.exit()
 		//.transition()
 		//.duration(1000)
