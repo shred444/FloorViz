@@ -135,16 +135,19 @@
 				<ul style="list-style-type:none">
 					
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roams">roams
+						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" disabled value="pings">Pings
+						<input type="checkbox" onchange="update()" checked="checked" disabled id="ping-checkbox">Pings
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" disabled value="rssi">RSSI
+						<input type="checkbox" onchange="update()" checked="checked" id="rssi-checkbox">RSSI
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" disabled value="traffic">Traffic
+						<input type="checkbox" onchange="update()" checked="checked" id="br-checkbox">Bitrate
+					</li>
+					<li>
+						<input type="checkbox" onchange="update()" checked="checked" disabled id="traffic-checkbox">Traffic
 					</li>
 					
 					
@@ -229,7 +232,7 @@
 		</script>
 		
 		<div id="txtHint"></div>
-		
+		<div id="chart"></div>
 		<svg class="barchart" id="barchart" width="500" height="300"></svg>
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>

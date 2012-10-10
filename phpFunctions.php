@@ -189,25 +189,52 @@ function get_all_data()
 		echo "<br>";
 	}
 	*/
+	
+	$starttime = microtime(true);
+	//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
+	$rssiHist = mysql_query("SELECT rssi_val, count(rssi_val) FROM rssi GROUP BY floor(rssi_val/5);");
+	$endtime = microtime(true);
+	$duration = $endtime - $starttime;
+	if($debug){
+		echo "<b>Traffic</b>";
+		echo "<br>Total Fields: " . mysql_num_fields($traffic);
+		echo "<br>Total Rows: " . mysql_num_rows($traffic);
+		echo "<br>Duration: " . number_format($duration, 2) . " ms";
+		echo "<br>";
+	}
+	
+	
+	
 
 	 if($debug)
 	echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
 	
-		
+	function convertToJSON($query){
+		//json encoding
+		mysql_data_seek( $query, 0);
+		$json_data = array();
+		while($r = mysql_fetch_assoc($query)) {
+			$json_data[] = $r;
+		}
+		return $json_data;
+	}
 		
 	//json encoding
-	mysql_data_seek( $aps, 0);
+	/*mysql_data_seek( $aps, 0);
 	$aps_json = array();
 	while($r = mysql_fetch_assoc($aps)) {
 		$aps_json[] = $r;
 	}
-
+	*/
+	$aps_json = convertToJSON($aps);
+/*
 	mysql_data_seek( $channels, 0);
 	$channels_json = array();
 	while($r = mysql_fetch_assoc($channels)) {
 		$channels_json[] = $r;
 	}
-
+	*/
+	$channels_json = convertToJSON($channels);
 	
 	mysql_data_seek( $cells, 0);
 	$raw_data = array();

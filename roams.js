@@ -14,7 +14,8 @@ Array.min = function( array ){
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
-var padding = 30;
+var showRSSI, showBR;
+var padding = 50;
 var drawingData;
 var channelcolors = [];
 channelcolors[0] = "black";
@@ -37,79 +38,37 @@ var svg;
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
-var myXMax = 0, myXMin = 9999;
-	rawData.rssi.forEach (function (data, index) {
-		if(Number(data.x)>myXMax){
-			myXMax=data.x;
-		}
-		if(Number(data.x)<myXMin){
-			myXMin=data.x;
-		}
-	});
-var myYMax = 0, myYMin = 9999;
-	rawData.rssi.forEach (function (data, index) {
-		if(Number(data.y)>myYMax){
-			myYMax=data.y;
-		}
-		if(Number(data.y)<myYMin){
-			myYMin=data.y;
-		}
-	});
 
 var xScale = d3.scale.linear()
-
 //.domain([60, d3.max(cellset, function(d) { return d[0]; })])
-//.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
-//.domain([60,400])
-/*.domain(
+.domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
-		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
+		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))	
 	])
-*/
-.domain([myXMin,myXMax])
-.range([padding, w - padding * 2]);
+	.rangeRound([padding, w - padding * 2]);
 
 var yScale = d3.scale.linear()
-//.domain([80, d3.max(cellset, function(d) { return d[1]; })])
-//.domain([60,d3.max(drawingData, function(d) { return d[1]; })])
-//.domain([60,200])
-//.domain([0,120])
-/*.domain(
+.domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.y;})),
 		Math.max.apply(Math,rawData.rssi.map(function(o){return o.y;}))
 	])
-*/
-.domain([myYMin,myYMax])
-.range([h - padding, padding]);
+	.range([h - padding *1.5, padding]);
 
 var rScale = d3.scale.linear()
-//.domain([0, d3.max(cellset, function(d) { return d[1]; })])
-//.domain([0, d3.max(drawingData, function(d) { return d[3]; })])
+	//.domain([0, d3.max(cellset, function(d) { return d[1]; })])
+	.domain([0,100])
+	.range([2, 5]);
 
-.domain([0,100])
-.range([2, 5]);
-var rssiMin = Array.min(rawData.rssi.map(function(o){return o.rssi_val;}));
-var rssiMax = Array.max(rawData.rssi.map(function(o){return o.rssi_val;}));
+var rssiMin = Array.min(rawData.rssi.map(function(o){return o.br_val;}));
+var rssiMax = Array.max(rawData.rssi.map(function(o){return o.br_val;}));
 var rssiScale = d3.scale.linear()
-//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
-//.domain([0, d3.max(cellset, function(d) { return d[2]; })])
-//.domain([30,80])
-//.domain([18,60])
-
-//.domain([7,60])
-.domain([rssiMin,rssiMax])
-.range([0, 1]);
+	//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
+	.domain([rssiMin,rssiMax])
+	.range([0, 1]);
 
 var rssiColorScale = d3.scale.ordinal()
-//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
-//.domain([0, d3.max(cellset, function(d) { return d[2]; })])
-//.domain([30,80])
-//.domain([18,60])
-
-//.domain([7,60])
       .domain([0,1,2,3,4,5,6,7,8,9,10])
       .range(["#A50026", "#D73027", "#F46D43", "#FDAE61", "#FEE08B", "#D9EF8B", "#A6D96A", "#66BD63", "#1A9850", "#006837"]);
-	  
 	  //0xA50026; 0xD73027; 0xF46D43; 0xFDAE61; 0xFEE08B; 0xD9EF8B; 0xA6D96A; 0x66BD63; 0x1A9850; 0x006837
 
 //-------------------------------------------------------------
@@ -231,24 +190,21 @@ function processData (data) {
 		//cullDirty = document.getElementById("cull-dirty").checked,
 		coasterTypes = {},
 		counter = 1;
-		
-	//get selected channels from form
-	/*var channel1 = document.getElementById("channel-158").checked;
-	var channel2 = document.getElementById("channel-153").checked;
-	var channel3 = document.getElementById("channel-149").checked;
-	var channel4 = document.getElementById("channel-161").checked;
-	*/
+
 	var selectedChannels = [];
 	
-	if(document.getElementById("roams").checked){
+	if(document.getElementById("rssi-checkbox").checked){
 		//roams checkbox checked
-		
-		rawData.channels.forEach (function (chan, index) {
-			var checked = document.getElementById("channel-" + chan.channel).checked;
-			if(checked)
-				selectedChannels.push(Number(chan.channel));
-		});
+		showRSSI = 1;
 	}
+	
+	//get data for each channel
+	rawData.channels.forEach (function (chan, index) {
+		var checked = document.getElementById("channel-" + chan.channel).checked;
+		if(checked)
+			selectedChannels.push(Number(chan.channel));
+	});
+	
 	
 	document.getElementById("dataDetails").innerHTML=processed.length + "/" + data.length + "   " + selectedChannels;
 
@@ -296,6 +252,8 @@ function processData (data) {
 				counter = counter + 1;
 			}
 			coaster.type = coasterTypes[data.type];
+			
+			//trim the fat
 			if(coaster.rssi_val>rssiMax){
 				coaster.rssi_val = rssiMax;
 			}else if(coaster.rssi_val<rssiMin){
@@ -440,6 +398,15 @@ function redraw () {
 		*/
 	
 	that = this;
+	
+	function cellFill(d) { 
+		var scaled;
+		if(showRSSI)
+			scaled = rssiScale(d.rssi_val)*10;
+		else //if(showBR)
+			scaled = rssiScale(d.br_val)*10;
+		return rssiColorScale(Math.round(scaled)-1); 
+	}
 
 	//-------------------------------------------------------------
 	//Create cells	
@@ -451,21 +418,18 @@ function redraw () {
 		.attr("x", 				function(d) { return xScale(d.x); })
 		//.attr("class",			"level1")
 		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			20)//function(d) { return 4 * floor; })
-		.attr("height", 		20)//function(d) { return 4 * floor; })
-		.attr("fill", 			function(d) { return rssiColorScale(Math.round(rssiScale(d.rssi_val)*10)-1); })
+		.attr("width", 			10)//function(d) { return 4 * floor; })
+		.attr("height", 		10)//function(d) { return 4 * floor; })
+		.attr("fill", 			function(d) { return cellFill(d);})
 		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		//.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); })
 		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
 		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
-		.append("svg:title")
-		.append("text")
-		.attr("text-anchor", "middle")
-		.text("h");
+		.append("svg:title");
 		
 	//mouseover title
 	cells.select("title")
-       .text(function(d) { return "x:"+d.x + " y:"+d.y +"rssi:"+d.rssi_val+"["+Math.round(rssiScale(d.rssi_val)*10) +"] br: " + d.br_val + " count:" +d.record_count; });
+       .text(function(d) { return "x:"+d.x + " y:"+d.y +"rssi:"+d.rssi_val+"["+Math.round(rssiScale(d.br_val)*10) +"] br: " + d.br_val + " count:" +d.record_count; });
 	/*		
 	cells.filter(function(d) { return d.x in drawingData; })
        //.attr("class", function(d) { return "day q" + color(data[d]) + "-9"; })
@@ -478,6 +442,60 @@ function redraw () {
 		//.ease("linear")
 		//.style("opacity", 0)
 		.remove();
+
+	var myDataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+                11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+
+	var barPadding = 1;
+	
+	//create bar scales
+	var barScale = d3.scale.linear()
+		.domain([d3.min(drawingData, function(d) { return d.rssi_val; }),d3.max(drawingData, function(d) { return d.rssi_val; })])
+		.range([0,100])
+		.clamp(true);
+	
+	//Create Bar element	
+	var bar = d3.select("#chart")
+            .append("svg")
+            .attr("width", 15000)
+            .attr("height", 100);
+		
+	bar.selectAll("rect")
+		.data(drawingData)
+		//.data(myDataset)
+		.enter()
+		.append("rect")
+		.attr("x", function(d,i){ 
+			return i*(bar.attr("width")/drawingData.length);
+		})
+		.attr("y", function(d){
+			return bar.attr("height") - barScale(d.rssi_val);
+		})
+		.attr("width", bar.attr("width")/drawingData.length - barPadding)
+		.attr("height", function(d){
+			return barScale(d.rssi_val);
+		})
+		.attr("fill", "teal");
+		
+	bar.selectAll("text")
+		.data(drawingData)
+		.enter()
+		.append("text")
+		.attr("font-family", "helvetica")
+		.attr("font-size", "8px")
+		.attr("fill", "white")
+		.attr("text-anchor", "middle")
+		.text(function(d) {
+			return d;
+		})
+		.attr("x", function(d, i) {
+			var barWidth = (bar.attr("width") / myDataset.length);
+			return (i * barWidth) + barWidth*.5 - barPadding;
+		})
+		.attr("y", function(d) {
+			return bar.attr("height") - barScale(d.rssi_val) + 10;
+		});
+
 	
 		
 	//-------------------------------------------------------------
@@ -485,7 +503,7 @@ function redraw () {
 	//-------------------------------------------------------------
 	
 	
-	var roamsChecked = document.getElementById("roams").checked;
+	var roamsChecked = document.getElementById("roam-checkbox").checked;
 	var roamData = [];
 	if(roamsChecked)
 	{
