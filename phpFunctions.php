@@ -71,147 +71,56 @@ function get_all_data()
 {
 	global $LIMIT, $FLOOR, $site, $dataset, $con, $debug;
 	global $aps_json, $raw_data, $roam_data, $channels_json, $datasets_json;
-	global $roams, $cellCount, $cells, $aps, $datasets, $channels;
+	global $myRoams, $myCount, $myCells, $myAPs, $myDatasets, $myChannels;
 		
 	if($debug)
 		echo "Site=" . $site . "<br>";
 		
-	
-	
-	
-	
-	//select all Roams
-	/*$starttime = microtime(true);
-	$roams = mysql_query("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	$fieldCount = mysql_num_fields($roams);
-	$rowCount = mysql_num_rows($roams);
-	
-	if($debug){
-		echo "<b>Roams</b>";
-		echo "<br>Total Fields: " . $fieldCount;
-		echo "<br>Total Rows: " . $rowCount;
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
-	*/
-	
+	//get all roams
 	$myRoams = new php_query();
 	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
 	$roam_data = $myRoams->JSON_data;
-	
-	//$myRoams = querySQL("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
-	
-	//$roam_data = convertToJSON($myRoams->result);
-	
+	/*
+	//count # of results
 	$myCounter = new php_query();
 	$myCounter->runQuery("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\"");
 	if($myCounter->rowCount > 10000){
 		$FLOOR = $myCounter->rowCount / 30000;
 	}
-	
+	*/
+	//get all cells
 	$myCells = new php_query();
 	$myCells->runQuery("SELECT A.rssi_id, A.x,A.y,A.rssi_val,A.br_val,B.channel, A.record_count 
 				FROM rssi A 
 				INNER JOIN aps B ON A.ap_id = B.mac 
 				WHERE A.x>0 AND dataset_id = 
 				(SELECT data_id FROM datasets where name=\"{$dataset}\") 
-				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}");
-							
+				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}");		
 	$raw_data = $myCells->JSON_data;
 	
-	
 	//get all APs
-	$starttime = microtime(true);
-	//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-	$aps = mysql_query("SELECT * FROM aps where channel>0");
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	if($debug){
-		echo "<b>APs</b>";
-		echo "<br>Total Fields: " . mysql_num_fields($aps);
-		echo "<br>Total Rows: " . mysql_num_rows($aps);
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
+	$myAPs = new php_query();
+	$myAPs->runQuery("SELECT * FROM aps where channel>0");
+	$aps_json = $myAPs->JSON_data;
 	
 	//get all Datasets
-	$starttime = microtime(true);
-	//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-	$datasets = mysql_query("SELECT * FROM datasets");
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	if($debug){
-		echo "<b>Datasets</b>";
-		echo "<br>Total Fields: " . mysql_num_fields($datasets);
-		echo "<br>Total Rows: " . mysql_num_rows($datasets);
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
-	
+	$myDatasets = new php_query();
+	$myDatasets->runQuery("SELECT * FROM datasets");
+	$datasets_json = $myDatasets->JSON_data;
+		
 	//get all Channels
+	$myChannels = new php_query();
+	$myChannels->runQuery("SELECT * FROM aps");
+	$channels_json = $myChannels->JSON_data;
 	
-	$starttime = microtime(true);
-	//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-	$channels = mysql_query("SELECT * FROM aps");
-	/*$channels = mysql_query("	SELECT B.channel as channel, 
-								sum(A.record_count) as records, 
-								sum(A.record_count)/(SELECT sum(record_count) from rssi2)*100 as percent,
-								avg(A.rssi_val) as avg_rssi, 
-								min(A.rssi_val) as min_rssi, 
-								max(A.rssi_val) as max_rssi
-								FROM amz_bfi1.rssi2 A
-								INNER JOIN aps B on A.ap_id = B.ap_id
-								WHERE B.channel != ''
-								group by B.channel 
-								order by sum(record_count) desc;");
-								*/
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	if($debug){
-		echo "<b>Channels</b>";
-		echo "<br>Total Fields: " . mysql_num_fields($channels);
-		echo "<br>Total Rows: " . mysql_num_rows($channels);
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
+	//get RSSI histogram
+	$myRSSIHist = new php_query();
+	$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) FROM rssi GROUP BY floor(rssi_val/5);");
+	$rssiHist_json = $myRSSIHist->JSON_data;
 	
-	//get all Traffic
-	/*
-	$starttime = microtime(true);
-	//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-	$traffic = mysql_query("SELECT x,y,sum(record_count) as records, avg(rssi_val) as rssi_val FROM amz_bfi1.rssi group by x,y");
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	if($debug){
-		echo "<b>Traffic</b>";
-		echo "<br>Total Fields: " . mysql_num_fields($traffic);
-		echo "<br>Total Rows: " . mysql_num_rows($traffic);
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
+	/*if($debug)
+		echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
 	*/
-	
-	$starttime = microtime(true);
-	//$aps = mysql_query("SELECT ap_id, mac, DISTINCT(channel) FROM aps");
-	$rssiHist = mysql_query("SELECT rssi_val, count(rssi_val) FROM rssi GROUP BY floor(rssi_val/5);");
-	$endtime = microtime(true);
-	$duration = $endtime - $starttime;
-	if($debug){
-		echo "<b>Traffic</b>";
-		echo "<br>Total Fields: " . mysql_num_fields($rssiHist);
-		echo "<br>Total Rows: " . mysql_num_rows($rssiHist);
-		echo "<br>Duration: " . number_format($duration, 2) . " ms";
-		echo "<br>";
-	}
-	
-	
-	
-
-	 if($debug)
-	echo "Total Duration: " . number_format($duration, 2) . " ms<br>";
-	
 	function convertToJSON($query){
 		//json encoding
 		mysql_data_seek( $query, 0);
@@ -222,10 +131,8 @@ function get_all_data()
 		return $json_data;
 	}
 		
-	$aps_json = convertToJSON($aps);
-	$channels_json = convertToJSON($channels);
 	
-	$datasets_json = convertToJSON($datasets);
+	
 	
 	
 }

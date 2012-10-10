@@ -158,8 +158,8 @@
 				<h2>Channels</h2>
 				<ul style="list-style-type:none">
 					<?php
-					mysql_data_seek( $channels, 0);
-					while($row = mysql_fetch_array($channels))
+					mysql_data_seek( $myChannels->result, 0);
+					while($row = mysql_fetch_array($myChannels->result))
 					{ ?>
 						<li>
 						<label id="label-<?php echo $row['channel']?>">
@@ -175,8 +175,8 @@
 				<h2>Access Points</h2>
 				<ul style="list-style-type:none">
 					<?php
-					mysql_data_seek( $aps, 0);
-					while($row = mysql_fetch_array($aps))
+					mysql_data_seek( $myAPs->result, 0);
+					while($row = mysql_fetch_array($myAPs->result))
 					{ ?>
 						<li>
 						<label id="<?php echo $row['mac']?>">
@@ -215,6 +215,7 @@
 				";
 			}
 			*/
+			/*
 			mysql_data_seek( $cells, 0);
 			while($row = mysql_fetch_array($cells)){
 				//add data points from db
@@ -225,7 +226,7 @@
 				cellset.push([xPos, yPos, rssi]);
 				";
 			}
-			
+			*/
 			
 			
 			
