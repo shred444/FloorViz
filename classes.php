@@ -47,6 +47,13 @@ class php_query {
 		return $this;
 	}
 	
+	function createJSVar($varName){
+		
+		global $debug;
+		echo "<script>{$varName} = " . json_encode($this->JSON_data) . ";</script>";
+		
+		return $this;
+	}
 	
 	
 }

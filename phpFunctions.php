@@ -72,7 +72,8 @@ function get_all_data()
 	global $LIMIT, $FLOOR, $site, $dataset, $con, $debug;
 	global $aps_json, $raw_data, $roam_data, $channels_json, $datasets_json;
 	global $myRoams, $myCount, $myCells, $myAPs, $myDatasets, $myChannels;
-		
+	
+	
 	if($debug)
 		echo "Site=" . $site . "<br>";
 		
@@ -80,6 +81,7 @@ function get_all_data()
 	$myRoams = new php_query();
 	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
 	$roam_data = $myRoams->JSON_data;
+	$myRoams->createJSVar("rawData.roams");
 	
 	//count # of results
 	$myCounter = new php_query();
@@ -97,26 +99,31 @@ function get_all_data()
 				(SELECT data_id FROM datasets where name=\"{$dataset}\") 
 				GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}");		
 	$raw_data = $myCells->JSON_data;
+	$myCells->createJSVar("rawData.rssi");
 	
 	//get all APs
 	$myAPs = new php_query();
 	$myAPs->runQuery("SELECT * FROM aps where channel>0");
 	$aps_json = $myAPs->JSON_data;
+	$myAPs->createJSVar("rawData.aps");
 	
 	//get all Datasets
 	$myDatasets = new php_query();
 	$myDatasets->runQuery("SELECT * FROM datasets");
 	$datasets_json = $myDatasets->JSON_data;
+	$myDatasets->createJSVar("rawData.datasets");
 		
 	//get all Channels
 	$myChannels = new php_query();
 	$myChannels->runQuery("SELECT * FROM aps");
 	$channels_json = $myChannels->JSON_data;
+	$myChannels->createJSVar("rawData.channels");
 	
 	//get RSSI histogram
 	$myRSSIHist = new php_query();
-	$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) FROM rssi GROUP BY floor(rssi_val/5);");
+	$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/5);");
 	$rssiHist_json = $myRSSIHist->JSON_data;
+	$myRSSIHist->createJSVar("rawData.hist");
 
 }
 

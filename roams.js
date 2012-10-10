@@ -59,8 +59,8 @@ var rScale = d3.scale.linear()
 	.domain([0,100])
 	.range([2, 5]);
 
-var rssiMin = Array.min(rawData.rssi.map(function(o){return o.br_val;}));
-var rssiMax = Array.max(rawData.rssi.map(function(o){return o.br_val;}));
+var rssiMin = Array.min(rawData.rssi.map(function(o){return o.rssi_val;}));
+var rssiMax = Array.max(rawData.rssi.map(function(o){return o.rssi_val;}));
 var rssiScale = d3.scale.linear()
 	//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 	.domain([rssiMin,rssiMax])
@@ -222,10 +222,10 @@ function processData (data) {
 	rssiMax = rssi_avg + rssi_dev;
 	
 	//reformat the scale???
-	rssiScale = d3.scale.linear()
+	/*rssiScale = d3.scale.linear()
 		.domain([rssiMin,rssiMax])
 		.range([0, 1]);
-	
+	*/
 	data.forEach (function (data, index) {
 		var coaster,
 		className = "";
@@ -442,59 +442,6 @@ function redraw () {
 		//.ease("linear")
 		//.style("opacity", 0)
 		.remove();
-
-	var myDataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
-                11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
-
-	var barPadding = 1;
-	
-	//create bar scales
-	var barScale = d3.scale.linear()
-		.domain([d3.min(drawingData, function(d) { return d.rssi_val; }),d3.max(drawingData, function(d) { return d.rssi_val; })])
-		.range([0,100])
-		.clamp(true);
-	
-	//Create Bar element	
-	var bar = d3.select("#chart")
-            .append("svg")
-            .attr("width", 15000)
-            .attr("height", 100);
-		
-	bar.selectAll("rect")
-		.data(drawingData)
-		//.data(myDataset)
-		.enter()
-		.append("rect")
-		.attr("x", function(d,i){ 
-			return i*(bar.attr("width")/drawingData.length);
-		})
-		.attr("y", function(d){
-			return bar.attr("height") - barScale(d.rssi_val);
-		})
-		.attr("width", bar.attr("width")/drawingData.length - barPadding)
-		.attr("height", function(d){
-			return barScale(d.rssi_val);
-		})
-		.attr("fill", "teal");
-		
-	bar.selectAll("text")
-		.data(drawingData)
-		.enter()
-		.append("text")
-		.attr("font-family", "helvetica")
-		.attr("font-size", "8px")
-		.attr("fill", "white")
-		.attr("text-anchor", "middle")
-		.text(function(d) {
-			return d;
-		})
-		.attr("x", function(d, i) {
-			var barWidth = (bar.attr("width") / myDataset.length);
-			return (i * barWidth) + barWidth*.5 - barPadding;
-		})
-		.attr("y", function(d) {
-			return bar.attr("height") - barScale(d.rssi_val) + 10;
-		});
 
 	
 		

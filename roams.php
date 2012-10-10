@@ -38,6 +38,7 @@
 		xmlhttp.send();
 	}
 	</script>
+	<script>rawData = new Object(); </script>	
 		<?php
 		
 			include('phpFunctions.php');
@@ -53,17 +54,6 @@
 			?>
 		
 		<script>
-			
-			//define json variables for use later
-			var jsonAPs=<?php echo json_encode($aps_json); ?>;
-			//var jsonChannels=<?php echo json_encode($channels_json); ?>;
-			rawData = new Object();
-			rawData.rssi=<?php echo json_encode($raw_data); ?>;
-			rawData.roams=<?php echo json_encode($roam_data); ?>;
-			rawData.aps=<?php echo json_encode($aps_json); ?>;
-			rawData.channels=<?php echo json_encode($channels_json); ?>;
-			rawData.datasets=<?php echo json_encode($datasets_json); ?>;
-			var floor = <?php echo $FLOOR; ?>
 			
 			var datasets = new Array();
 			<?php
@@ -235,9 +225,10 @@
 		
 		<div id="txtHint"></div>
 		<div id="chart"></div>
-		<svg class="barchart" id="barchart" width="500" height="300"></svg>
+		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
+		<script src="histogram.js"></script>
 		<script src="bar.js"></script>
 		
 		
