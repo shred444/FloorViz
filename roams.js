@@ -300,39 +300,7 @@ function update () {
 }
 
 function redraw () {
-	/*
-	var grid = svg.selectAll("line.vertical").data(drawingData);
-	grid.enter()
-		.append("svg:line")
-		.attr("x1", 1)
-		.attr("y1", 1)
-		.attr("x2", 100)
-		.attr("y2", 100)
-		.style("stroke-width", 2);
-	*/
-	/*
-	//-------------------------------------------------------------
-	//Create traffic	
-	//-------------------------------------------------------------
-	var traffic = svg.selectAll("rect").data(rawData.traffic, function (d) { return d.id;});
-	traffic.enter()
-		.append("rect")
-		.attr("x", 				function(d) { return xScale(d.x); })
-		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			function(d) { return 4; })
-		.attr("height", 		function(d) { return 5; })
-		.attr("fill", 			function(d) { return "black"; })
-		.attr("fill-opacity", 	function(d) { return rssiScale(d.records); });
-	
-	
-	traffic.exit()
-		//.transition()
-		//.duration(1000)
-		//.ease("linear")
-		//.style("opacity", 0)
-		.remove();
-		*/
-	
+		
 	that = this;
 	
 	//returns a color based on a cell value
