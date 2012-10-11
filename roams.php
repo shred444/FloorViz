@@ -91,11 +91,10 @@
 					</li>
 					<li>
 						<select id="site" name="site" onchange="populateDatasets('facility')">
-							<option  <?php if($site == "amz_bfi1") echo "selected='selected'"; ?> value="amz_bfi1">Amazon - BFI1</option>
-							<option  <?php if($site == "quid_gou") echo "selected='selected'"; ?> value="quid_gou">Quidsi - Diapers.com</option>
-							<option  <?php if($site == "amazon_qa") echo "selected='selected'"; ?> value="amazon_qa">Amazon - QA</option>
-							<option  <?php if($site == "hwmhs") echo "selected='selected'"; ?> value="hwmhs">Kiva - HWMHS</option>
-							
+							<?php foreach ($databases as $db){ ?>
+								<option  <?php if($site == $db) echo "selected='selected'"; ?> value="<?php echo $db ?>"><?php echo $db ?></option>
+							<?php }?>
+														
 						</select>
 					</li>
 					<li>
@@ -128,6 +127,7 @@
 						<select id="dataColumn" name="dataColumn" onchange="update()">
 							<option value="rssi_val">RSSI</option>
 							<option value="br_val">Bitrate</option>
+							<option value="record_count">Traffic</option>
 							
 						</select>
 					</li>

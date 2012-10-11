@@ -82,6 +82,12 @@ var rssiColorScale = d3.scale.ordinal()
       .domain([0,1,2,3,4,5,6,7,8,9,10])
       .range(["#A50026", "#D73027", "#F46D43", "#FDAE61", "#FEE08B", "#D9EF8B", "#A6D96A", "#66BD63", "#1A9850", "#006837"]);
 	  //0xA50026; 0xD73027; 0xF46D43; 0xFDAE61; 0xFEE08B; 0xD9EF8B; 0xA6D96A; 0x66BD63; 0x1A9850; 0x006837
+	  
+	  
+var trafficColorScale = d3.scale.linear()
+      .domain([0,10])
+      .range(["#EDF8FB", "#005824"]);	  
+	  //0xEDF8FB; 0xCCECE6; 0xCCECE6; 0x66C2A4; 0x41AE76; 0x238B45; 0x005824; 
 
 //-------------------------------------------------------------
 // Create All Axis
@@ -210,9 +216,6 @@ function processData (data) {
 		showRSSI = 1;
 	}
 	
-	dataColumn = document.getElementById("dataColumn").value;
-	console.log("Data Column: " + dataColumn);
-	
 	//get data for each channel
 	rawData.channels.forEach (function (chan, index) {
 		var checked = document.getElementById("channel-" + chan.channel).checked;
@@ -290,6 +293,21 @@ function processData (data) {
 // called every time a form field has changed
 function update () {
 	
+	
+	
+	dataColumn = document.getElementById("dataColumn").value;
+	console.log("Data Column: " + dataColumn);
+	
+	//update scales
+	rssiMin = Array.min(rawData.rssi.map(function(o){return o[dataColumn];}));
+	rssiMax = Array.max(rawData.rssi.map(function(o){return o[dataColumn];}));
+	
+	rssiScale = d3.scale.linear()
+		.domain([rssiMin,rssiMax])
+		.range([0, 1]);
+	
+	
+	
 	var processedData; 					// the data while will be visualised
 
 	processedData = processData(rawData.rssi);
@@ -306,6 +324,9 @@ function redraw () {
 	//returns a color based on a cell value
 	function cellFill(d) { 
 		var scaled = rssiScale(d[dataColumn])*10;
+		if(dataColumn=='record_count')
+			return trafficColorScale(Math.round(scaled)-1);
+		
 		return rssiColorScale(Math.round(scaled)-1); 
 	}
 
@@ -360,7 +381,23 @@ function redraw () {
 		.attr("cy", 			function(d) { return yScale(d.y); })
 		.attr("r", 				function(d) { return d.duration; })
 		.attr("fill", 			function(d) { return "red"; })
-		.attr("fill-opacity", 	function(d) { return .3; });
+		.attr("fill-opacity", 	function(d) { return .3; })
+		.on("mouseover", fade(.1))
+		.on("mouseout", fade(1))
+		.on("mouseup", 			function(d)	{ alert(d.roam_id); });
+	
+	 function fade(opacity) {
+		
+		return function(d, i) {
+	     svg.selectAll("d.circle")
+         .filter(function(d) {
+           return d.roam_id;
+         })
+       .transition()
+         .style("opacity", opacity);
+   };
+ }
+	
 	
 	/*
 	roams.transition()

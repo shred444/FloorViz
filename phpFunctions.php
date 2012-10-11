@@ -112,7 +112,10 @@ function get_all_data()
 	JOIN ( 
 		SELECT d.rssi_id, Avg(d.rssi_val) as average, {$STD}*STDDEV(d.rssi_val) StdDeviation
         FROM rssi d
-		WHERE x>0
+		WHERE 
+			x>0 AND
+			dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")
+		
          ) dev
 	INNER JOIN aps B ON A.ap_id = B.mac
 	WHERE
