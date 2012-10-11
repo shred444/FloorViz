@@ -73,7 +73,7 @@ function get_url_variables()
 			echo "STD SET to " . $STD;
 	}else
 	{
-		$STD="1";
+		$STD=1.5;
 		if($debug)
 			echo "STD SET to " . $STD;
 	}
@@ -119,14 +119,17 @@ function get_all_data()
 	WHERE
 		A.x>0 AND
 		A.rssi_val BETWEEN dev.average-dev.StdDeviation AND dev.average+dev.StdDeviation AND
-		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")";
+		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")
+		GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel
+		{$LIMIT}";
 	
 	$allowOutliers="
 	SELECT A.*,B.channel
 	FROM rssi A 
 	INNER JOIN aps B ON A.ap_id = B.mac 
 	WHERE A.x>0 AND dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") 
-	GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel	{$LIMIT}";		
+	GROUP BY FLOOR(A.x/{$FLOOR}), FLOOR(A.y/{$FLOOR}), B.channel
+	{$LIMIT}";		
 	
 	$myCells->runQuery($removedOutliers);
 		

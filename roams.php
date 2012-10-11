@@ -57,8 +57,8 @@
 		<script>
 			
 			var datasets = new Array();
-			<?php
 			
+			<?php
 			foreach ($databases as $db)
 			{
 				echo "var temp = new Array();";

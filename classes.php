@@ -10,12 +10,17 @@ class php_query {
 	
 	function convertToJSON(){
 		//json encoding
-		mysql_data_seek( $this->result, 0);
 		$json_temp = array();
-		while($r = mysql_fetch_assoc($this->result)) {
-			$json_temp[] = $r;
+		
+		//only do this if there is at least one row in the results
+		if($this->rowCount>0){
+			mysql_data_seek( $this->result, 0);
+			
+			while($r = mysql_fetch_assoc($this->result)) {
+				$json_temp[] = $r;
+			}
+			$this->JSON_data = $json_temp;
 		}
-		$this->JSON_data = $json_temp;
 		return $json_temp;
 	}
 	

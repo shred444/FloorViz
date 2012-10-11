@@ -17,6 +17,8 @@ var h = document.getElementById("visualization").height.baseVal.value;//700;
 var showRSSI, showBR;
 var padding = 50;
 var drawingData;
+var dataColumn = 'br_val';		//data to filter on and display
+
 var channelcolors = [];
 channelcolors[0] = "black";
 channelcolors[1] = "orange";
@@ -59,8 +61,8 @@ var rScale = d3.scale.linear()
 	.domain([0,100])
 	.range([2, 5]);
 
-var rssiMin = Array.min(rawData.rssi.map(function(o){return o.rssi_val;}));
-var rssiMax = Array.max(rawData.rssi.map(function(o){return o.rssi_val;}));
+var rssiMin = Array.min(rawData.rssi.map(function(o){return o[dataColumn];}));
+var rssiMax = Array.max(rawData.rssi.map(function(o){return o[dataColumn];}));
 var rssiScale = d3.scale.linear()
 	//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 	.domain([rssiMin,rssiMax])
@@ -210,7 +212,7 @@ function processData (data) {
 
 	console.log("All Data:");
 	console.log(data);
-	var rssi_data = data.map(function(o){ return Number(o.rssi_val); });
+	var rssi_data = data.map(function(o){ return Number(o[dataColumn]); });
 	var rssi_avg = getAverageFromNumArr(rssi_data,4);
 	var rssi_dev = getStandardDeviation(rssi_data,4);
 	
@@ -254,10 +256,10 @@ function processData (data) {
 			coaster.type = coasterTypes[data.type];
 			
 			//trim the fat
-			if(coaster.rssi_val>rssiMax){
-				coaster.rssi_val = rssiMax;
-			}else if(coaster.rssi_val<rssiMin){
-				coaster.rssi_val = rssiMin;
+			if(coaster[dataColumn]>rssiMax){
+				coaster[dataColumn] = rssiMax;
+			}else if(coaster[dataColumn]<rssiMin){
+				coaster[dataColumn] = rssiMin;
 			}
 			processed.push (coaster); // add the coaster to the outputs
 		
@@ -401,10 +403,10 @@ function redraw () {
 	
 	function cellFill(d) { 
 		var scaled;
-		if(showRSSI)
-			scaled = rssiScale(d.rssi_val)*10;
-		else //if(showBR)
-			scaled = rssiScale(d.br_val)*10;
+		//if(showRSSI)
+			scaled = rssiScale(d[dataColumn])*10;
+		//else //if(showBR)
+			//scaled = rssiScale(d.br_val)*10;
 		return rssiColorScale(Math.round(scaled)-1); 
 	}
 
@@ -422,7 +424,7 @@ function redraw () {
 		.attr("height", 		10)//function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return cellFill(d);})
 		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
-		//.attr("fill-opacity", 	function(d) { return rssiScale(d.rssi_val); })
+		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
 		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
 		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
 		.append("svg:title");

@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS `rssi` (
 ) ENGINE=InnoDB AUTO_INCREMENT=30540 DEFAULT CHARSET=latin1;#$$
 
 
+#import RSSI Values
 
 #Load data into ztemp from log
 LOAD DATA INFILE '/tmp/rssi_extracted/myRSSI.log' INTO TABLE ztemp 
@@ -105,3 +106,4 @@ INSERT IGNORE INTO rssi (x,y,ap_id,rssi_val, br_val,record_count, dataset_id)
 	SELECT t.x,t.y,t.ap,avg(t.rssi), avg(t.br), count(t.rssi),@dataset FROM ztemp t GROUP BY t.x, t.y, t.ap;
 
 DROP TABLE ztemp;
+
