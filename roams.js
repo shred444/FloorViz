@@ -335,12 +335,9 @@ function redraw () {
 	
 	that = this;
 	
+	//returns a color based on a cell value
 	function cellFill(d) { 
-		var scaled;
-		//if(showRSSI)
-			scaled = rssiScale(d[dataColumn])*10;
-		//else //if(showBR)
-			//scaled = rssiScale(d.br_val)*10;
+		var scaled = rssiScale(d[dataColumn])*10;
 		return rssiColorScale(Math.round(scaled)-1); 
 	}
 
@@ -366,20 +363,13 @@ function redraw () {
 	//mouseover title
 	cells.select("title")
        .text(function(d) { return "x:"+d.x + " y:"+d.y +"rssi:"+d.rssi_val+"["+Math.round(rssiScale(d.br_val)*10) +"] br: " + d.br_val + " count:" +d.record_count; });
-	/*		
-	cells.filter(function(d) { return d.x in drawingData; })
-       //.attr("class", function(d) { return "day q" + color(data[d]) + "-9"; })
-		.select("title")
-       .text(function(d) { return "hello: "; });		
-	*/		
+			
 	cells.exit()
-		//.transition()
-		//.duration(1000)
-		//.ease("linear")
-		//.style("opacity", 0)
 		.remove();
 
-	
+	cells.transition()
+        .duration(1000)
+        .attr("fill", function(d) {return cellFill(d);});
 		
 	//-------------------------------------------------------------
 	//Create Roams
