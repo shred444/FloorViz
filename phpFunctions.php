@@ -92,7 +92,6 @@ function get_all_data()
 	//get all roams
 	$myRoams = new php_query();
 	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
-	$roam_data = $myRoams->JSON_data;
 	$myRoams->createJSVar("rawData.roams");
 	
 	//count # of results
@@ -133,31 +132,26 @@ function get_all_data()
 	
 	$myCells->runQuery($removedOutliers);
 		
-	$raw_data = $myCells->JSON_data;
 	$myCells->createJSVar("rawData.rssi");
 	
 	//get all APs
 	$myAPs = new php_query();
 	$myAPs->runQuery("SELECT * FROM aps where channel>0");
-	$aps_json = $myAPs->JSON_data;
 	$myAPs->createJSVar("rawData.aps");
 	
 	//get all Datasets
 	$myDatasets = new php_query();
 	$myDatasets->runQuery("SELECT * FROM datasets");
-	$datasets_json = $myDatasets->JSON_data;
 	$myDatasets->createJSVar("rawData.datasets");
 		
 	//get all Channels
 	$myChannels = new php_query();
 	$myChannels->runQuery("SELECT * FROM aps");
-	$channels_json = $myChannels->JSON_data;
 	$myChannels->createJSVar("rawData.channels");
 	
 	//get RSSI histogram
 	$myRSSIHist = new php_query();
 	$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/5);");
-	$rssiHist_json = $myRSSIHist->JSON_data;
 	$myRSSIHist->createJSVar("rawData.hist");
 
 }

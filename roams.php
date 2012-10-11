@@ -70,7 +70,6 @@
 			}
 			?>
 			
- 
 			
 		</script>
 		
@@ -125,7 +124,13 @@
 			<form id="controls" method="get">
 				<h2>Details</h2>
 				<ul style="list-style-type:none">
-					
+					<li>
+						<select id="dataColumn" name="dataColumn" onchange="update()">
+							<option value="rssi_val">RSSI</option>
+							<option value="br_val">Bitrate</option>
+							
+						</select>
+					</li>
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
 					</li>

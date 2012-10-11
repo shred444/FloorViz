@@ -11,6 +11,8 @@ Array.min = function( array ){
     return Math.min.apply( Math, array );
 };
 
+
+
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
@@ -36,6 +38,14 @@ channelcolors[149] = "blue";
 channelcolors[161] = "purple";
 //var channelcolors = ["red","orange","yellow","green","blue","purple","cyan","lime", "royalblue"];
 var svg;
+
+//initialization functions
+populateDatasets('facility');
+
+
+
+
+
 
 //-------------------------------------------------------------
 //Create scale functions
@@ -189,9 +199,9 @@ function init () {
 function processData (data) {
 	
 	var processed = [],
-		//cullDirty = document.getElementById("cull-dirty").checked,
-		coasterTypes = {},
-		counter = 1;
+	//cullDirty = document.getElementById("cull-dirty").checked,
+	coasterTypes = {},
+	counter = 1;
 
 	var selectedChannels = [];
 	
@@ -199,6 +209,9 @@ function processData (data) {
 		//roams checkbox checked
 		showRSSI = 1;
 	}
+	
+	dataColumn = document.getElementById("dataColumn").value;
+	console.log("Data Column: " + dataColumn);
 	
 	//get data for each channel
 	rawData.channels.forEach (function (chan, index) {
@@ -276,93 +289,14 @@ function processData (data) {
 
 // called every time a form field has changed
 function update () {
-	//alert("updating");
-	//var dataset = getChosenDataset(); 	// filename of the chosen dataset csv
+	
 	var processedData; 					// the data while will be visualised
-	// if the dataset has changed from last time, load the new csv file
-	/*
-	if (dataset != currentDataset) {
-		d3.csv("data/" + dataset + ".csv", function (data) {
-			// process new data and store it in the appropriate variables
-			rawData = data;
-			processedData = processData(data);
-			currentDataset = dataset;
-			generateTypesList(processedData);
-			drawingData = cullUnwantedTypes(processedData);
-			redraw();
-		});
-		} else {
-		// process data based on the form fields and store it in the appropriate variables
-		processedData = processData(rawData);
-		drawingData = cullUnwantedTypes(processedData);
-	}
-	*/
 
 	processedData = processData(rawData.rssi);
 	drawingData = processedData;
-	//makeScales();
 	console.log("rssiMin="+rssiMin + "   rssiMax="+rssiMax);
 	redraw();
 	
-}
-
-function makeScales()
-{
-	
-	var myXMax = 0, myXMin = 9999;
-	rawData.rssi.forEach (function (data, index) {
-		if(Number(data.x)>myXMax){
-			myXMax=data.x;
-		}
-		if(Number(data.x)<myXMin){
-			myXMin=data.x;
-		}
-	});
-	
-	xScale = d3.scale.linear()
-	//.domain([60, d3.max(cellset, function(d) { return d[0]; })])
-	//.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
-	//.domain([60,400])
-	/*.domain(
-		[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
-			Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
-		])
-	*/
-	.domain([myXMin,myXMax])
-	.range([padding, w - padding * 2]);
-	
-	var myYMax = 0, myYMin = 9999;
-	rawData.rssi.forEach (function (data, index) {
-		if(Number(data.y)>myYMax){
-			myYMax=data.y;
-		}
-		if(Number(data.y)<myYMin){
-			myYMin=data.y;
-		}
-	});
-	
-	yScale = d3.scale.linear()
-	//.domain([60, d3.max(cellset, function(d) { return d[0]; })])
-	//.domain([60,d3.max(drawingData, function(d) { return d[0]; })])
-	//.domain([60,400])
-	/*.domain(
-		[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
-			Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))
-		])
-	*/
-	.domain([myYMin,myYMax])
-	.range([padding, w - padding * 2]);
-	xAxis = d3.svg.axis()
-	.scale(xScale)
-	.orient("bottom")
-	.ticks(5);
-
-	//Define Y axis
-	yAxis = d3.svg.axis()
-	.scale(yScale)
-	.orient("left")
-	.ticks(5);
-	console.log("making scales X:" + myXMin + "," + myXMax + "  Y:" + myYMin + "," + myYMax);
 }
 
 function redraw () {
