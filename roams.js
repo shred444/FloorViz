@@ -17,6 +17,8 @@ Array.min = function( array ){
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
 var padding = 50;
+var axisPadding = 25;
+var innerPadding = 10;
 var drawingData;
 var roamData = [];
 var roamsChecked;
@@ -45,27 +47,25 @@ populateDatasets('facility');
 
 
 
-
-
-
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
-
+var drawingWidth = w - ((axisPadding + innerPadding ) *2);
+var drawingHeight = h - (padding - innerPadding) * 2;
 var xScale = d3.scale.linear()
 //.domain([60, d3.max(cellset, function(d) { return d[0]; })])
 .domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
 		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))	
 	])
-	.rangeRound([padding, w - padding * 2]);
+	.rangeRound([axisPadding + innerPadding, w - (axisPadding + innerPadding ) *2]);
 
 var yScale = d3.scale.linear()
 .domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.y;})),
 		Math.max.apply(Math,rawData.rssi.map(function(o){return o.y;}))
 	])
-	.range([h - padding *1.5, padding]);
+	.range([h - padding - innerPadding, padding - innerPadding]);
 
 var rScale = d3.scale.linear()
 	//.domain([0, d3.max(cellset, function(d) { return d[1]; })])
@@ -98,6 +98,11 @@ var xAxis = d3.svg.axis()
 .scale(xScale)
 .orient("bottom")
 .ticks(5);
+
+var xAxisTop = d3.svg.axis()
+.scale(xScale)
+.orient("top")
+.ticks(5)
 
 //Define Y axis
 var yAxis = d3.svg.axis()
@@ -146,29 +151,38 @@ function init () {
 	
 		
 	//-------------------------------------------------------------
-	//Create X axis
+	//Create X axis - bottom
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
 	.attr("transform", "translate(0," + (h - padding) + ")")
 	.attr("fill", "grey")
 	.call(xAxis);
-
+	
 	//-------------------------------------------------------------
-	//Create Y axis
+	//Create X axis - top
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(" + padding + ",0)")
+	.attr("transform", "translate(0," + (0 + axisPadding) + ")")
+	.attr("fill", "grey")
+	.call(xAxisTop);
+
+	//-------------------------------------------------------------
+	//Create Y axis - left
+	//-------------------------------------------------------------
+	svg.append("g")
+	.attr("class", "axis")
+	.attr("transform", "translate(" + axisPadding + ",0)")
 	.attr("fill", "grey")
 	.call(yAxis);
 
 	//-------------------------------------------------------------
-	//Create Y axisR
+	//Create Y axis - right
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(" + (w - padding - 30) + ",0)")
+	.attr("transform", "translate(" + (w - axisPadding - 15) + ",0)")
 	.attr("fill", "grey")
 	.call(yAxisR);
 
@@ -348,6 +362,12 @@ function redraw () {
 	//-------------------------------------------------------------
 	//Create cells	
 	//-------------------------------------------------------------
+	
+	maxX = Math.max.apply(Math, rawData.rssi.map(function(o){ return o.x; }));
+	minX = Math.min.apply(Math, rawData.rssi.map(function(o){ return o.x; }));
+	maxY = Math.max.apply(Math, rawData.rssi.map(function(o){ return o.y; }));
+	minY = Math.min.apply(Math, rawData.rssi.map(function(o){ return o.y; }));
+	
 	var cells = svg.selectAll("rect").data(drawingData, function (d) { return d.id;});
 	cells.enter()
 		.append("rect")
@@ -355,8 +375,8 @@ function redraw () {
 		.attr("x", 				function(d) { return xScale(d.x); })
 		//.attr("class",			"level1")
 		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			4)//function(d) { return 4 * floor; })
-		.attr("height", 		4)//function(d) { return 4 * floor; })
+		.attr("width", 			drawingWidth/(maxX-minX))//function(d) { return 4 * floor; })
+		.attr("height", 		drawingHeight/(maxY-minY))//function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return cellFill(d);})
 		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
