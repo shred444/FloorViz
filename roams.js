@@ -53,19 +53,18 @@ populateDatasets('facility');
 var drawingWidth = w - ((axisPadding + innerPadding ) *2);
 var drawingHeight = h - (padding - innerPadding) * 2;
 var xScale = d3.scale.linear()
-//.domain([60, d3.max(cellset, function(d) { return d[0]; })])
 .domain(
 	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.x;})),
-		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;}))	
+		Math.max.apply(Math,rawData.rssi.map(function(o){return o.x;})) + 1	//require 1 more for padding
 	])
-	.rangeRound([axisPadding + innerPadding, w - (axisPadding + innerPadding ) *2]);
+	.rangeRound([(axisPadding + innerPadding), w - axisPadding - (innerPadding * 2)]);	//only use one axis for the width subtraction
 
 var yScale = d3.scale.linear()
 .domain(
-	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.y;})),
-		Math.max.apply(Math,rawData.rssi.map(function(o){return o.y;}))
+	[	Math.min.apply(Math,rawData.rssi.map(function(o){return o.y;})) -1, //require 1 more for padding
+		Math.max.apply(Math,rawData.rssi.map(function(o){return o.y;})) 	
 	])
-	.range([h - padding - innerPadding, padding - innerPadding]);
+	.range([h - (axisPadding + innerPadding)*2, padding - innerPadding]);
 
 var rScale = d3.scale.linear()
 	//.domain([0, d3.max(cellset, function(d) { return d[1]; })])
@@ -182,7 +181,7 @@ function init () {
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(" + (w - axisPadding - 15) + ",0)")
+	.attr("transform", "translate(" + (w - axisPadding) + ",0)")
 	.attr("fill", "grey")
 	.call(yAxisR);
 
@@ -368,6 +367,12 @@ function redraw () {
 	maxY = Math.max.apply(Math, rawData.rssi.map(function(o){ return o.y; }));
 	minY = Math.min.apply(Math, rawData.rssi.map(function(o){ return o.y; }));
 	
+	countX = maxX - minX +1; //add one more for padding
+	countY = maxY - minY +1; //add one more for padding
+	
+	cellWidth = (drawingWidth/(countX)) * floor;
+	cellHeight = (drawingHeight/(countY)) * floor;
+	
 	var cells = svg.selectAll("rect").data(drawingData, function (d) { return d.id;});
 	cells.enter()
 		.append("rect")
@@ -375,8 +380,8 @@ function redraw () {
 		.attr("x", 				function(d) { return xScale(d.x); })
 		//.attr("class",			"level1")
 		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			drawingWidth/(maxX-minX))//function(d) { return 4 * floor; })
-		.attr("height", 		drawingHeight/(maxY-minY))//function(d) { return 4 * floor; })
+		.attr("width", 			cellWidth)//function(d) { return 4 * floor; })
+		.attr("height", 		cellHeight)//function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return cellFill(d);})
 		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
