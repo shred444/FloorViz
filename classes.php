@@ -4,7 +4,7 @@ class php_query {
 /* Member functions and variables go here */
 	var $query;
 	var $result;
-	var $starttime, $endtime, $duration;
+	var $starttime, $endtime, $queryDuration, $totalDuration;
 	var $fieldCount, $rowCount;
 	var $JSON_data = array();
 	
@@ -30,24 +30,28 @@ class php_query {
 		//$myQuery = new php_query;
 		$this->query = $queryString;
 		$this->starttime = microtime(true);
+		//$this->result = mysql_unbuffered_query($queryString);
 		$this->result = mysql_query($queryString);
 		$this->endtime = microtime(true);
-		$this->duration = $this->endtime - $this->starttime;
+		$this->queryDuration = $this->endtime - $this->starttime;
 		$this->fieldCount = mysql_num_fields($this->result);
 		$this->rowCount = mysql_num_rows($this->result);
-		
+				
+		//convert the sql response to JSON
+		$this->convertToJSON();
+		$this->endtime = microtime(true);
+		$this->totalDuration = $this->endtime - $this->starttime; 
+				
 		//output if debug is enabled
 		if($debug){
 			echo "<b>Query</b>";
 			echo "<br>Query: " . $this->query;
 			echo "<br>Total Fields: " . $this->fieldCount;
 			echo "<br>Total Rows: " . $this->rowCount;
-			echo "<br>Duration: " . number_format($this->duration, 2) . " ms";
+			echo "<br>Query Duration: " . number_format($this->queryDuration, 2) . " sec";
+			echo "<br>Total Duration: " . number_format($this->totalDuration, 2) . " sec";
 			echo "<br>";
 		}
-		
-		//convert the sql response to JSON
-		$this->convertToJSON();
 		
 		return $this;
 	}

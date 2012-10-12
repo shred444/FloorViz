@@ -57,7 +57,7 @@
 		<script>
 			
 			var datasets = new Array();
-			
+			var selectedDataset = '<?php echo $dataset; ?>';
 			<?php
 			foreach ($databases as $db)
 			{
@@ -133,21 +133,19 @@
 					</li>
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
+						<ul>
+							<li>
+								<input type="checkbox" onchange="update()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
+							</li>
+							<li>
+								<input type="checkbox" onchange="update()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
+							</li>
+						</ul>
 					</li>
+
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" disabled id="ping-checkbox">Pings
 					</li>
-					<li>
-						<input type="checkbox" onchange="update()" checked="checked" id="rssi-checkbox">RSSI
-					</li>
-					<li>
-						<input type="checkbox" onchange="update()" checked="checked" id="br-checkbox">Bitrate
-					</li>
-					<li>
-						<input type="checkbox" onchange="update()" checked="checked" disabled id="traffic-checkbox">Traffic
-					</li>
-					
-					
 					
 				</ul>
 				<div id="dataDetails"></div>
@@ -194,39 +192,8 @@
 			var dataset = [];					//Initialize empty array
 			var cellset = [];
 			//var rssiset = [[],[]];
-			var numDataPoints = 50;				//Number of dummy data points to create
-			var xRange = Math.random() * 1000;	//Max range of new x values
-			var yRange = Math.random() * 1000;	//Max range of new y values
-			
-			<?php
-			/*
-			mysql_data_seek( $roams, 0);
-			while($row = mysql_fetch_array($roams)){
-				//add data points from db
-				echo "
-				var xPos = {$row['x']};
-				var yPos = {$row['y']};
-				var radius = 10;
-				dataset.push([xPos, yPos, radius]);
-				";
-			}
-			*/
-			/*
-			mysql_data_seek( $cells, 0);
-			while($row = mysql_fetch_array($cells)){
-				//add data points from db
-				echo "
-				var xPos = {$row['x']};
-				var yPos = {$row['y']};
-				var rssi = {$row['rssi_val']};
-				cellset.push([xPos, yPos, rssi]);
-				";
-			}
-			*/
-			
-			
-			
-			?>
+
+	
 		</script>
 		
 		<div id="txtHint"></div>

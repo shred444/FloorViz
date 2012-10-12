@@ -16,9 +16,10 @@ Array.min = function( array ){
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
-var showRSSI, showBR;
 var padding = 50;
 var drawingData;
+var roamData = [];
+var roamsChecked;
 var dataColumn = 'br_val';		//data to filter on and display
 
 var channelcolors = [];
@@ -211,10 +212,6 @@ function processData (data) {
 
 	var selectedChannels = [];
 	
-	if(document.getElementById("rssi-checkbox").checked){
-		//roams checkbox checked
-		showRSSI = 1;
-	}
 	
 	//get data for each channel
 	rawData.channels.forEach (function (chan, index) {
@@ -294,7 +291,7 @@ function processData (data) {
 function update () {
 	
 	
-	
+	//data column selection
 	dataColumn = document.getElementById("dataColumn").value;
 	console.log("Data Column: " + dataColumn);
 	
@@ -306,6 +303,24 @@ function update () {
 		.domain([rssiMin,rssiMax])
 		.range([0, 1]);
 	
+	//roam selection
+	roamData = [];
+	roamsChecked = document.getElementById("roam-checkbox").checked;
+	if(roamsChecked){
+		document.getElementById("AtoB-checkbox").disabled = false;
+		document.getElementById("AtoA-checkbox").disabled = false;
+		
+		if(document.getElementById("AtoB-checkbox").checked){
+			roamData = roamData.concat(rawData.roams); 
+		}
+		if(document.getElementById("AtoA-checkbox").checked){
+			roamData = roamData.concat(rawData.single);
+		}
+		
+	}else{
+		document.getElementById("AtoB-checkbox").disabled = true;
+		document.getElementById("AtoA-checkbox").disabled = true;
+	}
 	
 	
 	var processedData; 					// the data while will be visualised
@@ -340,8 +355,8 @@ function redraw () {
 		.attr("x", 				function(d) { return xScale(d.x); })
 		//.attr("class",			"level1")
 		.attr("y", 				function(d) { return yScale(d.y); })
-		.attr("width", 			10)//function(d) { return 4 * floor; })
-		.attr("height", 		10)//function(d) { return 4 * floor; })
+		.attr("width", 			4)//function(d) { return 4 * floor; })
+		.attr("height", 		4)//function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return cellFill(d);})
 		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
 		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
@@ -352,7 +367,14 @@ function redraw () {
 	//mouseover title
 	cells.select("title")
        .text(function(d) { return "x:"+d.x + " y:"+d.y +"rssi:"+d.rssi_val+"["+Math.round(rssiScale(d.br_val)*10) +"] br: " + d.br_val + " count:" +d.record_count; });
-			
+	
+	
+	//change this
+	cells.filter(function(d) { return d in drawingData; })
+       .attr("class", function(d) { return "day q" + color(data[d]) + "-9"; })
+     .select("title")
+       .text(function(d) { return d + ": " + percent(data[d]); });
+	
 	cells.exit()
 		.remove();
 
@@ -365,12 +387,8 @@ function redraw () {
 	//-------------------------------------------------------------
 	
 	
-	var roamsChecked = document.getElementById("roam-checkbox").checked;
-	var roamData = [];
-	if(roamsChecked)
-	{
-		roamData = rawData.roams; 
-	}
+	
+	
 	
 	var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
 	
@@ -384,7 +402,7 @@ function redraw () {
 		.attr("fill-opacity", 	function(d) { return .3; })
 		.on("mouseover", fade(.1))
 		.on("mouseout", fade(1))
-		.on("mouseup", 			function(d)	{ alert(d.roam_id); });
+		.on("mouseup", 			function(d)	{ alert(d.roam_id + ") " + d.roam_time + " Duration: " + d.duration); });
 	
 	 function fade(opacity) {
 		
@@ -476,7 +494,7 @@ init ();
 
 
 function populateDatasets (form){
-    var result = ""; 
+    var availableDatasets = ""; 
 	selectedSite = document.getElementById(form).site.value;
 	datasetField = document.getElementById(form).dataset;
 	//selectField = document.getElementById(FieldID);
@@ -484,27 +502,17 @@ function populateDatasets (form){
 	//selectField.disabled = false;
 	
 	
-	result = datasets[selectedSite];
+	availableDatasets = datasets[selectedSite];
 	
-	for (j=0; j<result.length; j++) {
-		datasetField.options[j] = new Option(result[j], result[j]);
+	//populate pulldown
+	for (j=0; j<availableDatasets.length; j++) {
+		datasetField.options[j] = new Option(availableDatasets[j], availableDatasets[j]);
 	}
 	
-	/*
-    for (var i = 0; i < form.plotFam.length; i++) { 
-        if (form.plotFam.options[i].selected) { 
-            famName = form.plotFam.options[i].text; 
-			if (families[famName]) {
-				result = families[famName];
-				
-				for (j=0; j<result.length; j++) {
-					selectField.options[selectField.length] = new Option(result[j], result[j]);
-				}
-			}
-        } 
-    }
-	*/
+	//set the pulldown to whatever is currently selected
+	datasetField.value = selectedDataset;
 	
-	console.log("Populated Datasets");
+	
+	console.log("Populated Datasets with " + availableDatasets.length + " options");
 }
 

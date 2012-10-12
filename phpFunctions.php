@@ -51,7 +51,10 @@ function get_url_variables()
 		$dataset=$_GET['dataset'];
 	}else
 	{
-		$dataset="";
+		//no dataset chosen, so get the first one
+		$result = mysql_query('SELECT name FROM datasets order by data_id asc limit 1');
+		
+		$dataset=mysql_result($result, 0,0);
 		if($debug)
 			echo "No dataset selected.<br> Using default table<br>";
 	}
@@ -91,8 +94,13 @@ function get_all_data()
 		
 	//get all roams
 	$myRoams = new php_query();
-	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1;");
+	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap <> dest_ap;");
 	$myRoams->createJSVar("rawData.roams");
+	
+	//get all roams
+	$mySingleRoams = new php_query();
+	$mySingleRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap = dest_ap;");
+	$mySingleRoams->createJSVar("rawData.single");
 	
 	//count # of results
 	$myCounter = new php_query();
