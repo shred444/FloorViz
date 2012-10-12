@@ -92,12 +92,12 @@ function get_all_data()
 	if($debug)
 		echo "Site=" . $site . "<br>";
 		
-	//get all roams
+	//get all roams (A->B)
 	$myRoams = new php_query();
 	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap <> dest_ap;");
 	$myRoams->createJSVar("rawData.roams");
 	
-	//get all roams
+	//get all roams (A->A)
 	$mySingleRoams = new php_query();
 	$mySingleRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap = dest_ap;");
 	$mySingleRoams->createJSVar("rawData.single");

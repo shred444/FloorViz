@@ -45,8 +45,6 @@ var svg;
 //initialization functions
 populateDatasets('facility');
 
-
-
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
@@ -77,6 +75,10 @@ var rssiScale = d3.scale.linear()
 	//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
 	.domain([rssiMin,rssiMax])
 	.range([0, 1]);
+var trafficScale = d3.scale.linear()
+	//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
+	.domain([0,100])
+	.range([0, 1]);
 
 var rssiColorScale = d3.scale.ordinal()
       .domain([0,1,2,3,4,5,6,7,8,9,10])
@@ -86,7 +88,8 @@ var rssiColorScale = d3.scale.ordinal()
 	  
 var trafficColorScale = d3.scale.linear()
       .domain([0,10])
-      .range(["#EDF8FB", "#005824"]);	  
+      .range(["#CCECE6", "#005824"])
+	  .clamp(true);	  
 	  //0xEDF8FB; 0xCCECE6; 0xCCECE6; 0x66C2A4; 0x41AE76; 0x238B45; 0x005824; 
 
 //-------------------------------------------------------------
@@ -351,11 +354,14 @@ function redraw () {
 	
 	//returns a color based on a cell value
 	function cellFill(d) { 
-		var scaled = rssiScale(d[dataColumn])*10;
-		if(dataColumn=='record_count')
+		var scaled;
+		if(dataColumn=='record_count'){
+			scaled = trafficScale(d[dataColumn])*10;
 			return trafficColorScale(Math.round(scaled)-1);
-		
-		return rssiColorScale(Math.round(scaled)-1); 
+		}else{
+			scaled = rssiScale(d[dataColumn])*10;
+			return rssiColorScale(Math.round(scaled)-1); 
+		}
 	}
 
 	//-------------------------------------------------------------
