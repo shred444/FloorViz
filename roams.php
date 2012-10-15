@@ -143,10 +143,19 @@
 							</li>
 						</ul>
 					</li>
-
+					
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" disabled id="ping-checkbox">Pings
+						<input type="checkbox" onchange="update()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
+						<ul>
+							<li>
+								<input type="checkbox" onchange="update()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
+							</li>
+							<li>
+								<input type="checkbox" onchange="update()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
+							</li>
+						</ul>
 					</li>
+
 					
 				</ul>
 				<div id="dataDetails"></div>

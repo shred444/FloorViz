@@ -1,4 +1,7 @@
 <?php
+	
+include('classes.php');
+
 $db=$_GET["db"];
 $query=$_GET["q"];
 //echo $query;
@@ -12,16 +15,22 @@ if (!$con)
 
 mysql_select_db($db, $con);
 
+//get all roams (A->B)
+$myQuery = new php_query();
+$myQuery->runQuery($query);
+//$myQuery->createJSVar("rawData.roams");
+
+/*
 $result = mysql_query($query);
 
 $json_data = array();
-
+*/
 /*while($r = mysql_fetch_assoc($result)) {
 	$json_data[] = $r;
 }
 echo json_encode($json_data);
 */
-
+/*
 while($r = mysql_fetch_assoc($result)) {
 	if(!isset($google_JSON)){    
      $google_JSON = "{cols: [";    
@@ -34,7 +43,13 @@ while($r = mysql_fetch_assoc($result)) {
    $google_JSON_rows[] = "{c:[{v: '".$r['ap_id']."'}, {v: ".$r['mac']."}, {v: ".$r['channel']."}]}";
 }    
 // you may need to change the above into a function that loops through rows, with $r['id'] etc, referring to the fields you want to inject..
-echo $google_JSON.implode(",",$google_JSON_rows)."]}";
+*/
+
+echo json_encode($myQuery->JSON_data); //.implode(",",;
+
+//echo $google_JSON.implode(",",$google_JSON_rows)."]}";
+
+//.implode(",",$google_JSON_rows)."]}";
 
 mysql_close($con);
 ?>

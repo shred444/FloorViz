@@ -1,36 +1,47 @@
 <html>
-  <head>
-    <!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="jquery-1.8.2.min.js"></script>
-    <script type="text/javascript">
-    
-    // Load the Visualization API and the piechart package.
-    google.load('visualization', '1', {'packages':['corechart']});
-      
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.setOnLoadCallback(drawChart);
-      
-    function drawChart() {
-      var jsonData = $.ajax({
-          url: "jsonSQL.php?db=amz_bfi1&q=SELECT%20*%20FROM%20aps",
-          dataType:"json",
-          async: false
-          }).responseText;
-          
-      // Create our data table out of JSON data loaded from server.
-      var data = new google.visualization.DataTable(jsonData);
+<head>
+<script>
+var myData;
+function showUser(str){
+	if (str==""){
+		document.getElementById("txtHint").innerHTML="";
+		return;
+	}
+	if (window.XMLHttpRequest)	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	else {// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+			//state is ready and data is good
+			document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+			myData = JSON.parse(xmlhttp.responseText);
+		}
+	}
+	
+	//call function to get data
+	xmlhttp.open("GET","jsonSQL.php?db=amz_bfi1&q="+"SELECT * FROM roams limit " + str,true);
+	xmlhttp.send();
+}
+</script>
+</head>
+<body>
 
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-      chart.draw(data, {width: 400, height: 240});
-    }
+<form>
+<select name="users" onchange="showUser(this.value)">
+<option value="">Select a person:</option>
+<option value="1">Peter Griffin</option>
+<option value="2">Lois Griffin</option>
+<option value="3">Glenn Quagmire</option>
+<option value="4">Joseph Swanson</option>
+</select>
+</form>
+<br />
+<div id="txtHint"><b>Person info will be listed here.</b></div>
 
-    </script>
-  </head>
-
-  <body>
-    <!--Div that will hold the pie chart-->
-    <div id="chart_div"></div>
-  </body>
+</body>
 </html>

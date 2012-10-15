@@ -1,4 +1,4 @@
-var data = rawData.channels;//[4, 8, 15, 16, 23, 42];
+var data = rawData.hist;//[4, 8, 15, 16, 23, 42];
 
 
 var chart = d3.select("#barchart")

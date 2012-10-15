@@ -103,12 +103,12 @@ function get_all_data()
 	$mySingleRoams->createJSVar("rawData.single");
 	
 	//count # of results
-	$myCounter = new php_query();
+	/*$myCounter = new php_query();
 	$myCounter->runQuery("SELECT rssi_id from rssi where x>0 AND dataset_id = (SELECT data_id FROM datasets where name =\"{$dataset}\")");
 	if($myCounter->rowCount > 10000){
 		$FLOOR = $myCounter->rowCount / 30000;
 	}
-	
+	*/
 
 	
 	//get all cells
@@ -162,7 +162,12 @@ function get_all_data()
 	
 	//get RSSI histogram
 	$myRSSIHist = new php_query();
-	$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/5);");
+	//$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/((SELECT count(*) FROM rssi)/5));");
+	$myRSSIHist->runQuery("
+	SELECT rssi_val, count(rssi_val) as count FROM rssi 
+	WHERE dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")
+	GROUP BY floor(rssi_val/(SELECT max(rssi_val)-min(rssi_val) as diff from rssi) * 20)
+	;");
 	$myRSSIHist->createJSVar("rawData.hist");
 
 }

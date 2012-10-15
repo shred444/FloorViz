@@ -157,7 +157,7 @@ function init () {
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(0," + (h - padding) + ")")
+	.attr("transform", "translate(0," + (h - axisPadding*2 - innerPadding) + ")")
 	.attr("fill", "grey")
 	.call(xAxis);
 	
@@ -166,7 +166,7 @@ function init () {
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(0," + (0 + axisPadding) + ")")
+	.attr("transform", "translate(0," + (0 + axisPadding ) + ")")
 	.attr("fill", "grey")
 	.call(xAxisTop);
 
@@ -184,7 +184,7 @@ function init () {
 	//-------------------------------------------------------------
 	svg.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(" + (w - axisPadding) + ",0)")
+	.attr("transform", "translate(" + (w - axisPadding - innerPadding) + ",0)")
 	.attr("fill", "grey")
 	.call(yAxisR);
 
