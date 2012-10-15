@@ -94,11 +94,13 @@ function get_all_data()
 		
 	//get all roams (A->B)
 	$myRoams = new php_query();
+	$myRoams->name = "Roams";
 	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap <> dest_ap;");
 	$myRoams->createJSVar("rawData.roams");
 	
 	//get all roams (A->A)
 	$mySingleRoams = new php_query();
+	$mySingleRoams->name = "Single Roams";
 	$mySingleRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap = dest_ap;");
 	$mySingleRoams->createJSVar("rawData.single");
 	
@@ -113,7 +115,7 @@ function get_all_data()
 	
 	//get all cells
 	$myCells = new php_query();
-	
+	$myCells->name = "Cells";
 	$removedOutliers = "
 	SELECT A.*, B.channel, dev.* 
 	FROM rssi A
@@ -147,25 +149,29 @@ function get_all_data()
 	
 	//get all APs
 	$myAPs = new php_query();
+	$myAPs->name = "APs";
 	$myAPs->runQuery("SELECT * FROM aps where channel>0");
 	$myAPs->createJSVar("rawData.aps");
 	
 	//get all Datasets
 	$myDatasets = new php_query();
+	$myDatasets->name = "Datasets";
 	$myDatasets->runQuery("SELECT * FROM datasets");
 	$myDatasets->createJSVar("rawData.datasets");
 		
 	//get all Channels
 	$myChannels = new php_query();
+	$myChannels->name = "Channels";
 	$myChannels->runQuery("SELECT * FROM aps");
 	$myChannels->createJSVar("rawData.channels");
 	
 	//get RSSI histogram
 	$myRSSIHist = new php_query();
+	$myRSSIHist->name = "Histogram";
 	//$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/((SELECT count(*) FROM rssi)/5));");
 	$myRSSIHist->runQuery("
-	SELECT rssi_val, count(rssi_val) as count FROM rssi 
-	WHERE dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")
+	SELECT rssi_val, count(rssi_val) as count FROM rssi
+	WHERE dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") 
 	GROUP BY floor(rssi_val/(SELECT max(rssi_val)-min(rssi_val) as diff from rssi) * 20)
 	;");
 	$myRSSIHist->createJSVar("rawData.hist");

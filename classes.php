@@ -2,6 +2,7 @@
 class php_query {
 
 /* Member functions and variables go here */
+	var $name;
 	var $query;
 	var $result;
 	var $starttime, $endtime, $queryDuration, $totalDuration;
@@ -44,7 +45,7 @@ class php_query {
 				
 		//output if debug is enabled
 		if($debug){
-			echo "<b>Query</b>";
+			echo "<b>Query {$this->name}</b>";
 			echo "<br>Query: " . $this->query;
 			echo "<br>Total Fields: " . $this->fieldCount;
 			echo "<br>Total Rows: " . $this->rowCount;
