@@ -10,6 +10,7 @@
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script src="jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
+	<script src="histogramRefresh.js"></script>
 	<script type="text/javascript">
 	
 	$(function() {
@@ -91,7 +92,7 @@
 		});
 		*/
 
-		
+		/*
 		$( "#slider" ).slider({
 			range: true,
             min: 0,
@@ -101,7 +102,7 @@
                 $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
             }
         });
-		
+		*/
         $( "#amount" ).val( $( "#slider" ).slider( "values", 0 ) +
             " - " + $( "#slider" ).slider( "values", 1 ) );
 		
@@ -127,67 +128,6 @@
 	
 		
 		
-	function pullNewData(db, table)
-	{
-		if (window.XMLHttpRequest)
-		{// code for IE7+, Firefox, Chrome, Opera, Safari
-			xmlhttp=new XMLHttpRequest();
-		}
-		else
-		{// code for IE6, IE5
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		
-		xmlhttp.onreadystatechange=function()
-		{
-			//alert("received" + xmlhttp.readyState + "  " + xmlhttp.status);
-			if (xmlhttp.readyState==4 && xmlhttp.status==200)
-			{
-				//data has been received from ajax function
-				//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
-				
-								
-				rawData.rssi=JSON.parse(xmlhttp.responseText);
-				update();
-		
-			}
-		}
-		
-		//get selected table and db from html form
-		var myDB = document.getElementById("dataset").value;
-		var myTable = document.getElementById("tableSelector").value;
-		
-		//send ajax to getdata
-		xmlhttp.open("GET","getdata.php?db=" + myDB + "&table=" + myTable,true);
-		xmlhttp.send();
-	}
-	
-	
-	function showUser(str){
-		if (str==""){
-			document.getElementById("txtHint").innerHTML="";
-			return;
-		}
-		if (window.XMLHttpRequest)	{// code for IE7+, Firefox, Chrome, Opera, Safari
-			xmlhttp=new XMLHttpRequest();
-		}
-		else {// code for IE6, IE5
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		}
-		
-		xmlhttp.onreadystatechange=function()
-		{
-			if (xmlhttp.readyState==4 && xmlhttp.status==200){
-				//state is ready and data is good
-				document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
-				myData = JSON.parse(xmlhttp.responseText);
-			}
-		}
-		
-		//call function to get data
-		xmlhttp.open("GET","jsonSQL.php?db=amz_bfi1&q="+"SELECT * FROM roams limit " + str,true);
-		xmlhttp.send();
-	}
 	</script>
 	
 	
@@ -400,7 +340,12 @@
 		</script>
 		
 		<div id="txtHint"></div>
-		<div id="roamHist"></div>
+		
+		<div id="durationchart" class="histogram" width="500">
+			<h2>Duration Times</h2>
+			<svg id="roamHist"></svg>
+		</div>
+		
 		<div id="chart"></div>
 		
 		<script src="statistics.js"></script>

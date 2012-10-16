@@ -48,7 +48,7 @@ function init()
 }
 function makeScales()
 {
-	var numBars = 4;
+	var numBars = roamBarData.length;
 	//create bar scales
 	var countMin = Array.min(roamBarData.map(function(o){return o.count;}));
 	var countMax = Array.max(roamBarData.map(function(o){return o.count;}));
@@ -67,6 +67,7 @@ function makeScales()
 	xAxis = d3.svg.axis()
 		.scale(barXScale)
 		.ticks(numBars)
+		.tickSubdivide(true)
 		.orient("bottom");
 }
 

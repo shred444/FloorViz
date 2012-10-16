@@ -6,12 +6,24 @@
   margin: 1px;
   color: white;
 }
+.barchart text.label  {
+	fill: white;
+}
 
 .barchart rect  {
 	fill: steelblue;
 	border-width: 3px;
 	border-style: solid;
 	border-color: #ffffff;
+}
+
+.histogram {
+	display: block;
+}
+
+.histogram h2 {
+	color: #525555;
+	text-align: left;
 }
 
 path.domain{
