@@ -9,6 +9,7 @@
 	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script src="jquery-ui-timepicker-addon.js"></script>
+	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
 	<script type="text/javascript">
 	
 	$(function() {
@@ -83,10 +84,10 @@
 		
 
 		
-		$( "#datepicker" ).datepicker({
+		/*$( "#datepicker" ).datepicker({
 			inline: true
 		});
-		
+		*/
 
 		
 		$( "#slider" ).slider({
@@ -110,6 +111,8 @@
 				$( this ).removeClass( "ui-state-hover" );
 			}
 		);
+		
+		$('#basic_example_1').datetimepicker();
 	});
 	
 		
@@ -150,43 +153,7 @@
 	}
 	</script>
 	
-	<style>
-	body{
-		font: 62.5% "Trebuchet MS", sans-serif;
-		margin: 50px;
-	}
-	.demoHeaders {
-		margin-top: 2em;
-	}
-	#dialog-link {
-		padding: .4em 1em .4em 20px;
-		text-decoration: none;
-		position: relative;
-	}
-	#dialog-link span.ui-icon {
-		margin: 0 5px 0 0;
-		position: absolute;
-		left: .2em;
-		top: 50%;
-		margin-top: -8px;
-	}
-	#icons {
-		margin: 0;
-		padding: 0;
-	}
-	#icons li {
-		margin: 2px;
-		position: relative;
-		padding: 4px 0;
-		cursor: pointer;
-		float: left;
-		list-style: none;
-	}
-	#icons span.ui-icon {
-		float: left;
-		margin: 0 4px;
-	}
-	</style>
+	
 	<script>rawData = new Object(); </script>	
 		<?php
 		
@@ -255,6 +222,12 @@
 								<option <?php if($dataset == $row['name']) echo "selected='selected'"; ?> value="<?php echo $row['name']; ?>"><?php echo $row['name']; ?></option>
 							<?php }?>
 						</select>
+					</li>
+					
+					<li>
+					
+					 		<input type="text" name="basic_example_1" id="basic_example_1" value="" class="hasDatepicker">
+						
 					</li>
 					<li>
 						<input type="submit" value="Refresh"> 

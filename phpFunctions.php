@@ -99,7 +99,7 @@ function get_all_data()
 	SELECT * FROM roams 
 	WHERE 
 		dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and 
-		duration between 1 and 60 AND 
+		duration between 30 and 600 AND 
 		origin_ap <> dest_ap AND
 		roam_time between '2012-10-14 00:00:00' and '2012-10-15 00:00:00';");
 	$myRoams->createJSVar("rawData.roams");
@@ -111,7 +111,7 @@ function get_all_data()
 	SELECT * FROM roams 
 	WHERE
 		dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") AND 
-		duration between 1 and 60 AND 
+		duration between 30 and 600 AND 
 		origin_ap = dest_ap AND
 		roam_time between '2012-10-14 00:00:00' and '2012-10-15 00:00:00';");
 	$mySingleRoams->createJSVar("rawData.single");
