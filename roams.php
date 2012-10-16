@@ -342,10 +342,12 @@
 		
 		<div id="txtHint"></div>
 		<div id="chart"></div>
+		<div id="roamHist"></div>
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
 		<script src="histogram.js"></script>
+		<script src="roamhistogram.js"></script>
 		<script src="bar.js"></script>
 		
 		

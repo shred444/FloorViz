@@ -187,6 +187,19 @@ function get_all_data()
 	GROUP BY floor(rssi_val/(SELECT max(rssi_val)-min(rssi_val) as diff from rssi) * 20)
 	;");
 	$myRSSIHist->createJSVar("rawData.hist");
+	
+	//get RSSI histogram
+	$myRoamHist = new php_query();
+	$myRoamHist->name = "Histogram";
+	//$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/((SELECT count(*) FROM rssi)/5));");
+	$myRoamHist->runQuery("
+	SELECT duration, count(duration) as count FROM roams
+	WHERE 
+		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") AND
+		duration >= 1
+	GROUP BY floor(duration/(SELECT max(duration)-min(duration) as diff from roams) * 20)
+	;");
+	$myRoamHist->createJSVar("rawData.roamhist");
 
 }
 
