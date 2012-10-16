@@ -2,11 +2,13 @@
 	<head>
 	<LINK href="styles.css" rel="stylesheet" type="text/css">
 	<LINK href="barstyles.css" rel="stylesheet" type="text/css">
-	
+	<LINK href="timepicker.css" rel="stylesheet" type="text/css">
 	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
+	
 	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
 	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
 	<script src="http://d3js.org/d3.v2.js"></script>
+	<script src="jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript">
 	
 	$(function() {
@@ -259,8 +261,6 @@
 					</li>
 					
 					
-					
-					
 				</ul>
 			</form>
 		</div>
@@ -290,6 +290,9 @@
 					*/
 					?>
 					<li>
+						<div id="datepicker"></div>
+					</li>
+					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
 							<li>
@@ -312,7 +315,7 @@
 							</li>
 						</ul>
 					</li>
-
+					
 					
 				</ul>
 				<div id="dataDetails"></div>
@@ -351,6 +354,7 @@
 				</ul>
 				
 			</form>
+			
 			
 			
 		</div>
