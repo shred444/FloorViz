@@ -2,6 +2,7 @@
 <head>
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
+	<link href="styles.css" rel="stylesheet">
 	
 	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
 	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
@@ -46,6 +47,10 @@ $(function() {
                 $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
             }
 		});
+		
+	//make first call	
+	slideval = $("#slider").slider("option","values");
+	showUser(slideval[0],slideval[1]);
 });
 </script>
 </head>
@@ -53,7 +58,6 @@ $(function() {
 <script>
 			
 var rawData = new Object();
-showUser(0,500);
 			
 </script>
 <form>
@@ -66,12 +70,13 @@ showUser(0,500);
 </select>
 </form>
 <br />
-<div id="txtHint"><b>Person info will be listed here.</b></div>
+<div id="txtHint"><b>JSON data will be listed here.</b></div>
 <div id="slider" style="width:400px;"></div>
 
 <svg id="roamHist"></svg>
 		
 		
 <script src="roamhistogram.js"></script>
+
 </body>
 </html>

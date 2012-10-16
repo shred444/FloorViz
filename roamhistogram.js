@@ -5,7 +5,7 @@ var barPadding = 20;
 var barWidth = 300;
 var barHeight = 100;
 var roamBarData;
-var barYScale, barXScale, barAxis, svg, labels, xAxis;
+var barYScale, barXScale, barAxis2, svg, labels, xAxis;
 
 Array.max = function( array ){
     return Math.max.apply( Math, array );
@@ -20,27 +20,35 @@ function init()
 {
 	svg = d3.select("#roamHist")
 	.append("svg")
+	.attr("class", "barchart")
 	.attr("width", barWidth)
 		.attr("height", barHeight);
 	
-	makeScales();
-	svg.append("g")
+	//makeScales();
+	/*svg.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
 		.call(barAxis);
+	*/
+	//create axis
 	
-	xAxis = d3.svg.axis()
-		.scale(barXScale)
-		.orient("bottom");
+	
 		
+	svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + (barHeight - barPadding) + ")")
+      .call(xAxis);
+	
+	/*	
 	svg.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
 		.call(xAxis);
+	*/
 }
 function makeScales()
 {
-	
+	var numBars = 4;
 	//create bar scales
 	var countMin = Array.min(roamBarData.map(function(o){return o.count;}));
 	var countMax = Array.max(roamBarData.map(function(o){return o.count;}));
@@ -55,24 +63,15 @@ function makeScales()
 		.domain([roamMin, roamMax])
 		.range([barPadding,barWidth-barPadding]);
 		
-	//create axis
-	barAxis = d3.svg.axis()
+			
+	xAxis = d3.svg.axis()
 		.scale(barXScale)
-		.orient("bottom")
-		.ticks(5);
-	
-	svg.selectAll("g")
-		.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0," + (barHeight - barPadding -50) + ")")
-		.call(barAxis);
-	
-	//svg.selectAll("g.axis")
-	//	.call(barAxis);
+		.ticks(numBars)
+		.orient("bottom");
 }
 
 init();
-redraw();
+//redraw();
 		
 function redraw()
 {
@@ -81,6 +80,7 @@ function redraw()
 	//Create Bar element	
 	bars = svg.selectAll(".bar").data(roamBarData);
 	labels = svg.selectAll("text.label").data(roamBarData);
+	axis = svg.selectAll(".x.axis");
 	
 	bars.enter()
 		.append("rect")
@@ -148,8 +148,7 @@ function redraw()
 		.remove();
 		
 		
-	svg.select(".x.axis")
-        .call(xAxis);
-		
-		
+    axis.transition()
+		.duration(1000)
+		.call(xAxis);
 }

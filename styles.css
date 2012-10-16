@@ -8,11 +8,16 @@
 }
 
 .barchart rect  {
-	stroke: white;
 	fill: steelblue;
 	border-width: 3px;
 	border-style: solid;
 	border-color: #ffffff;
+}
+
+path.domain{
+	fill:none;
+	stroke: black;
+	stroke-width: 1;
 }
 
 #roamHist {
