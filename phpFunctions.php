@@ -193,11 +193,14 @@ function get_all_data()
 	$myRoamHist->name = "Histogram";
 	//$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/((SELECT count(*) FROM rssi)/5));");
 	$myRoamHist->runQuery("
-	SELECT duration, count(duration) as count FROM roams
+	SELECT ROUND(duration*2, -1)/2    AS bucket,
+		   COUNT(*)                    AS count,
+		   RPAD('', LN(COUNT(*)), '*') AS bar
+	FROM   roams
 	WHERE 
 		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\") AND
 		duration >= 1
-	GROUP BY floor(duration/(SELECT max(duration)-min(duration) as diff from roams) * 20)
+	GROUP  BY bucket
 	;");
 	$myRoamHist->createJSVar("rawData.roamhist");
 

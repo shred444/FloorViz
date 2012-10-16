@@ -13,8 +13,8 @@ var barYScale = d3.scale.log()
 	.domain([countMin, countMax])
 	.range([barPadding,barHeight-barPadding]);
 
-var roamMin = Array.min(rawData.roams.map(function(o){return o.duration;}));
-var roamMax = Array.max(rawData.roams.map(function(o){return o.duration;}));
+var roamMin = Array.min(rawData.roamhist.map(function(o){return o.bucket;}));
+var roamMax = Array.max(rawData.roamhist.map(function(o){return o.bucket;}));
 
 var barXScale = d3.scale.linear()
 	.domain([roamMin, roamMax])
@@ -42,17 +42,13 @@ bar.selectAll("rect")
 		return i*(bar.attr("width")/roamBarData.length);
 	})
 	.attr("y", function(d){
-		return bar.attr("height") - barYScale(d.count);
+		return barHeight - barYScale(d.count) - barPadding;
 	})
-	.attr("width", bar.attr("width")/roamBarData.length - barSpacing)
+	.attr("width", barWidth/roamBarData.length - barSpacing)
 	.attr("height", function(d){
 		return barYScale(d.count);
 	})
-	.attr("fill", function(d){
-		var scaled = rssiScale(d.rssi_val)*10;
-		return rssiColorScale(Math.round(scaled)-1);
-		
-	});
+	.attr("fill", "red");
 	
 bar.selectAll("text")
 	.data(roamBarData)
@@ -74,10 +70,10 @@ bar.selectAll("text")
 		return (i * rectWidth) + rectWidth*.5 - barSpacing;
 	})
 	.attr("y", function(d) {
-		return bar.attr("height") - barYScale(d.count) - 10;
+		return barHeight - barYScale(d.count) - 6;  //spacing above bar
 	});
 
 bar.append("g")
 	.attr("class", "axis")
-	.attr("transform", "translate(0," + (bar.attr("height") - barPadding) + ")")
+	.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
 	.call(barAxis);
