@@ -15,6 +15,10 @@
 	border-color: #ffffff;
 }
 
+#roamHist {
+	float: left;
+}
+
 #header li{
 	display:inline;
 	list-style-type:none;

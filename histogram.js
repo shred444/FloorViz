@@ -41,7 +41,7 @@ bar.selectAll("rect")
 		return i*(bar.attr("width")/barData.length);
 	})
 	.attr("y", function(d){
-		return bar.attr("height") - barYScale(d.count);
+		return bar.attr("height") - barYScale(d.count) - barPadding;
 	})
 	.attr("width", bar.attr("width")/barData.length - barSpacing)
 	.attr("height", function(d){

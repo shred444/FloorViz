@@ -192,7 +192,7 @@ function get_all_data()
 	$myRoamHist = new php_query();
 	$myRoamHist->name = "Histogram";
 	//$myRSSIHist->runQuery("SELECT rssi_val, count(rssi_val) as count FROM rssi GROUP BY floor(rssi_val/((SELECT count(*) FROM rssi)/5));");
-	$myRoamHist->runQuery("
+	/*$myRoamHist->runQuery("
 	SELECT ROUND(duration*2, -1)/2    AS bucket,
 		   COUNT(*)                    AS count,
 		   RPAD('', LN(COUNT(*)), '*') AS bar
@@ -202,6 +202,16 @@ function get_all_data()
 		duration >= 1
 	GROUP  BY bucket
 	;");
+	*/
+	$myRoamHist->runQuery("SELECT 
+		floor(duration/10)*10 as duration, 
+		count(*) as count
+	FROM roams
+	WHERE 
+		duration>=1 AND
+		dataset_id = (SELECT data_id FROM datasets where name=\"{$dataset}\")
+	GROUP BY 
+		floor(duration/10)*10;");
 	$myRoamHist->createJSVar("rawData.roamhist");
 
 }

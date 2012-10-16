@@ -13,8 +13,8 @@ var barYScale = d3.scale.log()
 	.domain([countMin, countMax])
 	.range([barPadding,barHeight-barPadding]);
 
-var roamMin = Array.min(rawData.roamhist.map(function(o){return o.bucket;}));
-var roamMax = Array.max(rawData.roamhist.map(function(o){return o.bucket;}));
+var roamMin = Array.min(rawData.roamhist.map(function(o){return o.duration;}));
+var roamMax = Array.max(rawData.roamhist.map(function(o){return o.duration;}));
 
 var barXScale = d3.scale.linear()
 	.domain([roamMin, roamMax])

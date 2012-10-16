@@ -15,7 +15,9 @@
 	$(function() {
 		
 		$( "#accordion" ).accordion();
-		
+		$( "#accordion1" ).accordion({ collapsible: true });
+		$( "#accordion2" ).accordion({ collapsible: true });
+		$( "#accordion3" ).accordion({ collapsible: true });
 
 		
 		var availableTags = [
@@ -288,7 +290,9 @@
 							</li>
 						</ul>
 					</li>
-					
+					<li>
+					<div id="slider"></div>
+					</li>
 					
 				</ul>
 				<div id="dataDetails"></div>
@@ -328,6 +332,21 @@
 				
 			</form>
 			
+			<div id="accordion1">
+				<h3>First</h3>
+				<div>Lorem ipsum dolor sit amet. Lore
+					s
+					fsdf
+					<br><p>asdf</div>
+			</div>
+			<div id="accordion2">
+				<h3>Second</h3>
+				<div>Phasellus mattis tincidunt nibh.</div>
+			</div>
+			<div id="accordion3">
+				<h3>Third</h3>
+				<div>Nam dui erat, auctor a, dignissim quis.</div>
+			</div>
 			
 			
 		</div>
@@ -341,8 +360,8 @@
 		</script>
 		
 		<div id="txtHint"></div>
-		<div id="chart"></div>
 		<div id="roamHist"></div>
+		<div id="chart"></div>
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
