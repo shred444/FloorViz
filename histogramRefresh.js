@@ -1,8 +1,5 @@
-function showUser(minDuration,maxDuration){
-	/*if (str==""){
-		document.getElementById("txtHint").innerHTML="";
-		return;
-	}*/
+function cropRoams(minDuration,maxDuration){
+
 	if (window.XMLHttpRequest)	{// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp=new XMLHttpRequest();
 	}
@@ -19,25 +16,26 @@ function showUser(minDuration,maxDuration){
 			redraw();
 		}
 	}
-	
-	
-	
-	var query = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE duration BETWEEN ' + minDuration + ' AND ' + maxDuration + ' AND dataset_id = 15 GROUP BY floor(duration/10)*10;';
+
+	//ajax query
+	var query = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE duration BETWEEN ' + minDuration + ' AND ' + maxDuration + ' AND dataset_id = (SELECT data_id from datasets where name=\"' + selectedDataset + '\") GROUP BY floor(duration/10)*10;';
 	xmlhttp.open("GET","jsonSQL.php?db=amz_bfi1&q="+ query,true);
 	xmlhttp.send();
 }
 
 $(function() {
+	
+	//initialize slider
 	$( "#slider" ).slider({
 			range: true,
 			values: [ 17, 67 ],
 			slide: function( event, ui ) {
-				showUser(ui.values[ 0 ], ui.values[ 1 ]);
+				cropRoams(ui.values[ 0 ], ui.values[ 1 ]);
                 $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
             }
 		});
 		
 	//make first call	
 	slideval = $("#slider").slider("option","values");
-	showUser(slideval[0],slideval[1]);
+	cropRoams(slideval[0],slideval[1]);
 });

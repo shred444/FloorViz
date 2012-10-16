@@ -10,9 +10,8 @@
 </head>
 <body>
 <script>
-			
-var rawData = new Object();
-			
+	var rawData = new Object();
+	var selectedDataset = "2012-10-15 14:23:46";	
 </script>
 <form>
 <select name="users" onchange="showUser(this.value,200)">
