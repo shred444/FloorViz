@@ -101,7 +101,7 @@
 		
 		$( "#progressbar" ).progressbar({
 			value: 20
-		});
+			});
 		
 
 		// Hover states on the static widgets
