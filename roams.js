@@ -308,7 +308,17 @@ function update () {
 	
 	
 	//data column selection
-	dataColumn = document.getElementById("dataColumn").value;
+	//dataColumn = document.getElementById("dataColumn").value;
+	var radioButtons = document.getElementsByName('radio');
+	
+	for(i=0; i<radioButtons.length; i++)
+	{
+		if(radioButtons[i].checked){
+			dataColumn = radioButtons[i].name;
+			break;
+		}
+	}
+	
 	console.log("Data Column: " + dataColumn);
 	
 	//update scales

@@ -2,8 +2,116 @@
 	<head>
 	<LINK href="styles.css" rel="stylesheet" type="text/css">
 	<LINK href="barstyles.css" rel="stylesheet" type="text/css">
+	
+	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
+	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
+	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<script type="text/javascript">
+	
+	$(function() {
+		
+		$( "#accordion" ).accordion();
+		
+
+		
+		var availableTags = [
+			"ActionScript",
+			"AppleScript",
+			"Asp",
+			"BASIC",
+			"C",
+			"C++",
+			"Clojure",
+			"COBOL",
+			"ColdFusion",
+			"Erlang",
+			"Fortran",
+			"Groovy",
+			"Haskell",
+			"Java",
+			"JavaScript",
+			"Lisp",
+			"Perl",
+			"PHP",
+			"Python",
+			"Ruby",
+			"Scala",
+			"Scheme"
+		];
+		$( "#autocomplete" ).autocomplete({
+			source: availableTags
+		});
+		
+
+		
+		$( "#button" ).button();
+		$( "#radioset" ).buttonset();
+		
+
+		
+		$( "#tabs" ).tabs();
+		
+
+		
+		$( "#dialog" ).dialog({
+			autoOpen: false,
+			width: 400,
+			buttons: [
+				{
+					text: "Ok",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					text: "Cancel",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			]
+		});
+
+		// Link to open the dialog
+		$( "#dialog-link" ).click(function( event ) {
+			$( "#dialog" ).dialog( "open" );
+			event.preventDefault();
+		});
+		
+
+		
+		$( "#datepicker" ).datepicker({
+			inline: true
+		});
+		
+
+		
+		$( "#slider" ).slider({
+			range: true,
+			values: [ 17, 67 ]
+		});
+		
+
+		
+		$( "#progressbar" ).progressbar({
+			value: 20
+		});
+		
+
+		// Hover states on the static widgets
+		$( "#dialog-link, #icons li" ).hover(
+			function() {
+				$( this ).addClass( "ui-state-hover" );
+			},
+			function() {
+				$( this ).removeClass( "ui-state-hover" );
+			}
+		);
+	});
+	
+		
+		
 	function pullNewData(db, table)
 	{
 		if (window.XMLHttpRequest)
@@ -39,6 +147,44 @@
 		xmlhttp.send();
 	}
 	</script>
+	
+	<style>
+	body{
+		font: 62.5% "Trebuchet MS", sans-serif;
+		margin: 50px;
+	}
+	.demoHeaders {
+		margin-top: 2em;
+	}
+	#dialog-link {
+		padding: .4em 1em .4em 20px;
+		text-decoration: none;
+		position: relative;
+	}
+	#dialog-link span.ui-icon {
+		margin: 0 5px 0 0;
+		position: absolute;
+		left: .2em;
+		top: 50%;
+		margin-top: -8px;
+	}
+	#icons {
+		margin: 0;
+		padding: 0;
+	}
+	#icons li {
+		margin: 2px;
+		position: relative;
+		padding: 4px 0;
+		cursor: pointer;
+		float: left;
+		list-style: none;
+	}
+	#icons span.ui-icon {
+		float: left;
+		margin: 0 4px;
+	}
+	</style>
 	<script>rawData = new Object(); </script>	
 		<?php
 		
@@ -123,7 +269,16 @@
 		<div id="sidebar">
 			<form id="controls" method="get">
 				<h2>Details</h2>
+					
 				<ul style="list-style-type:none">
+					<li>
+					<div id="radioset" name="dataColumn" >
+						<input type="radio" id="radio1" name="rssi_val" checked="checked" ><label for="radio1">RSSI</label>
+						<input type="radio" id="radio2" name="br_val" ><label for="radio2">Bitrate</label>
+						<input type="radio" id="radio3" name="record_count" ><label for="radio3">Traffic</label>
+					</div>
+					</li>
+					
 					<li>
 						<select id="dataColumn" name="dataColumn" onchange="update()">
 							<option value="rssi_val">RSSI</option>

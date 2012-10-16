@@ -95,13 +95,25 @@ function get_all_data()
 	//get all roams (A->B)
 	$myRoams = new php_query();
 	$myRoams->name = "Roams";
-	$myRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap <> dest_ap;");
+	$myRoams->runQuery("
+	SELECT * FROM roams 
+	WHERE 
+		dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and 
+		duration between 1 and 60 AND 
+		origin_ap <> dest_ap AND
+		roam_time between '2012-10-14 00:00:00' and '2012-10-15 00:00:00';");
 	$myRoams->createJSVar("rawData.roams");
 	
 	//get all roams (A->A)
 	$mySingleRoams = new php_query();
 	$mySingleRoams->name = "Single Roams";
-	$mySingleRoams->runQuery("SELECT * FROM roams where dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") and duration>1 AND origin_ap = dest_ap;");
+	$mySingleRoams->runQuery("
+	SELECT * FROM roams 
+	WHERE
+		dataset_id=(SELECT data_id FROM datasets where name =\"{$dataset}\") AND 
+		duration between 1 and 60 AND 
+		origin_ap = dest_ap AND
+		roam_time between '2012-10-14 00:00:00' and '2012-10-15 00:00:00';");
 	$mySingleRoams->createJSVar("rawData.single");
 	
 	//count # of results
