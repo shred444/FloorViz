@@ -94,10 +94,18 @@
 		
 		$( "#slider" ).slider({
 			range: true,
-			values: [ 17, 67 ]
-		});
+            min: 0,
+            max: 500,
+            values: [ 75, 300 ],
+            slide: function( event, ui ) {
+                $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            }
+        });
 		
-
+        $( "#amount" ).val( $( "#slider" ).slider( "values", 0 ) +
+            " - " + $( "#slider" ).slider( "values", 1 ) );
+		
+		
 		
 		$( "#progressbar" ).progressbar({
 			value: 20
@@ -271,6 +279,13 @@
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
 							<li>
+					
+								<label for="amount">Duration:</label>
+								<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
+								<div id="slider"></div>
+							
+							</li>
+							<li>
 								<input type="checkbox" onchange="update()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
 							</li>
 							<li>
@@ -290,9 +305,7 @@
 							</li>
 						</ul>
 					</li>
-					<li>
-					<div id="slider"></div>
-					</li>
+					
 					
 				</ul>
 				<div id="dataDetails"></div>
