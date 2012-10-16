@@ -53,6 +53,7 @@ $(function() {
 <script>
 			
 var rawData = new Object();
+showUser(0,500);
 			
 </script>
 <form>
@@ -66,7 +67,7 @@ var rawData = new Object();
 </form>
 <br />
 <div id="txtHint"><b>Person info will be listed here.</b></div>
-<div id="slider"></div>
+<div id="slider" style="width:400px;"></div>
 
 <svg id="roamHist"></svg>
 		

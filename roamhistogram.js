@@ -5,7 +5,7 @@ var barPadding = 20;
 var barWidth = 300;
 var barHeight = 100;
 var roamBarData;
-var barYScale, barXScale, barAxis, svg, labels;
+var barYScale, barXScale, barAxis, svg, labels, xAxis;
 
 Array.max = function( array ){
     return Math.max.apply( Math, array );
@@ -29,6 +29,14 @@ function init()
 		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
 		.call(barAxis);
 	
+	xAxis = d3.svg.axis()
+		.scale(barXScale)
+		.orient("bottom");
+		
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
+		.call(xAxis);
 }
 function makeScales()
 {
