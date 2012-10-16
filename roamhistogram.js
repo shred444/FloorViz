@@ -5,7 +5,7 @@ var barPadding = 20;
 var barWidth = 300;
 var barHeight = 100;
 var roamBarData;
-var barYScale, barXScale, barAxis;
+var barYScale, barXScale, barAxis, svg, labels;
 
 Array.max = function( array ){
     return Math.max.apply( Math, array );
@@ -14,12 +14,16 @@ Array.min = function( array ){
     return Math.min.apply( Math, array );
 };
 
-var bar = d3.select("#roamHist")
-		.append("svg")
-		.attr("width", barWidth)
+
+
+function init()
+{
+	svg = d3.select("#roamHist")
+	.append("svg")
+	.attr("width", barWidth)
 		.attr("height", barHeight);
-
-
+	
+}
 function makeScales()
 {
 	
@@ -45,7 +49,7 @@ function makeScales()
 
 }
 
-
+init();
 redraw();
 		
 function redraw()
@@ -53,16 +57,13 @@ function redraw()
 	roamBarData = rawData.roamhist;
 	makeScales();
 	//Create Bar element	
+	bars = svg.selectAll("rect").data(roamBarData, function (d) { return d.id;});
+	labels = svg.selectAll("text").data(roamBarData);
 	
-	
-	
-	bar.selectAll("rect")
-		.data(roamBarData)
-		//.data(myDataset)
-		.enter()
+	bars.enter()
 		.append("rect")
 		.attr("x", function(d,i){ 
-			return i*(bar.attr("width")/roamBarData.length);
+			return i*(barWidth/roamBarData.length);
 		})
 		.attr("y", function(d){
 			return barHeight - barYScale(d.count) - barPadding;
@@ -73,15 +74,21 @@ function redraw()
 		})
 		.attr("fill", "red");
 		
-	bar.data(roamBarData).transition()
-		.duration(1000);
+	bars.transition()
+		.duration(1000)
+		.attr("y", function(d){
+			return barHeight - barYScale(d.count) - barPadding;
+		})
+		.attr("height", function(d){
+			return barYScale(d.count);
+		});
 		/*
 		rects.data(newData)
      .transition().duration(2000).delay(200)
      .attr("width", function(d) {return 20 * d; } )
      .attr("fill", newColor);
 		*/
-	bar.selectAll("text")
+	svg.selectAll("text")
 		.data(roamBarData)
 		.enter()
 		.append("text")
@@ -97,15 +104,30 @@ function redraw()
 			//return Math.round(scaled.toString());
 		})
 		.attr("x", function(d, i) {
-			var rectWidth = (bar.attr("width") / roamBarData.length);
+			var rectWidth = (barWidth / roamBarData.length);
 			return (i * rectWidth) + rectWidth*.5 - barSpacing;
 		})
 		.attr("y", function(d) {
 			return barHeight - barYScale(d.count) - 6;  //spacing above bar
 		});
 
-	bar.append("g")
+	labels.transition()
+		.duration(0)
+		.text(function(d) {
+			//return d.count.toString();
+			//var scaled = rssiScale(d.rssi_val)*10;
+			//return rssiColorScale(Math.round(scaled)-1);
+			return d.count.toString();
+			//return Math.round(scaled.toString());
+		});
+	
+	bars.exit()
+		.remove();
+		
+	svg.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
 		.call(barAxis);
+		
+		
 }

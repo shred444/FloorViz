@@ -53,7 +53,7 @@ var rawData = new Object();
 <div id="txtHint"><b>Person info will be listed here.</b></div>
 
 
-<div id="roamHist"></div>
+<svg id="roamHist"></svg>
 		
 		
 <script src="roamhistogram.js"></script>
