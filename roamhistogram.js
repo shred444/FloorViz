@@ -82,12 +82,7 @@ function redraw()
 		.attr("height", function(d){
 			return barYScale(d.count);
 		});
-		/*
-		rects.data(newData)
-     .transition().duration(2000).delay(200)
-     .attr("width", function(d) {return 20 * d; } )
-     .attr("fill", newColor);
-		*/
+		
 	labels.enter()
 		.append("text")
 		.attr("font-family", "helvetica")

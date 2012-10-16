@@ -1,6 +1,10 @@
 <html>
 <head>
 	<script src="http://d3js.org/d3.v2.js"></script>
+	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
+	
+	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
+	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
 <script>
 var myData;
 function showUser(minDuration,maxDuration){
@@ -32,6 +36,13 @@ function showUser(minDuration,maxDuration){
 	xmlhttp.open("GET","jsonSQL.php?db=amz_bfi1&q="+ query,true);
 	xmlhttp.send();
 }
+
+$(function() {
+	$( "#slider" ).slider({
+			range: true,
+			values: [ 17, 67 ]
+		});
+});
 </script>
 </head>
 <body>
@@ -51,7 +62,7 @@ var rawData = new Object();
 </form>
 <br />
 <div id="txtHint"><b>Person info will be listed here.</b></div>
-
+<div id="slider"></div>
 
 <svg id="roamHist"></svg>
 		
