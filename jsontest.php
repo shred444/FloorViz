@@ -40,7 +40,11 @@ function showUser(minDuration,maxDuration){
 $(function() {
 	$( "#slider" ).slider({
 			range: true,
-			values: [ 17, 67 ]
+			values: [ 17, 67 ],
+			slide: function( event, ui ) {
+				showUser(ui.values[ 0 ], ui.values[ 1 ]);
+                $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+            }
 		});
 });
 </script>

@@ -23,6 +23,12 @@ function init()
 	.attr("width", barWidth)
 		.attr("height", barHeight);
 	
+	makeScales();
+	svg.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
+		.call(barAxis);
+	
 }
 function makeScales()
 {
@@ -46,7 +52,15 @@ function makeScales()
 		.scale(barXScale)
 		.orient("bottom")
 		.ticks(5);
-
+	
+	svg.selectAll("g")
+		.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + (barHeight - barPadding -50) + ")")
+		.call(barAxis);
+	
+	//svg.selectAll("g.axis")
+	//	.call(barAxis);
 }
 
 init();
@@ -57,11 +71,12 @@ function redraw()
 	roamBarData = rawData.roamhist;
 	makeScales();
 	//Create Bar element	
-	bars = svg.selectAll("rect").data(roamBarData, function (d) { return d.id;});
-	labels = svg.selectAll("text").data(roamBarData);
+	bars = svg.selectAll(".bar").data(roamBarData);
+	labels = svg.selectAll("text.label").data(roamBarData);
 	
 	bars.enter()
 		.append("rect")
+		.attr("class", "bar")
 		.attr("x", function(d,i){ 
 			return i*(barWidth/roamBarData.length);
 		})
@@ -76,15 +91,20 @@ function redraw()
 		
 	bars.transition()
 		.duration(1000)
+		.attr("x", function(d,i){ 
+			return i*(barWidth/roamBarData.length);
+		})
 		.attr("y", function(d){
 			return barHeight - barYScale(d.count) - barPadding;
 		})
+		.attr("width", barWidth/roamBarData.length - barSpacing)
 		.attr("height", function(d){
 			return barYScale(d.count);
 		});
 		
 	labels.enter()
 		.append("text")
+		.attr("class", "label")
 		.attr("font-family", "helvetica")
 		.attr("font-size", "8px")
 		.attr("fill", "black")
@@ -101,7 +121,7 @@ function redraw()
 		});
 
 	labels.transition()
-		.duration(0)
+		.duration(1000)
 		.text(function(d) {
 			return d.count.toString();
 		})
@@ -119,10 +139,9 @@ function redraw()
 	bars.exit()
 		.remove();
 		
-	svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
-		.call(barAxis);
+		
+	svg.select(".x.axis")
+        .call(xAxis);
 		
 		
 }
