@@ -88,20 +88,14 @@ function redraw()
      .attr("width", function(d) {return 20 * d; } )
      .attr("fill", newColor);
 		*/
-	svg.selectAll("text")
-		.data(roamBarData)
-		.enter()
+	labels.enter()
 		.append("text")
 		.attr("font-family", "helvetica")
 		.attr("font-size", "8px")
 		.attr("fill", "black")
 		.attr("text-anchor", "middle")
 		.text(function(d) {
-			//return d.count.toString();
-			//var scaled = rssiScale(d.rssi_val)*10;
-			//return rssiColorScale(Math.round(scaled)-1);
 			return d.count.toString();
-			//return Math.round(scaled.toString());
 		})
 		.attr("x", function(d, i) {
 			var rectWidth = (barWidth / roamBarData.length);
@@ -114,12 +108,18 @@ function redraw()
 	labels.transition()
 		.duration(0)
 		.text(function(d) {
-			//return d.count.toString();
-			//var scaled = rssiScale(d.rssi_val)*10;
-			//return rssiColorScale(Math.round(scaled)-1);
 			return d.count.toString();
-			//return Math.round(scaled.toString());
+		})
+		.attr("x", function(d, i) {
+			var rectWidth = (barWidth / roamBarData.length);
+			return (i * rectWidth) + rectWidth*.5 - barSpacing;
+		})
+		.attr("y", function(d) {
+			return barHeight - barYScale(d.count) - 6;  //spacing above bar
 		});
+		
+	labels.exit()
+		.remove();
 	
 	bars.exit()
 		.remove();
