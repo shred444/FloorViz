@@ -309,12 +309,17 @@ function update () {
 	
 	//data column selection
 	//dataColumn = document.getElementById("dataColumn").value;
-	var radioButtons = document.getElementsByName('radio');
+	var radioDIV = document.getElementById('radioset');
 	
-	for(i=0; i<radioButtons.length; i++)
+	for(i=0; i<radioDIV.children.length/2; i++)
 	{
-		if(radioButtons[i].checked){
-			dataColumn = radioButtons[i].name;
+		if(radioDIV.children[i*2].checked){
+			if(i==0)
+				dataColumn = 'rssi_val';
+			else if(i==1)
+				dataColumn = 'br_val';
+			else if(i==2)
+				dataColumn = 'record_count';
 			break;
 		}
 	}

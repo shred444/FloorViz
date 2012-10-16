@@ -273,12 +273,12 @@
 				<ul style="list-style-type:none">
 					<li>
 					<div id="radioset" name="dataColumn" >
-						<input type="radio" id="radio1" name="rssi_val" checked="checked" ><label for="radio1">RSSI</label>
-						<input type="radio" id="radio2" name="br_val" ><label for="radio2">Bitrate</label>
-						<input type="radio" id="radio3" name="record_count" ><label for="radio3">Traffic</label>
+						<input type="radio" id="radio1" name="radio" checked="checked" onclick="update()"><label for="radio1">RSSI</label>
+						<input type="radio" id="radio2" name="radio" onclick="update()"><label for="radio2">Bitrate</label>
+						<input type="radio" id="radio3" name="radio" onclick="update()"><label for="radio3">Traffic</label>
 					</div>
 					</li>
-					
+					<?php /*
 					<li>
 						<select id="dataColumn" name="dataColumn" onchange="update()">
 							<option value="rssi_val">RSSI</option>
@@ -287,6 +287,8 @@
 							
 						</select>
 					</li>
+					*/
+					?>
 					<li>
 						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
