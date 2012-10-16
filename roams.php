@@ -339,14 +339,10 @@
 	
 		</script>
 		
-		<div id="txtHint"></div>
 		
-		<div id="durationchart" class="histogram" width="500">
-			<h2>Duration Times</h2>
-			<svg id="roamHist"></svg>
-		</div>
+		<div id="roamHist"><h2>Duration Times</h2></div>
 		
-		<div id="chart"></div>
+		<div id="chart"><h2>RSSI Values</h2></div>
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>

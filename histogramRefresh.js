@@ -14,9 +14,8 @@ function showUser(minDuration,maxDuration){
 	{
 		if (xmlhttp.readyState==4 && xmlhttp.status==200){
 			//state is ready and data is good
-			document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
-			myData = JSON.parse(xmlhttp.responseText);
-			rawData.roamhist = myData;
+			
+			rawData.roamhist = JSON.parse(xmlhttp.responseText);
 			redraw();
 		}
 	}

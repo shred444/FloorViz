@@ -28,8 +28,8 @@ var rawData = new Object();
 <div id="slider" style="width:400px;"></div>
 
 <div id="durationchart" class="histogram" width="500">
-<h2>Duration Times</h2>
-<svg id="roamHist"></svg>
+
+<div id="roamHist"><h2>Duration Times</h2></div>
 </div>
 		
 		

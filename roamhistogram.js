@@ -7,6 +7,9 @@ var barHeight = 100;
 var roamBarData;
 var barYScale, barXScale, barAxis2, svg, labels, xAxis;
 
+
+
+
 Array.max = function( array ){
     return Math.max.apply( Math, array );
 };
