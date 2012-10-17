@@ -20,7 +20,8 @@ function cropRoams(minDuration,maxDuration){
 			//state is ready and data is good
 			console.log("Received response from cropRoams");
 			rawData.roamhist = JSON.parse(xmlhttp.responseText);
-			redraw();
+			if(typeof redrawHist == 'function')
+				redrawHist();
 		}
 	}
 
@@ -45,8 +46,8 @@ function roamRefresh(minDuration,maxDuration){
 			//state is ready and data is good
 			console.log("Received response from roamRefresh");
 			rawData.roams = JSON.parse(xmlhttp.responseText);
-			refreshRoams();
-			//alert('data received');
+			if(typeof refreshRoams == 'function')
+				refreshRoams();
 		}
 	}
 

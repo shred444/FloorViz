@@ -72,9 +72,8 @@ function makeScales()
 }
 
 init();
-//redraw();
 		
-function redraw()
+function redrawHist()
 {
 	roamBarData = rawData.roamhist;
 	makeScales();
