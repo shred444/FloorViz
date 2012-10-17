@@ -451,6 +451,7 @@ function redraw () {
 		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
 		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
 		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
+		.on("mousemove", mousemove);
 		.append("svg:title");
 		
 	//mouseover title
@@ -474,33 +475,22 @@ function redraw () {
 	//-------------------------------------------------------------
 	//Create Roams
 	//-------------------------------------------------------------
-	
-	
-	
-
-
 	/*
-		//-------------------------------------------------------------
-		//Create labels
-		//-------------------------------------------------------------
-		svg.selectAll("text")
-		.data(dataset)
-		.enter()
-		.append("text")
-		.text(function(d) {
-		return d[0] + "," + d[1];
-		})
-		.attr("x", function(d) {
-		return xScale(d[0]);
-		})
-		.attr("y", function(d) {
-		return yScale(d[1]);
-		})
-		.attr("font-family", "sans-serif")
-		.attr("font-size", "10px")
-		.attr("fill", "black");
-		//end labels
+	var coords = svg.append("g")
+			.attr("class", "coords")
+			.style("display", "none");
+
+		coords.append("circle")
+			.attr("r", 4.5);
+
+		coords.append("text")
+			.attr("x", 9)
+			.attr("dy", ".35em");
+	function mousemove(){
+		coords.select("#coords").text('hello');
+	}	
 	*/
+
 	console.log("Redraw Complete");
 	
 }
@@ -512,7 +502,6 @@ init ();
 //-------------------------------------------------------------
 //document.getElementById("controls").addEventListener ("click", update, false);
 //document.getElementById("controls").addEventListener ("keyup", update, false);
-
 
 function populateDatasets (form){
     var availableDatasets = ""; 

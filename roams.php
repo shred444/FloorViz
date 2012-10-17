@@ -266,9 +266,9 @@
 		</script>
 		
 		
-		<div id="roamHist"><h2>Duration Times</h2></div>
+		<div id="roamHist" class="chart"><h2>Duration Times</h2></div>
 		
-		<div id="chart"><h2>RSSI Values</h2></div>
+		<div id="chart" class="chart" style="padding-left:30px;"><h2>RSSI Values</h2></div>
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>

@@ -24,27 +24,11 @@ function init()
 	.attr("width", barWidth)
 		.attr("height", barHeight);
 	
-	//makeScales();
-	/*svg.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
-		.call(barAxis);
-	*/
-	//create axis
-	
-	
-		
 	svghist.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + (barHeight - barPadding) + ")")
       .call(xAxis);
 	
-	/*	
-	svghist.append("g")
-		.attr("class", "axis")
-		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
-		.call(xAxis);
-	*/
 }
 function makeScales()
 {
@@ -162,10 +146,7 @@ function redrawHist()
 	labels.exit()
 		.remove();
 	
-	
-	
-		
-    axis.transition()
+	axis.transition()
 		.duration(1000)
 		.call(xAxis);
 }

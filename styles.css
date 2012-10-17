@@ -31,6 +31,13 @@
 	}
 	/*0xF46D43; 0xFDAE61; 0xFEE08B; 0xD9EF8B; 0xA6D96A; 0x66BD63; 0x1A9850; */
 	
+.chart {
+	float: left;
+}
+.chart h2 {
+	text-align: center;
+	color: #999999;
+}
 	
 /*jquery styles*/
 body{
