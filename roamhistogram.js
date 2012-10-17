@@ -5,10 +5,7 @@ var barPadding = 20;
 var barWidth = 300;
 var barHeight = 100;
 var roamBarData;
-var barYScale, barXScale, barAxis2, svg, labels, xAxis;
-
-
-
+var barYScale, barXScale, barAxis2, svghist, labels, xAxis;
 
 Array.max = function( array ){
     return Math.max.apply( Math, array );
@@ -21,7 +18,7 @@ Array.min = function( array ){
 
 function init()
 {
-	svg = d3.select("#roamHist")
+	svghist = d3.select("#roamHist")
 	.append("svg")
 	.attr("class", "barchart")
 	.attr("width", barWidth)
@@ -37,13 +34,13 @@ function init()
 	
 	
 		
-	svg.append("g")
+	svghist.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + (barHeight - barPadding) + ")")
       .call(xAxis);
 	
 	/*	
-	svg.append("g")
+	svghist.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(0," + (barHeight - barPadding) + ")")
 		.call(xAxis);
@@ -82,9 +79,9 @@ function redraw()
 	roamBarData = rawData.roamhist;
 	makeScales();
 	//Create Bar element	
-	bars = svg.selectAll(".bar").data(roamBarData);
-	labels = svg.selectAll("text.label").data(roamBarData);
-	axis = svg.selectAll(".x.axis");
+	bars = svghist.selectAll(".bar").data(roamBarData);
+	labels = svghist.selectAll("text.label").data(roamBarData);
+	axis = svghist.selectAll(".x.axis");
 	
 	bars.enter()
 		.append("rect")

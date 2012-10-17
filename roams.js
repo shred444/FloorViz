@@ -365,32 +365,32 @@ function update () {
 
 function refreshRoams()
 {
-	
-	var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
+	console.log("Refresh Roams Called");
+	//var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
+	var roams = svg.selectAll("circle").data(rawData.roams, function (d) {return d.roam_id;});
 	
 	roams.enter()
 		.append("circle")
-		//.attr("transform", translate)
 		.attr("cx", 			function(d) { return xScale(d.x); })
 		.attr("cy", 			function(d) { return yScale(d.y); })
 		.attr("r", 				function(d) { return d.duration; })
 		.attr("fill", 			function(d) { return "red"; })
 		.attr("fill-opacity", 	function(d) { return .3; })
-		.on("mouseover", fade(.1))
-		.on("mouseout", fade(1))
+		//.on("mouseover", fade(.1))
+		//.on("mouseout", fade(1))
 		.on("mouseup", 			function(d)	{ alert(d.roam_id + ") " + d.roam_time + " Duration: " + d.duration); });
 	
 	 function fade(opacity) {
 		
 		return function(d, i) {
-	     svg.selectAll("d.circle")
-         .filter(function(d) {
-           return d.roam_id;
-         })
-       .transition()
-         .style("opacity", opacity);
-   };
- }
+			svg.selectAll("d.circle")
+				.filter(function(d) {
+					return d.roam_id;
+				})
+				.transition()
+				.style("opacity", opacity);
+		};
+	}
 	
 	
 	roams.exit()

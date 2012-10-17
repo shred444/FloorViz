@@ -63,7 +63,7 @@ $(function() {
 	//initialize slider
 	$( "#slider" ).slider({
 		range: true,
-		values: [ 17, 67 ],	//default values
+		values: [ 1, 60 ],	//default values
 		min: 1,
 		max: 400,
 		change: function( event, ui ) {
@@ -73,6 +73,11 @@ $(function() {
 			
 			$( "#amount" ).val( myMin + " - " + myMax );
 			roamRefresh(myMin,myMax);
+		},
+		slide: function( event, ui ) {
+			var myMin = ui.values[0];
+			var myMax = ui.values[1];
+			$( "#amount" ).val( myMin + " - " + myMax );
 		}
 	});
 		
