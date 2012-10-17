@@ -188,20 +188,6 @@ function init () {
 	.attr("fill", "grey")
 	.call(yAxisR);
 
-	/*
-	vis = d3.select("#visualisation");
-
-	// add in the x axis
-	vis.append("svg:g") // container element
-		.attr("class", "x axis") // so we can style it with CSS
-		.attr("transform", "translate(0," + HEIGHT + ")") // move into position
-		.call(xAxis); // add to the visualisation
-
-	// add in the y axis
-	vis.append("svg:g") // container element
-		.attr("class", "y axis") // so we can style it with CSS
-		.call(yAxis); // add to the visualisation
-	*/
 	
 	//set form colors
 	for (var i=0; i<rawData.channels.length; i++)
@@ -451,7 +437,7 @@ function redraw () {
 		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
 		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
 		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
-		.on("mousemove", mousemove);
+		//.on("mousemove", mousemove);
 		.append("svg:title");
 		
 	//mouseover title
