@@ -334,9 +334,26 @@ function update () {
 		.domain([rssiMin,rssiMax])
 		.range([0, 1]);
 	
+	
+	
+	
+	var processedData; 					// the data while will be visualised
+
+	processedData = processData(rawData.rssi);
+	drawingData = processedData;
+	console.log("rssiMin="+rssiMin + "   rssiMax="+rssiMax);
+	redraw();
+	
+}
+
+function refreshRoams()
+{
+	console.log("Refresh Roams Called");
+	
 	//roam selection
 	roamData = [];
 	roamsChecked = document.getElementById("roam-checkbox").checked;
+	
 	if(roamsChecked){
 		document.getElementById("AtoB-checkbox").disabled = false;
 		document.getElementById("AtoA-checkbox").disabled = false;
@@ -354,20 +371,9 @@ function update () {
 	}
 	
 	
-	var processedData; 					// the data while will be visualised
-
-	processedData = processData(rawData.rssi);
-	drawingData = processedData;
-	console.log("rssiMin="+rssiMin + "   rssiMax="+rssiMax);
-	redraw();
 	
-}
-
-function refreshRoams()
-{
-	console.log("Refresh Roams Called");
-	//var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
-	var roams = svg.selectAll("circle").data(rawData.roams, function (d) {return d.roam_id;});
+	var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
+	//var roams = svg.selectAll("circle").data(rawData.roams, function (d) {return d.roam_id;});
 	
 	roams.enter()
 		.append("circle")

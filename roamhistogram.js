@@ -81,6 +81,10 @@ function redrawHist()
 	bars = svghist.selectAll(".bar").data(roamBarData);
 	labels = svghist.selectAll("text.label").data(roamBarData);
 	axis = svghist.selectAll(".x.axis");
+	numBars = roamBarData.length;
+	
+	
+	//BARS
 	
 	bars.enter()
 		.append("rect")
@@ -89,11 +93,13 @@ function redrawHist()
 			return i*(barWidth/roamBarData.length);
 		})
 		.attr("y", function(d){
-			return barHeight - barYScale(d.count) - barPadding;
+			//return barHeight - barYScale(d.count) - barPadding;
+			return barHeight - barPadding;
 		})
 		.attr("width", barWidth/roamBarData.length - barSpacing)
 		.attr("height", function(d){
-			return barYScale(d.count);
+			//return barYScale(d.count);
+			return 1;
 		})
 		.attr("fill", "red");
 		
@@ -110,6 +116,18 @@ function redrawHist()
 			return barYScale(d.count);
 		});
 		
+	bars.exit().transition()
+		.duration(1000)
+		//.attr("fill-opacity", 0)
+		.attr("x", function(d, i) {
+			var rectWidth = (barWidth / roamBarData.length);
+			return (i * rectWidth) + rectWidth*.5 - barSpacing + numBars;
+		})
+		.remove();
+	
+	
+	//LABELS
+	
 	labels.enter()
 		.append("text")
 		.attr("class", "label")
@@ -144,9 +162,8 @@ function redrawHist()
 	labels.exit()
 		.remove();
 	
-	bars.exit()
-		.remove();
-		
+	
+	
 		
     axis.transition()
 		.duration(1000)

@@ -20,45 +20,10 @@
 		$( "#accordion2" ).accordion({ collapsible: true });
 		$( "#accordion3" ).accordion({ collapsible: true });
 
-		
-		var availableTags = [
-			"ActionScript",
-			"AppleScript",
-			"Asp",
-			"BASIC",
-			"C",
-			"C++",
-			"Clojure",
-			"COBOL",
-			"ColdFusion",
-			"Erlang",
-			"Fortran",
-			"Groovy",
-			"Haskell",
-			"Java",
-			"JavaScript",
-			"Lisp",
-			"Perl",
-			"PHP",
-			"Python",
-			"Ruby",
-			"Scala",
-			"Scheme"
-		];
-		$( "#autocomplete" ).autocomplete({
-			source: availableTags
-		});
-		
-
-		
 		$( "#button" ).button();
 		$( "#radioset" ).buttonset();
 		
-
-		
 		$( "#tabs" ).tabs();
-		
-
 		
 		$( "#dialog" ).dialog({
 			autoOpen: false,
@@ -84,50 +49,11 @@
 			$( "#dialog" ).dialog( "open" );
 			event.preventDefault();
 		});
-		
-
-		
-		/*$( "#datepicker" ).datepicker({
-			inline: true
-		});
-		*/
-
-		/*
-		$( "#slider" ).slider({
-			range: true,
-            min: 0,
-            max: 500,
-            values: [ 75, 300 ],
-            slide: function( event, ui ) {
-                $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-            }
-        });
-		*/
+	
         $( "#amount" ).val( $( "#slider" ).slider( "values", 0 ) +
             " - " + $( "#slider" ).slider( "values", 1 ) );
-		
-		
-		
-		$( "#progressbar" ).progressbar({
-			value: 20
-			});
-		
-
-		// Hover states on the static widgets
-		$( "#dialog-link, #icons li" ).hover(
-			function() {
-				$( this ).addClass( "ui-state-hover" );
-			},
-			function() {
-				$( this ).removeClass( "ui-state-hover" );
-			}
-		);
-		
-		$('#basic_example_1').datetimepicker();
 	});
 	
-		
-		
 	</script>
 	
 	
@@ -243,7 +169,7 @@
 						<div id="datepicker"></div>
 					</li>
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" value="roams" id="roam-checkbox">roams
+						<input type="checkbox" onchange="refreshRoams()" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
 							<li>
 					
@@ -253,10 +179,10 @@
 							
 							</li>
 							<li>
-								<input type="checkbox" onchange="update()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
+								<input type="checkbox" onchange="refreshRoams()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
 							</li>
 							<li>
-								<input type="checkbox" onchange="update()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
+								<input type="checkbox" onchange="refreshRoams()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
 							</li>
 						</ul>
 					</li>
