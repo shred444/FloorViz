@@ -363,6 +363,43 @@ function update () {
 	
 }
 
+function refreshRoams()
+{
+	
+	var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
+	
+	roams.enter()
+		.append("circle")
+		//.attr("transform", translate)
+		.attr("cx", 			function(d) { return xScale(d.x); })
+		.attr("cy", 			function(d) { return yScale(d.y); })
+		.attr("r", 				function(d) { return d.duration; })
+		.attr("fill", 			function(d) { return "red"; })
+		.attr("fill-opacity", 	function(d) { return .3; })
+		.on("mouseover", fade(.1))
+		.on("mouseout", fade(1))
+		.on("mouseup", 			function(d)	{ alert(d.roam_id + ") " + d.roam_time + " Duration: " + d.duration); });
+	
+	 function fade(opacity) {
+		
+		return function(d, i) {
+	     svg.selectAll("d.circle")
+         .filter(function(d) {
+           return d.roam_id;
+         })
+       .transition()
+         .style("opacity", opacity);
+   };
+ }
+	
+	
+	roams.exit()
+		.remove();
+	
+
+	
+}
+
 function redraw () {
 		
 	that = this;
@@ -431,74 +468,6 @@ function redraw () {
 	//-------------------------------------------------------------
 	//Create Roams
 	//-------------------------------------------------------------
-	
-	
-	
-	
-	
-	var roams = svg.selectAll("circle").data(roamData, function (d) {return d.roam_id;});
-	
-	roams.enter()
-		.append("circle")
-		//.attr("transform", translate)
-		.attr("cx", 			function(d) { return xScale(d.x); })
-		.attr("cy", 			function(d) { return yScale(d.y); })
-		.attr("r", 				function(d) { return d.duration; })
-		.attr("fill", 			function(d) { return "red"; })
-		.attr("fill-opacity", 	function(d) { return .3; })
-		.on("mouseover", fade(.1))
-		.on("mouseout", fade(1))
-		.on("mouseup", 			function(d)	{ alert(d.roam_id + ") " + d.roam_time + " Duration: " + d.duration); });
-	
-	 function fade(opacity) {
-		
-		return function(d, i) {
-	     svg.selectAll("d.circle")
-         .filter(function(d) {
-           return d.roam_id;
-         })
-       .transition()
-         .style("opacity", opacity);
-   };
- }
-	
-	
-	/*
-	roams.transition()
-		.duration(3000)
-		//.ease("cubic-in-out")
-		.ease("elastic", 2, .45)
-		.delay(function(d) { return Math.random() * 1000; })
-		.attr("visibility", "visible")
-		.attr("r", 5);
-		//.attr("cx", 0)
-		//.attr("cy", 0)
-		//.style("fill", function (d) { return colours[d.type.id]; }) // set fill colour from the colours array
-		//.attr("r", function(d) { return rRange (d[axes.radiusAxis]); })
-		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
-		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
-	*/
-	
-	roams.exit()
-		.transition()
-			//.duration(1000)
-			//.ease("cubic-in-out")
-			//.delay(function(d) { return Math.random() * 1000; })
-			//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
-			//.attr("cy", function (d) { return yRange (d[axes.yAxis]); })
-			//.style("opacity", 0)
-			.remove();
-	
-	
-	// remove points if we don't need them anymore
-	
-	// transition the points
-	//cells.transition().duration(1000).ease("exp-in-out")
-	//	.style("opacity", 1)
-		//.style("fill", function (d) { return colours[d.type.id]; }) // set fill colour from the colours array
-		//.attr("r", function(d) { return rRange (d[axes.radiusAxis]); })
-		//.attr("cx", function (d) { return xRange (d[axes.xAxis]); })
-		//.attr("cy", function (d) { return yRange (d[axes.yAxis]); });
 	
 	
 	

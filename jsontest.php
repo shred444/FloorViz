@@ -3,6 +3,7 @@
 	<script src="http://d3js.org/d3.v2.js"></script>
 	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
 	<link href="styles.css" rel="stylesheet">
+	<link href="barstyles.css" rel="stylesheet">
 	
 	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
 	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>

@@ -7,5 +7,40 @@
 
 .axis text {
     font-family: sans-serif;
-    font-size: 11px;
+    font-size: 9px;
+}
+
+.barchart {
+  font: 10px sans-serif;
+  /*background-color: steelblue;*/
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+.barchart text.label  {
+	fill: white;
+}
+
+.barchart rect  {
+	fill: steelblue;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #ffffff;
+}
+
+
+.histogram {
+	display: block;
+}
+
+.histogram h2 {
+	color: #525555;
+	text-align: left;
+}
+
+path.domain{
+	fill:none;
+	stroke: black;
+	stroke-width: 1;
 }
