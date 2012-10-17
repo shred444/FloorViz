@@ -187,7 +187,7 @@ function init () {
 	.attr("transform", "translate(" + (w - axisPadding - innerPadding) + ",0)")
 	.attr("fill", "grey")
 	.call(yAxisR);
-
+	
 	
 	//set form colors
 	for (var i=0; i<rawData.channels.length; i++)
@@ -235,14 +235,8 @@ function processData (data) {
 	console.log("Average: "+getAverageFromNumArr(rssi_data,4));
 	console.log("StdDev: "+getStandardDeviation(rssi_data,4));
 	console.log("Variance: "+getVariance(rssi_data,4));
-	//rssiMin = rssi_avg - rssi_dev;
-	//rssiMax = rssi_avg + rssi_dev;
 	
-	//reformat the scale???
-	/*rssiScale = d3.scale.linear()
-		.domain([rssiMin,rssiMax])
-		.range([0, 1]);
-	*/
+	
 	data.forEach (function (data, index) {
 		var coaster,
 		className = "";
@@ -320,9 +314,6 @@ function update () {
 		.domain([rssiMin,rssiMax])
 		.range([0, 1]);
 	
-	
-	
-	
 	var processedData; 					// the data while will be visualised
 
 	processedData = processData(rawData.rssi);
@@ -384,12 +375,9 @@ function refreshRoams()
 		};
 	}
 	
-	
 	roams.exit()
 		.remove();
-	
-
-	
+		
 }
 
 function redraw () {
@@ -433,11 +421,7 @@ function redraw () {
 		.attr("width", 			cellWidth)//function(d) { return 4 * floor; })
 		.attr("height", 		cellHeight)//function(d) { return 4 * floor; })
 		.attr("fill", 			function(d) { return cellFill(d);})
-		//.attr("fill", 			function(d) { return channelcolors[d.channel]; })
-		//.attr("fill-opacity", 	function(d) { return rssiScale(d[dataColumn]); })
-		//.on("mouseover", (d,i) -> that.show_details(d,i,this))
-		//.on("mouseout", (d,i) -> that.hide_details(d,i,this));
-		//.on("mousemove", mousemove);
+		.on("mousemove", mousemove)
 		.append("svg:title");
 		
 	//mouseover title
@@ -457,26 +441,7 @@ function redraw () {
 	cells.transition()
         .duration(1000)
         .attr("fill", function(d) {return cellFill(d);});
-		
-	//-------------------------------------------------------------
-	//Create Roams
-	//-------------------------------------------------------------
-	/*
-	var coords = svg.append("g")
-			.attr("class", "coords")
-			.style("display", "none");
-
-		coords.append("circle")
-			.attr("r", 4.5);
-
-		coords.append("text")
-			.attr("x", 9)
-			.attr("dy", ".35em");
-	function mousemove(){
-		coords.select("#coords").text('hello');
-	}	
-	*/
-
+	
 	console.log("Redraw Complete");
 	
 }
@@ -488,6 +453,13 @@ init ();
 //-------------------------------------------------------------
 //document.getElementById("controls").addEventListener ("click", update, false);
 //document.getElementById("controls").addEventListener ("keyup", update, false);
+
+function mousemove(){
+	var x = xScale.invert(d3.mouse(this)[0]);
+	var y = yScale.invert(d3.mouse(this)[0]);
+	console.log(x + " " + y);
+}
+
 
 function populateDatasets (form){
     var availableDatasets = ""; 
