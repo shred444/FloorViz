@@ -457,7 +457,7 @@ init ();
 function mousemove(){
 	var x = xScale.invert(d3.mouse(this)[0]);
 	var y = yScale.invert(d3.mouse(this)[0]);
-	console.log(x + " " + y);
+	//console.log(x + " " + y);
 }
 
 

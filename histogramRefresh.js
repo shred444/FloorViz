@@ -74,6 +74,7 @@ $(function() {
 			
 			$( "#amount" ).val( myMin + " - " + myMax );
 			roamRefresh(myMin,myMax);
+			pieRefresh(myMin,myMax);
 		},
 		slide: function( event, ui ) {
 			var myMin = ui.values[0];
@@ -87,4 +88,5 @@ $(function() {
 	cropRoams(slideval[0],slideval[1]);
 	//alert('done');
 	roamRefresh(slideval[0],slideval[1]);
+	pieRefresh(slideval[0],slideval[1]);
 });

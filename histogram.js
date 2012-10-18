@@ -4,7 +4,7 @@ var myDataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
 
 var barSpacing = 1;
 var barPadding = 20;
-var barWidth = 500;
+var barWidth = 300;
 var barHeight = 100;
 var barData = rawData.hist;
 

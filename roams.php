@@ -2,6 +2,7 @@
 	<head>
 	<LINK href="styles.css" rel="stylesheet" type="text/css">
 	<LINK href="barstyles.css" rel="stylesheet" type="text/css">
+	<LINK href="piestyles.css" rel="stylesheet" type="text/css">
 	<LINK href="timepicker.css" rel="stylesheet" type="text/css">
 	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
 	
@@ -59,9 +60,16 @@
 	</script>
 	
 	
-	<script>rawData = new Object(); </script>	
+	<script>rawData = new Object(); 
+		var timeRange = new Object();
+				timeRange.now = new Date();
+				timeRange.min = new Date();
+				timeRange.max = new Date();
+				timeRange.min.setDate(timeRange.now.getDate()-4);
+				timeRange.max.setDate(timeRange.now.getDate()-3);
+	</script>	
 		<?php
-		
+			
 			include('phpFunctions.php');
 			include('classes.php');
 			$databases = array("quid_gou","amz_bfi1","hwmhs","amazon_qa");
@@ -271,7 +279,7 @@
 		<div id="roamHist" class="chart"><h2>Duration Times</h2></div>
 		
 		<div id="chart" class="chart" style="padding-left:30px;"><h2>RSSI Values</h2></div>
-		<div id="piechart" class="chart"></div>
+		<div id="piechart" class="chart"><h2>Roams per Drive</h2></div>
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
