@@ -202,17 +202,6 @@
 						<input type="radio" id="radio3" name="radio" onclick="update()"><label for="radio3">Traffic</label>
 					</div>
 					</li>
-					<?php /*
-					<li>
-						<select id="dataColumn" name="dataColumn" onchange="update()">
-							<option value="rssi_val">RSSI</option>
-							<option value="br_val">Bitrate</option>
-							<option value="record_count">Traffic</option>
-							
-						</select>
-					</li>
-					*/
-					?>
 					<li>
 						<input type="checkbox" onchange="refreshRoams()" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
