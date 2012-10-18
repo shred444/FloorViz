@@ -11,10 +11,22 @@
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
-	<script src="histogramRefresh.js"></script>
 	<script src="date.js"></script>
+	<script src="histogramRefresh.js"></script>
 	<script type="text/javascript">
-	
+		var filter = new Object();
+		filter.timeRange = new Object();
+		rawData = new Object(); 
+		//var timeRange = new Object();
+		filter.timeRange.now = new Date();
+		filter.timeRange.min = new Date();
+		filter.timeRange.max = new Date();
+		filter.duration = new Object();
+		filter.duration.min = 1;
+		filter.duration.max = 60;
+		
+				
+				
 	$(function() {
 		
 		$( "#accordion" ).accordion();
@@ -22,39 +34,49 @@
 		$( "#accordion2" ).accordion({ collapsible: true });
 		$( "#accordion3" ).accordion({ collapsible: true });
 
+		$( "#radioset" ).buttonset();
+		
 		$( "#from" ).datepicker({
             defaultDate: "+1w",
             changeMonth: true,
-            numberOfMonths: 3,
+            numberOfMonths: 2,
             onSelect: function( selectedDate ) {
                 $( "#to" ).datepicker( "option", "minDate", selectedDate );
+				console.log("From date selected: " + selectedDate);
+				filter.timeRange.min = new Date(selectedDate);
+				filter.timeRange.min.setHours(0,0,0);
+				pieRefresh(1,100);
+				roamRefresh();
             }
         });
         $( "#to" ).datepicker({
             defaultDate: "+1w",
             changeMonth: true,
-            numberOfMonths: 3,
+            numberOfMonths: 2,
             onSelect: function( selectedDate ) {
                 $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+				console.log("To date selected: " + selectedDate);
+				filter.timeRange.max = new Date(selectedDate);
+				filter.timeRange.min.setHours(23,59,59);
+				pieRefresh(1,100);
+				roamRefresh();
             }
         });
 		
 	
         $( "#amount" ).val( $( "#slider" ).slider( "values", 0 ) +
             " - " + $( "#slider" ).slider( "values", 1 ) );
+			
+		
+		$( "#from" ).datepicker('setDate', filter.timeRange.min);
+		$( "#to" ).datepicker('setDate', filter.timeRange.max);
 	});
+	
+	
 	
 	</script>
 	
 	
-	<script>rawData = new Object(); 
-		var timeRange = new Object();
-				timeRange.now = new Date();
-				timeRange.min = new Date();
-				timeRange.max = new Date();
-				timeRange.min.setDate(timeRange.now.getDate()-4);
-				timeRange.max.setDate(timeRange.now.getDate()-3);
-	</script>	
 		<?php
 			
 			include('phpFunctions.php');
