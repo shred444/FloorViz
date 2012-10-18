@@ -28,7 +28,7 @@
 	function filterRefresh(){
 		pieRefresh();
 		roamRefresh();
-		cropRoams();
+		histRefresh();
 	
 	}
 				
@@ -46,7 +46,7 @@
 			range: true,
 			values: [ filter.duration.min, filter.duration.max ],	//default values
 			min: 1,
-			max: 400,
+			max: 100,
 			change: function( event, ui ) {
 				
 				filter.duration.min = ui.values[0];

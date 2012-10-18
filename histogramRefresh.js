@@ -4,6 +4,7 @@ console.warn = console.warn || function(){};
 console.error = console.error || function(){};
 console.info = console.info || function(){};
 
+/*
 function cropRoams(minDuration,maxDuration){
 	var xmlhttp;
 	
@@ -31,7 +32,7 @@ function cropRoams(minDuration,maxDuration){
 	xmlhttp.open("GET","jsonSQL.php?db=amz_bfi1&q="+ query,true);
 	xmlhttp.send();
 }
-
+*/
 /*
 function roamRefresh(minDuration,maxDuration){
 	var xmlhttp;

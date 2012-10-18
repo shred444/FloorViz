@@ -1,5 +1,3 @@
-
-
 var barSpacing = 1;
 var barPadding = 20;
 var barWidth = 300;
@@ -57,15 +55,13 @@ function makeScales(roamBarData)
 
 init();
 		
-function redrawHist()
+function histRefresh()
 {
-	//roamBarData = rawData.roamhist;
-	
-	
 	
 	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" GROUP BY floor(duration/10)*10;';
 	var histurl = "jsonSQL.php?db=amz_bfi1&q=" + histquery;
-	console.log(histurl);
+	//console.log(histurl);
+	
 	var roamBarData= [];
 	d3.json(histurl, function(error, roamBarData) {
 		console.log("Histogram received with " + roamBarData.length + " data");
