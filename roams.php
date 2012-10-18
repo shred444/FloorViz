@@ -10,7 +10,6 @@
 	<script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
-	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
 	<script src="date.js"></script>
 	<script src="histogramRefresh.js"></script>
 	<script type="text/javascript">
@@ -24,6 +23,7 @@
 		filter.duration = new Object();
 		filter.duration.min = 1;
 		filter.duration.max = 60;
+		filter.dataColumn = "rssi_val";
 		
 	function filterRefresh(){
 		pieRefresh();
@@ -40,6 +40,19 @@
 		$( "#accordion3" ).accordion({ collapsible: true });
 
 		$( "#radioset" ).buttonset();
+		
+		$("input[type='radio']").bind( "change", function(event, ui) {
+			var id = event.srcElement.id;			
+			if(id == "radio1")
+				filter.dataColumn = "rssi_val";
+			else if(id == "radio2")
+				filter.dataColumn = "br_val";
+			else if(id == "radio3")
+				filter.dataColumn = "record_count";
+			
+			filterRefresh();
+			update();
+		});
 		
 		//initialize slider
 		$( "#slider" ).slider({
@@ -197,9 +210,9 @@
 				<ul style="list-style-type:none">
 					<li>
 					<div id="radioset" name="dataColumn" >
-						<input type="radio" id="radio1" name="radio" checked="checked" onclick="update()"><label for="radio1">RSSI</label>
-						<input type="radio" id="radio2" name="radio" onclick="update()"><label for="radio2">Bitrate</label>
-						<input type="radio" id="radio3" name="radio" onclick="update()"><label for="radio3">Traffic</label>
+						<input type="radio" id="radio1" name="radio" checked="checked"><label for="radio1">RSSI</label>
+						<input type="radio" id="radio2" name="radio"><label for="radio2">Bitrate</label>
+						<input type="radio" id="radio3" name="radio"><label for="radio3">Traffic</label>
 					</div>
 					</li>
 					<li>
