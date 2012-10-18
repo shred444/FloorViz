@@ -28,7 +28,7 @@
 	function filterRefresh(){
 		pieRefresh();
 		roamRefresh();
-		cropRoams(myMin, myMax);
+		cropRoams();
 	
 	}
 				

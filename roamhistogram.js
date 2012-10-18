@@ -30,7 +30,7 @@ function init()
       .call(xAxis);
 	
 }
-function makeScales()
+function makeScales(roamBarData)
 {
 	var numBars = roamBarData.length;
 	//create bar scales
@@ -59,94 +59,108 @@ init();
 		
 function redrawHist()
 {
-	roamBarData = rawData.roamhist;
-	makeScales();
-	//Create Bar element	
-	bars = svghist.selectAll(".bar").data(roamBarData);
-	labels = svghist.selectAll("text.label").data(roamBarData);
-	axis = svghist.selectAll(".x.axis");
-	numBars = roamBarData.length;
+	//roamBarData = rawData.roamhist;
 	
 	
-	//BARS
 	
-	bars.enter()
-		.append("rect")
-		.attr("class", "bar")
-		.attr("x", function(d,i){ 
-			return i*(barWidth/roamBarData.length);
-		})
-		.attr("y", function(d){
-			//return barHeight - barYScale(d.count) - barPadding;
-			return barHeight - barPadding;
-		})
-		.attr("width", barWidth/roamBarData.length - barSpacing)
-		.attr("height", function(d){
-			//return barYScale(d.count);
-			return 1;
-		})
-		.attr("fill", "red");
+	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" GROUP BY floor(duration/10)*10;';
+	var histurl = "jsonSQL.php?db=amz_bfi1&q=" + histquery;
+	console.log(histurl);
+	var roamBarData= [];
+	d3.json(histurl, function(error, roamBarData) {
+		console.log("Histogram received with " + roamBarData.length + " data");
 		
-	bars.transition()
-		.duration(1000)
-		.attr("x", function(d,i){ 
-			return i*(barWidth/roamBarData.length);
-		})
-		.attr("y", function(d){
-			return barHeight - barYScale(d.count) - barPadding;
-		})
-		.attr("width", barWidth/roamBarData.length - barSpacing)
-		.attr("height", function(d){
-			return barYScale(d.count);
-		});
+		makeScales(roamBarData);
+			
+		//Create Bar element	
+		bars = svghist.selectAll(".bar").data(roamBarData);
+		labels = svghist.selectAll("text.label").data(roamBarData);
+		axis = svghist.selectAll(".x.axis");
+		numBars = roamBarData.length;
 		
-	bars.exit().transition()
-		.duration(1000)
-		//.attr("fill-opacity", 0)
-		.attr("x", function(d, i) {
-			var rectWidth = (barWidth / roamBarData.length);
-			return (i * rectWidth) + rectWidth*.5 - barSpacing + numBars;
-		})
-		.remove();
-	
-	
-	//LABELS
-	
-	labels.enter()
-		.append("text")
-		.attr("class", "label")
-		.attr("font-family", "helvetica")
-		.attr("font-size", "8px")
-		.attr("fill", "black")
-		.attr("text-anchor", "middle")
-		.text(function(d) {
-			return d.count.toString();
-		})
-		.attr("x", function(d, i) {
-			var rectWidth = (barWidth / roamBarData.length);
-			return (i * rectWidth) + rectWidth*.5 - barSpacing;
-		})
-		.attr("y", function(d) {
-			return barHeight - barYScale(d.count) - 6;  //spacing above bar
-		});
+		
+		//BARS
+		
+		bars.enter()
+			.append("rect")
+			.attr("class", "bar")
+			.attr("x", function(d,i){ 
+				return i*(barWidth/roamBarData.length);
+			})
+			.attr("y", function(d){
+				//return barHeight - barYScale(d.count) - barPadding;
+				return barHeight - barPadding;
+			})
+			.attr("width", barWidth/roamBarData.length - barSpacing)
+			.attr("height", function(d){
+				//return barYScale(d.count);
+				return 1;
+			})
+			.attr("fill", "red");
+			
+		bars.transition()
+			.duration(1000)
+			.attr("x", function(d,i){ 
+				return i*(barWidth/roamBarData.length);
+			})
+			.attr("y", function(d){
+				return barHeight - barYScale(d.count) - barPadding;
+			})
+			.attr("width", barWidth/roamBarData.length - barSpacing)
+			.attr("height", function(d){
+				return barYScale(d.count);
+			});
+			
+		bars.exit().transition()
+			.duration(1000)
+			//.attr("fill-opacity", 0)
+			.attr("x", function(d, i) {
+				var rectWidth = (barWidth / roamBarData.length);
+				return (i * rectWidth) + rectWidth*.5 - barSpacing + numBars;
+			})
+			.remove();
+		
+		
+		//LABELS
+		
+		labels.enter()
+			.append("text")
+			.attr("class", "label")
+			.attr("font-family", "helvetica")
+			.attr("font-size", "8px")
+			.attr("fill", "black")
+			.attr("text-anchor", "middle")
+			.text(function(d) {
+				return d.count.toString();
+			})
+			.attr("x", function(d, i) {
+				var rectWidth = (barWidth / roamBarData.length);
+				return (i * rectWidth) + rectWidth*.5 - barSpacing;
+			})
+			.attr("y", function(d) {
+				return barHeight - barYScale(d.count) - 6;  //spacing above bar
+			});
 
-	labels.transition()
-		.duration(1000)
-		.text(function(d) {
-			return d.count.toString();
-		})
-		.attr("x", function(d, i) {
-			var rectWidth = (barWidth / roamBarData.length);
-			return (i * rectWidth) + rectWidth*.5 - barSpacing;
-		})
-		.attr("y", function(d) {
-			return barHeight - barYScale(d.count) - 6;  //spacing above bar
-		});
+		labels.transition()
+			.duration(1000)
+			.text(function(d) {
+				return d.count.toString();
+			})
+			.attr("x", function(d, i) {
+				var rectWidth = (barWidth / roamBarData.length);
+				return (i * rectWidth) + rectWidth*.5 - barSpacing;
+			})
+			.attr("y", function(d) {
+				return barHeight - barYScale(d.count) - 6;  //spacing above bar
+			});
+			
+		labels.exit()
+			.remove();
 		
-	labels.exit()
-		.remove();
+		axis.transition()
+			.duration(1000)
+			.call(xAxis);
+		
+	});
 	
-	axis.transition()
-		.duration(1000)
-		.call(xAxis);
 }
