@@ -6,11 +6,10 @@
 	<LINK href="timepicker.css" rel="stylesheet" type="text/css">
 	<link href="jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
 	
-	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
-	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
+	<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+	<script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
-	<script src="jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
 	<script src="histogramRefresh.js"></script>
 	<script src="date.js"></script>
@@ -23,35 +22,23 @@
 		$( "#accordion2" ).accordion({ collapsible: true });
 		$( "#accordion3" ).accordion({ collapsible: true });
 
-		$( "#button" ).button();
-		$( "#radioset" ).buttonset();
+		$( "#from" ).datepicker({
+            defaultDate: "+1w",
+            changeMonth: true,
+            numberOfMonths: 3,
+            onSelect: function( selectedDate ) {
+                $( "#to" ).datepicker( "option", "minDate", selectedDate );
+            }
+        });
+        $( "#to" ).datepicker({
+            defaultDate: "+1w",
+            changeMonth: true,
+            numberOfMonths: 3,
+            onSelect: function( selectedDate ) {
+                $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+            }
+        });
 		
-		$( "#tabs" ).tabs();
-		
-		$( "#dialog" ).dialog({
-			autoOpen: false,
-			width: 400,
-			buttons: [
-				{
-					text: "Ok",
-					click: function() {
-						$( this ).dialog( "close" );
-					}
-				},
-				{
-					text: "Cancel",
-					click: function() {
-						$( this ).dialog( "close" );
-					}
-				}
-			]
-		});
-
-		// Link to open the dialog
-		$( "#dialog-link" ).click(function( event ) {
-			$( "#dialog" ).dialog( "open" );
-			event.preventDefault();
-		});
 	
         $( "#amount" ).val( $( "#slider" ).slider( "values", 0 ) +
             " - " + $( "#slider" ).slider( "values", 1 ) );
@@ -139,8 +126,10 @@
 					
 					<li>
 					
-					 		<input type="text" name="basic_example_1" id="basic_example_1" value="" class="hasDatepicker">
-						
+					 	<label for="from">From</label>
+						<input type="text" id="from" name="from" />
+						<label for="to">to</label>
+						<input type="text" id="to" name="to" />
 					</li>
 					<li>
 						<input type="submit" value="Refresh"> 
@@ -175,9 +164,6 @@
 					</li>
 					*/
 					?>
-					<li>
-						<div id="datepicker"></div>
-					</li>
 					<li>
 						<input type="checkbox" onchange="refreshRoams()" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
@@ -280,6 +266,7 @@
 		
 		<div id="chart" class="chart" style="padding-left:30px;"><h2>RSSI Values</h2></div>
 		<div id="piechart" class="chart"><h2>Roams per Drive</h2></div>
+		
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
