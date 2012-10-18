@@ -66,32 +66,7 @@ function roamRefresh(minDuration,maxDuration){
 
 $(function() {
 	
-	//initialize slider
-	$( "#slider" ).slider({
-		range: true,
-		values: [ filter.duration.min, filter.duration.max ],	//default values
-		min: 1,
-		max: 400,
-		change: function( event, ui ) {
-			var myMin = ui.values[0];
-			var myMax = ui.values[1];
-			cropRoams(myMin, myMax);
-			filter.duration.min = myMin;
-			filter.duration.max = myMax;
-			
-			$( "#amount" ).val( myMin + " - " + myMax );
-			roamRefresh(myMin,myMax);
-			pieRefresh(myMin,myMax);
-		},
-		slide: function( event, ui ) {
-			var myMin = ui.values[0];
-			var myMax = ui.values[1];
-			$( "#amount" ).val( myMin + " - " + myMax );
-		}
-	});
-		
-	//make first call	
-	slideval = $("#slider").slider("option","values");
+	
 	//cropRoams(slideval[0],slideval[1]);
 	//alert('done');
 	//roamRefresh(slideval[0],slideval[1]);

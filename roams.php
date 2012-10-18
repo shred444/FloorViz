@@ -25,7 +25,12 @@
 		filter.duration.min = 1;
 		filter.duration.max = 60;
 		
-				
+	function filterRefresh(){
+		pieRefresh();
+		roamRefresh();
+		cropRoams(myMin, myMax);
+	
+	}
 				
 	$(function() {
 		
@@ -36,17 +41,40 @@
 
 		$( "#radioset" ).buttonset();
 		
+		//initialize slider
+		$( "#slider" ).slider({
+			range: true,
+			values: [ filter.duration.min, filter.duration.max ],	//default values
+			min: 1,
+			max: 400,
+			change: function( event, ui ) {
+				
+				filter.duration.min = ui.values[0];
+				filter.duration.max = ui.values[1];
+				
+				$( "#amount" ).val( filter.duration.min + " - " + filter.duration.max );
+				filterRefresh();
+			},
+			slide: function( event, ui ) {
+				var myMin = ui.values[0];
+				var myMax = ui.values[1];
+				$( "#amount" ).val( myMin + " - " + myMax );
+			}
+		});
+			
+		//make first call	
+		slideval = $("#slider").slider("option","values");
+		
 		$( "#from" ).datepicker({
             defaultDate: "+1w",
             changeMonth: true,
             numberOfMonths: 2,
             onSelect: function( selectedDate ) {
-                $( "#to" ).datepicker( "option", "minDate", selectedDate );
+                //$( "#to" ).datepicker( "option", "minDate", selectedDate );
 				console.log("From date selected: " + selectedDate);
 				filter.timeRange.min = new Date(selectedDate);
 				filter.timeRange.min.setHours(0,0,0);
-				pieRefresh(1,100);
-				roamRefresh();
+				filterRefresh();
             }
         });
         $( "#to" ).datepicker({
@@ -54,12 +82,11 @@
             changeMonth: true,
             numberOfMonths: 2,
             onSelect: function( selectedDate ) {
-                $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+                //$( "#from" ).datepicker( "option", "maxDate", selectedDate );
 				console.log("To date selected: " + selectedDate);
 				filter.timeRange.max = new Date(selectedDate);
-				filter.timeRange.min.setHours(23,59,59);
-				pieRefresh(1,100);
-				roamRefresh();
+				filter.timeRange.max.setHours(23,59,59);
+				filterRefresh();
             }
         });
 		
