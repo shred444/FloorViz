@@ -7,10 +7,12 @@
 	
 	<script src="jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
 	<script src="jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
-	<script src="http://d3js.org/d3.v2.js"></script>
+	
+	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="jquery-ui-timepicker-addon.js"></script>
 	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
 	<script src="histogramRefresh.js"></script>
+	<script src="date.js"></script>
 	<script type="text/javascript">
 	
 	$(function() {
@@ -73,11 +75,7 @@
 			?>
 		
 		<script>
-			var timeRange = new Object();
-			timeRange.min = new Date();
-			timeRange.max = new Date();
-			timeRange.min.setDate(timeRange.max.getDate()-1);
-			
+						
 			var datasets = new Array();
 			var floor = '<?php echo $FLOOR; ?>';
 			var selectedDataset = '<?php echo $dataset; ?>';
@@ -273,12 +271,14 @@
 		<div id="roamHist" class="chart"><h2>Duration Times</h2></div>
 		
 		<div id="chart" class="chart" style="padding-left:30px;"><h2>RSSI Values</h2></div>
+		<div id="piechart" class="chart"></div>
 		
 		<script src="statistics.js"></script>
 		<script src="roams.js"></script>
 		<script src="histogram.js"></script>
 		<script src="roamhistogram.js"></script>
 		<script src="bar.js"></script>
+		<script src="piechart.js"></script>
 		
 		
 		
