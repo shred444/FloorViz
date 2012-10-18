@@ -73,6 +73,10 @@
 			?>
 		
 		<script>
+			var timeRange = new Object();
+			timeRange.min = new Date();
+			timeRange.max = new Date();
+			timeRange.min.setDate(timeRange.max.getDate()-1);
 			
 			var datasets = new Array();
 			var floor = '<?php echo $FLOOR; ?>';
