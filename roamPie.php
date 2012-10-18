@@ -42,44 +42,39 @@ var pie = d3.layout.pie()
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
-  .append("g")
+	.append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-	var query = 'SELECT du_id, count(*) as count, (select count(*) from roams WHERE roam_time BETWEEN \"' + timeRange.min.format(Date.SQL) + '\" AND \"' + timeRange.max.format(Date.SQL) + '\") as max FROM roams WHERE roam_time BETWEEN \"' + timeRange.min.format(Date.SQL) + '\" AND \"' + timeRange.max.format(Date.SQL) + '\" group by du_id order by count desc LIMIT 20;';
+var query = 'SELECT du_id, count(*) as count, (select count(*) from roams WHERE roam_time BETWEEN \"' + timeRange.min.format(Date.SQL) + '\" AND \"' + timeRange.max.format(Date.SQL) + '\") as max FROM roams WHERE roam_time BETWEEN \"' + timeRange.min.format(Date.SQL) + '\" AND \"' + timeRange.max.format(Date.SQL) + '\" group by du_id order by count desc LIMIT 20;';
 d3.json("jsonSQL.php?db=amz_bfi1&q=" + query, function(error, data) {
-var sum=0;
-  data.forEach(function(d) {
-    d.count = +d.count;
-	sum +=d.count;
-  });
-  
-  
 	
-//create other section
-var total = data[0].max;
-var other = total - sum;
+	var sum=0;
+	data.forEach(function(d) {
+		d.count = +d.count;
+		sum +=d.count;
+	});
 
-var otherObject = new Object();
-otherObject.count = other;
-otherObject.du_id = "other";
-otherObject.max = total;
+	//create other section
+	var other = new Object();
+	other.count = total - sum;;
+	other.du_id = "other";
+	other.max = data[0].max;;
+	data.push(other);
 
-data.push(otherObject);
+	var g = svg.selectAll(".arc")
+		.data(pie(data))
+		.enter().append("g")
+		.attr("class", "arc");
 
-  var g = svg.selectAll(".arc")
-      .data(pie(data))
-    .enter().append("g")
-      .attr("class", "arc");
+	g.append("path")
+		.attr("d", arc)
+		.style("fill", function(d) { return color(d.data.du_id); });
 
-  g.append("path")
-      .attr("d", arc)
-      .style("fill", function(d) { return color(d.data.du_id); });
-
-  g.append("text")
-      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return d.data.du_id; });
+	g.append("text")
+		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+		.attr("dy", ".35em")
+		.style("text-anchor", "middle")
+		.text(function(d) { return d.data.du_id; });
 
 });
 
