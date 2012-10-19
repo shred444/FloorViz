@@ -12,7 +12,6 @@ Array.min = function( array ){
 };
 
 
-
 //Width and height
 var w = document.getElementById("visualization").width.baseVal.value;//1000;
 var h = document.getElementById("visualization").height.baseVal.value;//700;
@@ -285,25 +284,8 @@ function processData (data) {
 
 // called every time a form field has changed
 function update () {
-	
-	
-	//data column selection
-	//dataColumn = document.getElementById("dataColumn").value;
-	var radioDIV = document.getElementById('radioset');
-	
-	for(i=0; i<radioDIV.children.length/2; i++)
-	{
-		if(radioDIV.children[i*2].checked){
-			if(i==0)
-				dataColumn = 'rssi_val';
-			else if(i==1)
-				dataColumn = 'br_val';
-			else if(i==2)
-				dataColumn = 'record_count';
-			break;
-		}
-	}
-	
+
+	dataColumn = filter.dataColumn;	
 	console.log("Data Column: " + dataColumn);
 	
 	//update scales
@@ -316,8 +298,8 @@ function update () {
 	
 	var processedData; 					// the data while will be visualised
 
-	processedData = processData(rawData.rssi);
-	drawingData = processedData;
+	//processedData = processData(rawData.rssi);
+	drawingData = rawData.rssi; //processedData;
 	console.log("rssiMin="+rssiMin + "   rssiMax="+rssiMax);
 	redraw();
 	
@@ -392,7 +374,7 @@ function roamRefresh(){
 		
 		
 	
-	var roamquery = 'SELECT * FROM roams ' + filter.roams.where;// + ' ' + dest + ';';
+	var roamquery = 'SELECT * FROM roams WHERE ' + filter.roams.where;// + ' ' + dest + ';';
 	
 	if(!filter.roams.enabled)
 		roamquery = 'SELECT * FROM roams WHERE 0';

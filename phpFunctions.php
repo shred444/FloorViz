@@ -91,7 +91,8 @@ function get_all_data()
 	
 	if($debug)
 		echo "Site=" . $site . "<br>";
-		
+	
+	/*
 	//get all roams (A->B)
 	$myRoams = new php_query();
 	$myRoams->name = "Roams";
@@ -123,7 +124,7 @@ function get_all_data()
 		$FLOOR = $myCounter->rowCount / 30000;
 	}
 	*/
-
+	
 	
 	//get all cells
 	$myCells = new php_query();
@@ -177,6 +178,7 @@ function get_all_data()
 	$myChannels->runQuery("SELECT * FROM aps");
 	$myChannels->createJSVar("rawData.channels");
 	
+	/*
 	//get RSSI histogram
 	$myRSSIHist = new php_query();
 	$myRSSIHist->name = "Histogram";
@@ -203,6 +205,8 @@ function get_all_data()
 	GROUP  BY bucket
 	;");
 	*/
+	
+	/*
 	$myRoamHist->runQuery("SELECT 
 		floor(duration/10)*10 as duration, 
 		count(*) as count
@@ -213,7 +217,7 @@ function get_all_data()
 	GROUP BY 
 		floor(duration/10)*10;");
 	$myRoamHist->createJSVar("rawData.roamhist");
-
+*/
 }
 
 ?>
