@@ -11,7 +11,6 @@
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="date.js"></script>
-	<script src="histogramRefresh.js"></script>
 	<script type="text/javascript">
 		var filter = new Object();
 		filter.timeRange = new Object();
@@ -32,7 +31,14 @@
 		
 		
 	function filterRefresh(){
-		filter.roams.where = ' WHERE duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
+		if(filter.roams.atob && !filter.roams.atoa)
+			var dest = "AND origin_ap <> dest_ap";
+		else if(filter.roams.atoa && !filter.roams.atob)
+			var dest = "AND origin_ap = dest_ap";
+		else
+			var dest = "";
+		
+		filter.roams.where = ' WHERE duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
 		pieRefresh();
 		roamRefresh();
 		histRefresh();

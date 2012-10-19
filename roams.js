@@ -392,7 +392,7 @@ function roamRefresh(){
 		
 		
 	
-	var roamquery = 'SELECT * FROM roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" and duration between ' + filter.duration.min + ' AND ' + filter.duration.max + ' ' + dest + ';';
+	var roamquery = 'SELECT * FROM roams ' + filter.roams.where;// + ' ' + dest + ';';
 	
 	if(!filter.roams.enabled)
 		roamquery = 'SELECT * FROM roams WHERE 0';
