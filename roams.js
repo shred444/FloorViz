@@ -383,11 +383,23 @@ function refreshRoams()
 
 
 function roamRefresh(){
+	if(filter.roams.atob && !filter.roams.atoa)
+		var dest = "AND origin_ap <> dest_ap";
+	else if(filter.roams.atoa && !filter.roams.atob)
+		var dest = "AND origin_ap = dest_ap";
+	else
+		var dest = "";
+		
+		
 	
-	var roamquery = 'SELECT * FROM roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" and duration between ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND origin_ap <> dest_ap;';
+	var roamquery = 'SELECT * FROM roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" and duration between ' + filter.duration.min + ' AND ' + filter.duration.max + ' ' + dest + ';';
+	
+	if(!filter.roams.enabled)
+		roamquery = 'SELECT * FROM roams WHERE 0';
+	
 	var roamurl = "jsonSQL.php?db=amz_bfi1&q=" + roamquery;
 
-	//console.log(roamurl);
+	console.log(roamurl);
 	var roamData= [];
 	d3.json(roamurl, function(error, roamData) {
 		console.log("Roam data received with " +roamData.length + " data");

@@ -24,12 +24,29 @@
 		filter.duration.min = 1;
 		filter.duration.max = 60;
 		filter.dataColumn = "rssi_val";
+		filter.roams = new Object();
+		filter.roams.enabled = true;
+		filter.roams.atoa = true;
+		filter.roams.atob = true;
+		filter.roams.where = "";
+		
 		
 	function filterRefresh(){
+		filter.roams.where = ' WHERE duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
 		pieRefresh();
 		roamRefresh();
 		histRefresh();
 	
+	}
+	
+	function roamCheck(){
+		filter.roams.enabled = document.getElementById('roam-checkbox').checked;
+		filter.roams.atoa = document.getElementById('AtoA-checkbox').checked;
+		filter.roams.atob = document.getElementById('AtoB-checkbox').checked;
+		document.getElementById('AtoA-checkbox').disabled = !filter.roams.enabled;
+		document.getElementById('AtoB-checkbox').disabled = !filter.roams.enabled
+			
+		filterRefresh();
 	}
 				
 	$(function() {
@@ -81,7 +98,7 @@
 		$( "#from" ).datepicker({
             defaultDate: "+1w",
             changeMonth: true,
-            numberOfMonths: 2,
+            numberOfMonths: 1,
             onSelect: function( selectedDate ) {
                 //$( "#to" ).datepicker( "option", "minDate", selectedDate );
 				console.log("From date selected: " + selectedDate);
@@ -93,7 +110,7 @@
         $( "#to" ).datepicker({
             defaultDate: "+1w",
             changeMonth: true,
-            numberOfMonths: 2,
+            numberOfMonths: 1,
             onSelect: function( selectedDate ) {
                 //$( "#from" ).datepicker( "option", "maxDate", selectedDate );
 				console.log("To date selected: " + selectedDate);
@@ -216,20 +233,21 @@
 					</div>
 					</li>
 					<li>
-						<input type="checkbox" onchange="refreshRoams()" checked="checked" value="roams" id="roam-checkbox">roams
+						<input type="checkbox" onchange="roamCheck();" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
+							
+							<li>
+								<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
+							</li>
+							<li>
+								<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
+							</li>
 							<li>
 					
 								<label for="amount">Duration:</label>
 								<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
 								<div id="slider"></div>
 							
-							</li>
-							<li>
-								<input type="checkbox" onchange="refreshRoams()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
-							</li>
-							<li>
-								<input type="checkbox" onchange="refreshRoams()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
 							</li>
 						</ul>
 					</li>

@@ -27,15 +27,18 @@ var piesvg = d3.select("#piechart")
 //pieRefresh();
 	
 function pieRefresh(minDuration,maxDuration){
-	var piequery = 'SELECT du_id, count(*) as count, (select count(*) from roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ') as max FROM roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' group by du_id order by count desc LIMIT 6;';
+	//var piequery = 'SELECT du_id, count(*) as count, (select count(*) from roams ' + filter.roams.where + ')as max FROM roams group by du_id order by count desc LIMIT 6;';
+	//var piequery = 'SELECT du_id, count(*) as count, (select count(*) from roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ') as max FROM roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' group by du_id order by count desc LIMIT 6;';
+	var piequery = 'SELECT du_id, count(*) as count, (select count(*) from roams ' + filter.roams.where + ') as max FROM roams ' + filter.roams.where + ' group by du_id order by count desc LIMIT 6;';
+	
 	var pieurl = "jsonSQL.php?db=amz_bfi1&q=" + piequery;
 
-	//console.log(pieurl);
+	console.log(pieurl);
 	
 	var piedata= [];
 	d3.json(pieurl, function(error, piedata) {
 		
-		console.log("Pie Chart Update Received (" + minDuration + ", " + maxDuration + ") with " + piedata.length + " data");
+		console.log("Pie Chart Update Received with " + piedata.length + " data");
 
 		
 		var sum=0;

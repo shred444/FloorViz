@@ -58,7 +58,7 @@ init();
 function histRefresh()
 {
 	
-	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" GROUP BY floor(duration/10)*10;';
+	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams ' + filter.roams.where + ' GROUP BY floor(duration/10)*10;';
 	var histurl = "jsonSQL.php?db=amz_bfi1&q=" + histquery;
 	//console.log(histurl);
 	
