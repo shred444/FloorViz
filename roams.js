@@ -497,7 +497,11 @@ init ();
 
 function drawTimeouts()
 {
-	var fatalquery = 'SELECT * FROM du_errors where error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\";';
+	if(filter.timeouts.fatalcomms)
+		var fatalquery = 'SELECT * FROM du_errors where error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\";';
+	else
+		var fatalquery = 'SELECT * FROM du_errors WHERE 0;';
+		
 	var fatalurl = "jsonSQL.php?db=amz_bfi1&q=" + fatalquery;
 	console.log(fatalurl);
 	
@@ -512,11 +516,11 @@ function drawTimeouts()
 		fataltimeout.enter()
 			.append("circle")
 			.attr("class", "fataltimeout")
-			.attr("cx", 			function(d) { return xScale(d.x); })
-			.attr("cy", 			function(d) { return yScale(d.y); })
-			.attr("r", 				function(d) { return 10; })
+			.attr("cx", 			function(d) { return xScale(d.x/1000); })  //meters to mm
+			.attr("cy", 			function(d) { return yScale(d.y/1000); })  //meters to mm
+			.attr("r", 				function(d) { return 5; })
 			.attr("fill", 			function(d) { return "blue"; })
-			.attr("fill-opacity", 	function(d) { return .7; });
+			.attr("fill-opacity", 	function(d) { return .5; });
 
 		fataltimeout.exit()
 			.remove();

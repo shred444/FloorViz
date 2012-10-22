@@ -49,7 +49,7 @@
 		pieRefresh();
 		roamRefresh();
 		histRefresh();
-		//drawTimeouts();
+		drawTimeouts();
 	}
 	
 	function roamCheck(){
