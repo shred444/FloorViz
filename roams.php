@@ -28,7 +28,8 @@
 		filter.roams.atoa = true;
 		filter.roams.atob = true;
 		filter.roams.where = "";
-		
+		filter.timeouts = new Object();
+		filter.timeouts.fatalcomms = true;
 		
 	function filterRefresh(){
 		if(filter.roams.atob && !filter.roams.atoa)
@@ -41,10 +42,14 @@
 		filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
 		filter.roams.where = ' duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
 		
+		if(filter.roams.du_id)
+			filter.roams.where += ' AND du_id=' + filter.roams.du_id + ' ';
+			
+		
 		pieRefresh();
 		roamRefresh();
 		histRefresh();
-	
+		//drawTimeouts();
 	}
 	
 	function roamCheck(){
@@ -53,7 +58,15 @@
 		filter.roams.atob = document.getElementById('AtoB-checkbox').checked;
 		document.getElementById('AtoA-checkbox').disabled = !filter.roams.enabled;
 		document.getElementById('AtoB-checkbox').disabled = !filter.roams.enabled
+		
 			
+		filterRefresh();
+	}
+	
+	function timeoutCheck(){
+		
+		filter.timeouts.fatalcomms = document.getElementById('fatalcomms-checkbox').checked;
+		
 		filterRefresh();
 	}
 				
@@ -261,13 +274,13 @@
 					</li>
 					
 					<li>
-						<input type="checkbox" onchange="update()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
+						<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
 						<ul>
 							<li>
-								<input type="checkbox" onchange="update()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
+								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
 							</li>
 							<li>
-								<input type="checkbox" onchange="update()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
+								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
 							</li>
 						</ul>
 					</li>

@@ -33,7 +33,7 @@ function pieRefresh(minDuration,maxDuration){
 	
 	var pieurl = "jsonSQL.php?db=amz_bfi1&q=" + piequery;
 
-	console.log(pieurl);
+	//console.log(pieurl);
 	
 	var piedata= [];
 	d3.json(pieurl, function(error, piedata) {
@@ -59,10 +59,57 @@ function pieRefresh(minDuration,maxDuration){
 		
 		var myg = piesvg.selectAll(".arc")
 			.data(pie(piedata));
+			/*
+		var myCircle = piesvg.selectAll("circle").data(pie(piedata))
+		.enter()
+			.append("circle")
+			.attr("cx", 	0) //		function(d) { return xScale(d.x); })
+			.attr("cy", 0) //			function(d) { return yScale(d.y); })
+			.attr("r", 	50) //			function(d) { return d.duration; })
+			.attr("fill", 			function(d) { return "red"; })
+			.attr("fill-opacity", 	function(d) {
+				if(filter.roams.du_id)
+					return 1;
+				else
+					return 0;
+			})
+			.text("all")
+			.on("mouseup", 			function(d)	{ 
+				filter.roams.du_id = "";
+				filterRefresh();
+				//alert("center clicked"); 
+			});
+			
+		myCircle = piesvg.selectAll("circle").data(pie(piedata))
+			.transition()
+			.duration(1000)
+			.attr("cx", 	0) //		function(d) { return xScale(d.x); })
+			.attr("cy", 0) //			function(d) { return yScale(d.y); })
+			.attr("r", 	50) //			function(d) { return d.duration; })
+			.attr("fill", 			function(d) { return "red"; })
+			.attr("fill-opacity", 	function(d) {
+				if(filter.roams.du_id)
+					return 1;
+				else
+					return 0;
+			});
+			
+			
+			*/
+			
 			
 		var g = myg.enter()
 			.append("g")
-			.attr("class", "arc");
+			.attr("class", "arc")
+			.on("mouseup", 	function(d)	{ 
+				//alert("" + d.data.du_id); 
+				if(filter.roams.du_id)
+					filter.roams.du_id = "";
+				else
+					filter.roams.du_id = d.data.du_id;
+				filterRefresh();
+			});
+		
 		
 		g.append("path")
 			.attr("d", arc)

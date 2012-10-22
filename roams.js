@@ -482,6 +482,8 @@ function redraw () {
 	
 	console.log("Redraw Complete");
 	
+	drawTimeouts();
+	
 }
 // let's kick it all off!
 init ();
@@ -491,6 +493,38 @@ init ();
 //-------------------------------------------------------------
 //document.getElementById("controls").addEventListener ("click", update, false);
 //document.getElementById("controls").addEventListener ("keyup", update, false);
+
+
+function drawTimeouts()
+{
+	var fatalquery = 'SELECT * FROM du_errors where error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\";';
+	var fatalurl = "jsonSQL.php?db=amz_bfi1&q=" + fatalquery;
+	console.log(fatalurl);
+	
+	var fatalCommsData= [];
+	d3.json(fatalurl, function(error, fatalCommsData) {
+	
+		console.log("fatal comms data received with " + fatalCommsData.length + "data");
+		
+		
+		var fataltimeout = svg.selectAll("#fataltimeout").data(fatalCommsData);
+
+		fataltimeout.enter()
+			.append("circle")
+			.attr("class", "fataltimeout")
+			.attr("cx", 			function(d) { return xScale(d.x); })
+			.attr("cy", 			function(d) { return yScale(d.y); })
+			.attr("r", 				function(d) { return 10; })
+			.attr("fill", 			function(d) { return "blue"; })
+			.attr("fill-opacity", 	function(d) { return .7; });
+
+		fataltimeout.exit()
+			.remove();
+		
+		
+	});
+	
+}
 
 function mousemove(){
 	var x = xScale.invert(d3.mouse(this)[0]);
