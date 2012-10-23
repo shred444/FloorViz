@@ -51,7 +51,6 @@ function mapScales(mapData){
 			maxY//Math.max.apply(Math,mapData.map(function(o){return Number(o.y);})) 	
 		])
 		.range([mapHeight - (axisPadding + innerPadding)*2, padding - innerPadding]);
-
 		
 	xAxis = d3.svg.axis()
 		.scale(xScale)
@@ -92,21 +91,6 @@ function mapScales(mapData){
 	.ticks(5);
 		  
 }
-
-/*
-var xScale = d3.scale.linear()
-	.domain(
-		[50,100])
-		.rangeRound([(axisPadding + innerPadding), mapWidth - axisPadding - (innerPadding * 2)]);	//only use one axis for the widtmapHeight subtraction
-
-	var yScale = d3.scale.linear()
-	.domain(
-		[0,100])
-		.range([mapHeight - (axisPadding + innerPadding)*2, padding - innerPadding]);
-*/
-
-
-
 
 
 init();
