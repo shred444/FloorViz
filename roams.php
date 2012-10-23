@@ -45,6 +45,13 @@
 		if(filter.roams.du_id)
 			filter.roams.where += ' AND du_id=' + filter.roams.du_id + ' ';
 			
+		if(filter.timeouts.fatalcomms)	
+			filter.timeouts.where = ' error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
+		else
+			filter.timeouts.where = ' 0 ';
+		if(filter.roams.du_id)
+			filter.timeouts.where += ' AND du_id=' + filter.roams.du_id + ' ';
+			
 		
 		pieRefresh();
 		roamRefresh();

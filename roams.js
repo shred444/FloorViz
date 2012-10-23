@@ -497,10 +497,9 @@ init ();
 
 function drawTimeouts()
 {
-	if(filter.timeouts.fatalcomms)
-		var fatalquery = 'SELECT * FROM du_errors where error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\";';
-	else
-		var fatalquery = 'SELECT * FROM du_errors WHERE 0;';
+	
+	var fatalquery = 'SELECT * FROM du_errors WHERE ' + filter.timeouts.where + ';';
+	
 		
 	var fatalurl = "jsonSQL.php?db=amz_bfi1&q=" + fatalquery;
 	console.log(fatalurl);
