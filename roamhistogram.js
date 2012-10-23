@@ -53,6 +53,7 @@ function makeScales(roamBarData)
 		.orient("bottom");
 }
 
+makeScales();
 init();
 		
 function histRefresh()

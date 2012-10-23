@@ -13,8 +13,8 @@ Array.min = function( array ){
 
 
 //Width and height
-var w = document.getElementById("map").width.baseVal.value;//1000;
-var h = document.getElementById("map").height.baseVal.value;//700;
+var w = 1000; //document.getElementById("map").width.baseVal.value;//1000;
+var h = 700; //document.getElementById("map").height.baseVal.value;//700;
 var padding = 50;
 var axisPadding = 25;
 var innerPadding = 10;
@@ -22,16 +22,17 @@ var drawingData;
 var roamData = [];
 var roamsChecked;
 var dataColumn = 'br_val';		//data to filter on and display
-var mapData;
-
-
-
+var mapData = [];
+var yScale, xScale, xAxis, yAxis;
+var yAxis, yAxisR, xAxis, xAxisTop;
+var minX, maxX, minY, maxY;
+var map;
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
 var drawingWidth = w - ((axisPadding + innerPadding ) *2);
 var drawingHeight = h - (padding - innerPadding) * 2;
-var minX, maxX, minY, maxY;
+
 
 
 function mapScales(mapData){
@@ -51,52 +52,63 @@ function mapScales(mapData){
 		])
 		.range([h - (axisPadding + innerPadding)*2, padding - innerPadding]);
 
-	var rScale = d3.scale.linear()
-		//.domain([0, d3.max(cellset, function(d) { return d[1]; })])
-		.domain([0,100])
-		.range([2, 5]);
+		
+	xAxis = d3.svg.axis()
+		.scale(xScale)
+		.orient("bottom")
+		.ticks(5);
 
-	var rssiMin = Array.min(mapData.map(function(o){return o[dataColumn];}));
-	var rssiMax = Array.max(mapData.map(function(o){return o[dataColumn];}));
-	var rssiScale = d3.scale.linear()
-		//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
-		.domain([rssiMin,rssiMax])
-		.range([0, 1]);
-	var trafficScale = d3.scale.linear()
-		//.domain([d3.min(cellset, function(d) { return d[2]; }), d3.max(cellset, function(d) { return d[2]; })])
-		.domain([0,100])
-		.range([0, 1]);
+	xAxisTop = d3.svg.axis()
+		.scale(xScale)
+		.orient("top")
+		.ticks(5)
+		
+			  
+		  
+	//-------------------------------------------------------------
+	// Create All Axis
+	//-------------------------------------------------------------
+	//Define X axis
+	xAxis = d3.svg.axis()
+	.scale(xScale)
+	.orient("bottom")
+	.ticks(5);
 
-	var rssiColorScale = d3.scale.ordinal()
-		  .domain([0,1,2,3,4,5,6,7,8,9,10])
-		  .range(["#A50026", "#D73027", "#F46D43", "#FDAE61", "#FEE08B", "#D9EF8B", "#A6D96A", "#66BD63", "#1A9850", "#006837"]);
-		  //0xA50026; 0xD73027; 0xF46D43; 0xFDAE61; 0xFEE08B; 0xD9EF8B; 0xA6D96A; 0x66BD63; 0x1A9850; 0x006837
+	xAxisTop = d3.svg.axis()
+	.scale(xScale)
+	.orient("top")
+	.ticks(5)
+
+	//Define Y axis
+	yAxis = d3.svg.axis()
+	.scale(yScale)
+	.orient("left")
+	.ticks(5);
+
+	//Define Y axis Right
+	yAxisR = d3.svg.axis()
+	.scale(yScale)
+	.orient("right")
+	.ticks(5);
 		  
-		  
-	var trafficColorScale = d3.scale.linear()
-		  .domain([0,10])
-		  .range(["#CCECE6", "#005824"])
-		  .clamp(true);	  
-		  //0xEDF8FB; 0xCCECE6; 0xCCECE6; 0x66C2A4; 0x41AE76; 0x238B45; 0x005824; 
-	  
 }
 
-
+/*
 var xScale = d3.scale.linear()
 	.domain(
-		[0,100])
+		[50,100])
 		.rangeRound([(axisPadding + innerPadding), w - axisPadding - (innerPadding * 2)]);	//only use one axis for the width subtraction
 
 	var yScale = d3.scale.linear()
 	.domain(
 		[0,100])
 		.range([h - (axisPadding + innerPadding)*2, padding - innerPadding]);
+*/
 
 
 
 
 
-//mapScales();
 init();
 redraw();
 
@@ -105,38 +117,13 @@ redraw();
 function init () {
 	console.log("Map Init");
 	
-	
-	//-------------------------------------------------------------
-	// Create All Axis
-	//-------------------------------------------------------------
-	//Define X axis
-	var xAxis = d3.svg.axis()
-	.scale(xScale)
-	.orient("bottom")
-	.ticks(5);
-
-	var xAxisTop = d3.svg.axis()
-	.scale(xScale)
-	.orient("top")
-	.ticks(5)
-
-	//Define Y axis
-	var yAxis = d3.svg.axis()
-	.scale(yScale)
-	.orient("left")
-	.ticks(5);
-
-	//Define Y axis Right
-	var yAxisR = d3.svg.axis()
-	.scale(yScale)
-	.orient("right")
-	.ticks(5);
+	mapScales();
 	
 	
 	//-------------------------------------------------------------
 	//Create SVG element
 	//-------------------------------------------------------------
-	svg = d3.select("#map")
+	map = d3.select("#map")
 	.append("svg")
 	.attr("width", w)
 	.attr("height", h);
@@ -145,8 +132,9 @@ function init () {
 	//-------------------------------------------------------------
 	//Create X axis - bottom
 	//-------------------------------------------------------------
-	svg.append("g")
+	map.append("g")
 	.attr("class", "axis")
+	.attr("id", "xaxis")
 	.attr("transform", "translate(0," + (h - axisPadding*2 - innerPadding) + ")")
 	.attr("fill", "grey")
 	.call(xAxis);
@@ -154,8 +142,9 @@ function init () {
 	//-------------------------------------------------------------
 	//Create X axis - top
 	//-------------------------------------------------------------
-	svg.append("g")
+	map.append("g")
 	.attr("class", "axis")
+	.attr("id", "xaxistop")
 	.attr("transform", "translate(0," + (0 + axisPadding ) + ")")
 	.attr("fill", "grey")
 	.call(xAxisTop);
@@ -163,8 +152,9 @@ function init () {
 	//-------------------------------------------------------------
 	//Create Y axis - left
 	//-------------------------------------------------------------
-	svg.append("g")
+	map.append("g")
 	.attr("class", "axis")
+	.attr("id", "yaxis")
 	.attr("transform", "translate(" + axisPadding + ",0)")
 	.attr("fill", "grey")
 	.call(yAxis);
@@ -172,8 +162,9 @@ function init () {
 	//-------------------------------------------------------------
 	//Create Y axis - right
 	//-------------------------------------------------------------
-	svg.append("g")
+	map.append("g")
 	.attr("class", "axis")
+	.attr("id", "yaxisr")
 	.attr("transform", "translate(" + (w - axisPadding - innerPadding) + ",0)")
 	.attr("fill", "grey")
 	.call(yAxisR);
@@ -209,7 +200,7 @@ function redraw () {
 	var mapquery = 'select floor(x/1000) as x, floor(y/1000) as y from du_errors WHERE x<>0 and y<>0 GROUP BY floor(x/1000),floor(y/1000);';
 	
 		
-	var mapurl = "jsonSQL.php?db=hwmhs&q=" + mapquery;
+	var mapurl = "jsonSQL.php?db=amz_bfi1&q=" + mapquery;
 	console.log(mapurl);
 	
 	d3.json(mapurl, function(error, mapData) {
@@ -234,7 +225,8 @@ function redraw () {
 		mapScales(mapData);
 		
 		
-		var cells = svg.selectAll("rect").data(mapData, function (d) { return d.id;});
+		
+		var cells = map.selectAll("rect").data(mapData, function (d) { return d.id;});
 		cells.enter()
 			.append("rect")
 			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
@@ -264,9 +256,22 @@ function redraw () {
 		cells.transition()
 			.duration(1000)
 			.attr("fill", function(d) {return cellFill(d);});
-	});
-	console.log("Redraw Complete");
+			
+		/*	
+		axis.transition()
+			.duration(1000)
+			.call(xAxis);
+		*/
+		
+		//-------------------------------------------------------------
+	//Create X axis - bottom
+	//-------------------------------------------------------------
+	//update axis
+	map.selectAll("#xaxis").transition().call(xAxis);
 	
+	
+	console.log("Redraw Complete");
+	})
 	
 }
 // let's kick it all off!

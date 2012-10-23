@@ -24,7 +24,7 @@
 		
 </script>
 
-<svg id="map" width="500" height="1000"></svg>
+<div id="map" width="1000" height="500"></div>
 
 <script src="map.js"></script>
 
