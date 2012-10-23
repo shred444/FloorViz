@@ -12,9 +12,9 @@ Array.min = function( array ){
 };
 
 
-//Width and height
-var w = 1000; //document.getElementById("map").width.baseVal.value;//1000;
-var h = 700; //document.getElementById("map").height.baseVal.value;//700;
+//WidtmapHeight and height
+var mapWidth = 1000; //document.getElementById("map").width.baseVal.value;//1000;
+var mapHeight = 500; //document.getElementById("map").height.baseVal.value;//700;
 var padding = 50;
 var axisPadding = 25;
 var innerPadding = 10;
@@ -30,8 +30,8 @@ var map;
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
-var drawingWidth = w - ((axisPadding + innerPadding ) *2);
-var drawingHeight = h - (padding - innerPadding) * 2;
+var drawingWidth = mapWidth - ((axisPadding + innerPadding ) *2);
+var drawingHeight = mapHeight - (padding - innerPadding) * 2;
 
 
 
@@ -43,14 +43,14 @@ function mapScales(mapData){
 		[	minX,//Math.min.apply(Math,mapData.map(function(o){return Number(o.x);})),
 			maxX +1//Math.max.apply(Math,mapData.map(function(o){return Number(o.x);})) + 1	//require 1 more for padding
 		])
-		.rangeRound([(axisPadding + innerPadding), w - axisPadding - (innerPadding * 2)]);	//only use one axis for the width subtraction
+		.rangeRound([(axisPadding + innerPadding), mapWidth - axisPadding - (innerPadding * 2)]);	//only use one axis for the widtmapHeight subtraction
 
 	yScale = d3.scale.linear()
 	.domain(
 		[	minY -1,//Math.min.apply(Math,mapData.map(function(o){return Number(o.y);})) -1, //require 1 more for padding
 			maxY//Math.max.apply(Math,mapData.map(function(o){return Number(o.y);})) 	
 		])
-		.range([h - (axisPadding + innerPadding)*2, padding - innerPadding]);
+		.range([mapHeight - (axisPadding + innerPadding)*2, padding - innerPadding]);
 
 		
 	xAxis = d3.svg.axis()
@@ -97,12 +97,12 @@ function mapScales(mapData){
 var xScale = d3.scale.linear()
 	.domain(
 		[50,100])
-		.rangeRound([(axisPadding + innerPadding), w - axisPadding - (innerPadding * 2)]);	//only use one axis for the width subtraction
+		.rangeRound([(axisPadding + innerPadding), mapWidth - axisPadding - (innerPadding * 2)]);	//only use one axis for the widtmapHeight subtraction
 
 	var yScale = d3.scale.linear()
 	.domain(
 		[0,100])
-		.range([h - (axisPadding + innerPadding)*2, padding - innerPadding]);
+		.range([mapHeight - (axisPadding + innerPadding)*2, padding - innerPadding]);
 */
 
 
@@ -125,8 +125,8 @@ function init () {
 	//-------------------------------------------------------------
 	map = d3.select("#map")
 	.append("svg")
-	.attr("width", w)
-	.attr("height", h);
+	.attr("width", mapWidth)
+	.attr("height", mapHeight);
 	
 		
 	//-------------------------------------------------------------
@@ -135,7 +135,7 @@ function init () {
 	map.append("g")
 	.attr("class", "axis")
 	.attr("id", "xaxis")
-	.attr("transform", "translate(0," + (h - axisPadding*2 - innerPadding) + ")")
+	.attr("transform", "translate(0," + (mapHeight - axisPadding*2 - innerPadding) + ")")
 	.attr("fill", "grey")
 	.call(xAxis);
 	
@@ -165,18 +165,18 @@ function init () {
 	map.append("g")
 	.attr("class", "axis")
 	.attr("id", "yaxisr")
-	.attr("transform", "translate(" + (w - axisPadding - innerPadding) + ",0)")
+	.attr("transform", "translate(" + (mapWidth - axisPadding - innerPadding) + ",0)")
 	.attr("fill", "grey")
 	.call(yAxisR);
 	
-	// load data, process it and draw it
+	// load data, process it and dramapWidth it
 	
 	console.log("Map Init Complete");
 }
 
 
 
-function redraw () {
+function redraw() {
 		
 	that = this;
 	
@@ -196,7 +196,7 @@ function redraw () {
 	}
 
 	
-	var scale = 1.2;
+	var scale = 1;
 	var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from du_errors WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
 	
 		
@@ -207,6 +207,10 @@ function redraw () {
 	
 		console.log("mapData received: " + mapData.length);
 		
+		if(document.getElementById("cellCount"))
+			document.getElementById("cellCount").innerHTML = mapData.length;
+		
+		
 		//-------------------------------------------------------------
 		//Create cells	
 		//-------------------------------------------------------------
@@ -215,9 +219,11 @@ function redraw () {
 		minX = Math.min.apply(Math, mapData.map(function(o){ return o.x; }));
 		maxY = Math.max.apply(Math, mapData.map(function(o){ return o.y; }));
 		minY = Math.min.apply(Math, mapData.map(function(o){ return o.y; }));
+				
 		
 		countX = maxX - minX +1; //add one more for padding
 		countY = maxY - minY +1; //add one more for padding
+		
 		
 		cellWidth = (drawingWidth/(countX)) * scale;
 		cellHeight = (drawingHeight/(countY)) * scale;
@@ -227,21 +233,19 @@ function redraw () {
 		
 		
 		
-		var cells = map.selectAll("rect").data(mapData, function (d) { return d.id;});
+		var cells = map.selectAll(".cell").data(mapData, function (d) { return d.id;});
+		
 		cells.enter()
 			.append("rect")
 			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
 			.attr("x", 				function(d) { return xScale(d.x); })
-			//.attr("class",			"level1")
+			.attr("class",			"cell")
 			.attr("y", 				function(d) { return yScale(d.y); })
-			.attr("width", 			cellWidth)//function(d) { return 4 * floor; })
-			.attr("height", 		cellHeight)//function(d) { return 4 * floor; })
+			.attr("width", 			cellWidth)
+			.attr("height", 		cellHeight)
 			.attr("fill", 			function(d) { return cellFill(d);})
-			.on("mousemove", mousemove)
-			.append("svg:title");
+			.on("mousemove", 		function(d) { return mousemove(d);});
 		
-		console.log("cells created");
-
 		cells.exit()
 			.remove();
 
@@ -259,17 +263,16 @@ function redraw () {
 		map.selectAll("#yaxisr").transition().duration(1000).call(yAxisR);
 	
 	
-		console.log("Redraw Complete");
+		console.log("RedramapWidth Complete");
 	})
 	
 }
 
 
-function mousemove(){
-	var x = xScale.invert(d3.mouse(this)[0]);
-	var y = yScale.invert(d3.mouse(this)[0]);
+function mousemove(d){
+	if(document.getElementById("xPos"))
+		document.getElementById("xPos").innerHTML = Math.round(d.x);
+	if(document.getElementById("yPos"))
+		document.getElementById("yPos").innerHTML = Math.round(d.y);
 	
-	document.getElementById("xPos").innerHTML = Math.round(x);
-	document.getElementById("yPos").innerHTML = Math.round(y);
-	//console.log(x + " " + y);
 }

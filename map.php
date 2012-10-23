@@ -23,14 +23,15 @@
 		timeRange.max.setDate(timeRange.now.getDate()-3);
 </script>
 
-<div id="map" width="1000" height="500"></div>
+<div id="map"></div>
 
 
 <table>
 <tr><td>
 <label>X</label><div id="xPos"></div>
 </td><td>
-<label>Y</label><div id="yPos"></div>
+<label>Y</label><div id="yPos"></div></td><td>
+<label>Cells</label><div id="cellCount"></div>
 </td></tr>
 </table>
 <script src="map.js"></script>
