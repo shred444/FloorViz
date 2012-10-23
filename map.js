@@ -196,8 +196,8 @@ function redraw () {
 	}
 
 	
-	
-	var mapquery = 'select floor(x/1000) as x, floor(y/1000) as y from du_errors WHERE x<>0 and y<>0 GROUP BY floor(x/1000),floor(y/1000);';
+	var scale = 1.2;
+	var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from du_errors WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
 	
 		
 	var mapurl = "jsonSQL.php?db=amz_bfi1&q=" + mapquery;
@@ -219,9 +219,10 @@ function redraw () {
 		countX = maxX - minX +1; //add one more for padding
 		countY = maxY - minY +1; //add one more for padding
 		
-		cellWidth = (drawingWidth/(countX));// * floor;
-		cellHeight = (drawingHeight/(countY));// * floor;
+		cellWidth = (drawingWidth/(countX)) * scale;
+		cellHeight = (drawingHeight/(countY)) * scale;
 		
+		//recalculate scales
 		mapScales(mapData);
 		
 		
@@ -236,20 +237,11 @@ function redraw () {
 			.attr("width", 			cellWidth)//function(d) { return 4 * floor; })
 			.attr("height", 		cellHeight)//function(d) { return 4 * floor; })
 			.attr("fill", 			function(d) { return cellFill(d);})
+			.on("mousemove", mousemove)
 			.append("svg:title");
 		
 		console.log("cells created");
-		//mouseover title
-		/*cells.select("title")
-		   .text(function(d) { return "x:"+d.x + " y:"+d.y +"rssi:"+d.rssi_val+"["+Math.round(rssiScale(d.br_val)*10) +"] br: " + d.br_val + " count:" +d.record_count; });
-		*/
-		
-		//change this
-		/*cells.filter(function(d) { return d in drawingData; })
-		   .attr("class", function(d) { return "day q" + color(data[d]) + "-9"; })
-		 .select("title")
-		   .text(function(d) { return d + ": " + percent(data[d]); });
-		*/
+
 		cells.exit()
 			.remove();
 
@@ -257,21 +249,27 @@ function redraw () {
 			.duration(1000)
 			.attr("fill", function(d) {return cellFill(d);});
 			
-		/*	
-		axis.transition()
-			.duration(1000)
-			.call(xAxis);
-		*/
 		
 		//-------------------------------------------------------------
-	//Create X axis - bottom
-	//-------------------------------------------------------------
-	//update axis
-	map.selectAll("#xaxis").transition().call(xAxis);
+		// update axis
+		//-------------------------------------------------------------
+		map.selectAll("#xaxis").transition().duration(1000).call(xAxis);
+		map.selectAll("#xaxistop").transition().duration(1000).call(xAxisTop);
+		map.selectAll("#yaxis").transition().duration(1000).call(yAxis);
+		map.selectAll("#yaxisr").transition().duration(1000).call(yAxisR);
 	
 	
-	console.log("Redraw Complete");
+		console.log("Redraw Complete");
 	})
 	
 }
-// let's kick it all off!
+
+
+function mousemove(){
+	var x = xScale.invert(d3.mouse(this)[0]);
+	var y = yScale.invert(d3.mouse(this)[0]);
+	
+	document.getElementById("xPos").innerHTML = Math.round(x);
+	document.getElementById("yPos").innerHTML = Math.round(y);
+	//console.log(x + " " + y);
+}

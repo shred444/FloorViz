@@ -21,11 +21,18 @@
 		timeRange.max = new Date();
 		timeRange.min.setDate(timeRange.now.getDate()-4);
 		timeRange.max.setDate(timeRange.now.getDate()-3);
-		
 </script>
 
 <div id="map" width="1000" height="500"></div>
 
+
+<table>
+<tr><td>
+<label>X</label><div id="xPos"></div>
+</td><td>
+<label>Y</label><div id="yPos"></div>
+</td></tr>
+</table>
 <script src="map.js"></script>
 
 </body>
