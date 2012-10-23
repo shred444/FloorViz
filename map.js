@@ -158,7 +158,36 @@ function init () {
 	console.log("Map Init Complete");
 }
 
+function drawAPs() {
+	
+	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
+	var apquery = 'select * from aps WHERE x<>0 AND y<>0';
+	
+	var apurl = "jsonSQL.php?db=amz_bfi1&q=" + apquery;
+	console.log(apurl);
+	
+	d3.json(apurl, function(error, apData) {
+		console.log("received aps "+ apData.length);
+		console.log(apData[0].x);
+		var aps = map.selectAll(".ap").data(apData, function (d) { return d.id;});
+		
+		aps.enter()
+			.append("circle")
+			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
+			.attr("class",			"ap")
+			.attr("cy", 				function(d) { return yScale(d.y); })
+			.attr("r",					20)
+			.attr("fill", 			"red")
+			.on("mousemove", 		function(d) { return mousemove(d);});
+		
+		aps.exit()
+			.remove();
 
+		aps.transition()
+			.duration(1000);
+	});
+	
+}
 
 function redraw() {
 		
@@ -176,13 +205,13 @@ function redraw() {
 			return rssiColorScale(Math.round(scaled)-1); 
 		}
 		*/
-		return 1;
+		return .5;
 	}
 
-	
-	var scale = 1;
-	var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from du_errors WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
-	
+	var units = 1; //1 for meters, 1000 for mm
+	var scale = 1.5;
+	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
+	var mapquery = 'select floor(x/'+scale+')*'+scale+' as x, floor(y/'+scale+')*'+scale+' as y from rssi where x<>0 and y<>0 AND dataset_id = 20 group by floor(x/'+scale+'),floor(y/'+scale+');';
 		
 	var mapurl = "jsonSQL.php?db=amz_bfi1&q=" + mapquery;
 	console.log(mapurl);
@@ -229,6 +258,7 @@ function redraw() {
 			.attr("height", 		cellHeight)
 			.attr("fill", 			function(d) { return cellFill(d);})
 			.on("mousemove", 		function(d) { return mousemove(d);});
+			
 		
 		cells.exit()
 			.remove();
@@ -247,7 +277,8 @@ function redraw() {
 		map.selectAll("#yaxisr").transition().duration(1000).call(yAxisR);
 	
 	
-		console.log("RedramapWidth Complete");
+		console.log("Redraw Complete");
+		drawAPs();
 	})
 	
 }
