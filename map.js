@@ -179,7 +179,7 @@ function drawAPs() {
 		var aps = map.selectAll(".ap").data(apData, function (d) { return d.id;});
 		
 		aps.enter()
-			.append("circle")
+			.insert("circle")
 			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
 			.attr("class",			"ap")
 			.attr("cy", 				function(d) { return yScale(d.y); })
@@ -188,7 +188,7 @@ function drawAPs() {
 		
 		
 		aps.enter()
-			.append("circle")
+			.insert("circle")
 			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
 			.attr("class",			"ap")
 			.attr("cy", 				function(d) { return yScale(d.y); })
@@ -215,7 +215,7 @@ function drawRoams() {
 	
 	
 	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
-	var roamquery = 'select * from roams';
+	var roamquery = 'select * from roams WHERE duration>1';
 	
 	var roamurl = "jsonSQL.php?db=amz_bfi1&q=" + roamquery;
 	console.log(roamurl);
@@ -234,11 +234,12 @@ function drawRoams() {
 			.attr("opacity", 			.3)
 			.on("mouseup", 		function(d) { return clickRoam(d);});
 		
-		aps.exit()
+		roams.exit()
 			.remove();
 
-		aps.transition()
+		roams.transition()
 			.duration(1000);
+			
 	});
 	
 }
@@ -333,8 +334,9 @@ function redraw() {
 	
 	
 		console.log("Redraw Complete");
-		drawAPs();
 		drawRoams();
+		
+		drawAPs();
 	})
 	
 }
