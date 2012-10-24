@@ -161,7 +161,8 @@ function init () {
 function drawAPs() {
 	
 	function clickAP(data){
-		//alert("clicked on ap" + data.x);
+		filter.selection = data;
+		document.getElementById("selectionTab").innerHTML = JSON.stringify(filter.selection, null, "<br>");
 		$( "#accordion" ).accordion({ active: 0 });
 	
 	}
@@ -209,6 +210,8 @@ function drawRoams() {
 	
 	function clickRoam(data){
 		//alert("clicked on ap" + data.x);
+		filter.selection = data;
+		document.getElementById("selectionTab").innerHTML = JSON.stringify(filter.selection, null, "<br>");
 		$( "#accordion" ).accordion({ active: 0 });
 	
 	}
@@ -227,12 +230,14 @@ function drawRoams() {
 		roams.enter()
 			.append("circle")
 			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
-			.attr("class",			"roam")
+			.attr("class",				"roam")
 			.attr("cy", 				function(d) { return yScale(d.y); })
-			.attr("r",					8)
-			.attr("fill", 			"red")
-			.attr("opacity", 			.3)
-			.on("mouseup", 		function(d) { return clickRoam(d);});
+			.attr("r",					function(d) { return d.duration; })
+			.attr("fill", 				"red")
+			.style("stroke", 			"red")
+			.style("stroke-width", 		"1px")
+			.attr("fill-opacity", 		.3)
+			.on("mouseup", 				function(d) { return clickRoam(d);});
 		
 		roams.exit()
 			.remove();

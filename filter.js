@@ -38,11 +38,11 @@ var filter = new Object();
 		if(filter.roams.du_id)
 			filter.timeouts.where += ' AND du_id=' + filter.roams.du_id + ' ';
 			
-		
-		pieRefresh();
-		roamRefresh();
-		histRefresh();
-		drawTimeouts();
+		if(typeof pieRefresh == 'function') pieRefresh();
+		if(typeof roamRefresh == 'function') roamRefresh();
+		if(typeof drawRoams == 'function') drawRoams();
+		if(typeof histRefresh == 'function') histRefresh();
+		if(typeof drawTimeouts == 'function') drawTimeouts();
 	}
 	
 	function roamCheck(){
