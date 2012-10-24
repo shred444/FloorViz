@@ -176,9 +176,18 @@ function drawAPs() {
 			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
 			.attr("class",			"ap")
 			.attr("cy", 				function(d) { return yScale(d.y); })
-			.attr("r",					20)
-			.attr("fill", 			"red")
+			.attr("r",					12)
+			.attr("fill", 			"white")
 			.on("mousemove", 		function(d) { return mousemove(d);});
+		
+		
+		aps.enter()
+			.append("circle")
+			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
+			.attr("class",			"ap")
+			.attr("cy", 				function(d) { return yScale(d.y); })
+			.attr("r",					8)
+			.attr("fill", 			"blue");
 		
 		aps.exit()
 			.remove();
