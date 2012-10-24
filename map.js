@@ -160,6 +160,13 @@ function init () {
 
 function drawAPs() {
 	
+	function clickAP(data){
+		//alert("clicked on ap" + data.x);
+		$( "#accordion" ).accordion({ active: 0 });
+	
+	}
+	
+	
 	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
 	var apquery = 'select * from aps WHERE x<>0 AND y<>0';
 	
@@ -176,9 +183,8 @@ function drawAPs() {
 			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
 			.attr("class",			"ap")
 			.attr("cy", 				function(d) { return yScale(d.y); })
-			.attr("r",					12)
-			.attr("fill", 			"white")
-			.on("mousemove", 		function(d) { return mousemove(d);});
+			.attr("r",					11)
+			.attr("fill", 			"white");
 		
 		
 		aps.enter()
@@ -187,7 +193,8 @@ function drawAPs() {
 			.attr("class",			"ap")
 			.attr("cy", 				function(d) { return yScale(d.y); })
 			.attr("r",					8)
-			.attr("fill", 			"blue");
+			.attr("fill", 			"blue")
+			.on("mouseup", 		function(d) { return clickAP(d);});
 		
 		aps.exit()
 			.remove();
@@ -197,6 +204,45 @@ function drawAPs() {
 	});
 	
 }
+
+function drawRoams() {
+	
+	function clickRoam(data){
+		//alert("clicked on ap" + data.x);
+		$( "#accordion" ).accordion({ active: 0 });
+	
+	}
+	
+	
+	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
+	var roamquery = 'select * from roams';
+	
+	var roamurl = "jsonSQL.php?db=amz_bfi1&q=" + roamquery;
+	console.log(roamurl);
+	
+	d3.json(roamurl, function(error, roamData) {
+		console.log("received roams "+ roamData.length);
+		var roams = map.selectAll(".roam").data(roamData, function (d) { return d.id;});
+				
+		roams.enter()
+			.append("circle")
+			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
+			.attr("class",			"roam")
+			.attr("cy", 				function(d) { return yScale(d.y); })
+			.attr("r",					8)
+			.attr("fill", 			"red")
+			.attr("opacity", 			.3)
+			.on("mouseup", 		function(d) { return clickRoam(d);});
+		
+		aps.exit()
+			.remove();
+
+		aps.transition()
+			.duration(1000);
+	});
+	
+}
+
 
 function redraw() {
 		
@@ -288,6 +334,7 @@ function redraw() {
 	
 		console.log("Redraw Complete");
 		drawAPs();
+		drawRoams();
 	})
 	
 }
