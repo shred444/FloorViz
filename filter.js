@@ -13,7 +13,7 @@ var filter = new Object();
 		filter.roams.enabled = true;
 		filter.roams.atoa = true;
 		filter.roams.atob = true;
-		filter.roams.where = "";
+		filter.roams.where = "0";
 		filter.timeouts = new Object();
 		filter.timeouts.fatalcomms = true;
 		

@@ -215,7 +215,7 @@ function drawRoams() {
 	
 	
 	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
-	var roamquery = 'select * from roams WHERE duration>1';
+	var roamquery = 'select * from roams WHERE ' + filter.roams.where;
 	
 	var roamurl = "jsonSQL.php?db=amz_bfi1&q=" + roamquery;
 	console.log(roamurl);
