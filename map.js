@@ -329,8 +329,8 @@ function redraw() {
 			.attr("cy", 				function(d) { return yScale(d.y); })
 			.attr("r", 				2)
 			
-			.attr("fill", 			function(d) { return cellFill(d);})
-			.style("stroke", 			"red")
+			.attr("fill", 			"grey")
+			.style("stroke", 			"black")
 			.style("stroke-width", 		"1px")
 			.on("mousemove", 		function(d) { return mousemove(d);});	
 		

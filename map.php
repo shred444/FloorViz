@@ -21,16 +21,33 @@
 
 
 <script>
-	//var site = "amz_bfi1";
-	var site = "hwmhs";
+	var site = "amz_bfi1";
+	//var site = "hwmhs";
 
 	$(function() {
-		$( "#accordion" ).accordion({
-			autoHeight: true,
-			collapsible: true,
-			heightStyle: "content",
-			fillSpace: false
-		});
+		$( "#accordion" )
+			.accordion({
+				autoHeight: true,
+				collapsible: true,
+				heightStyle: "content",
+				fillSpace: false
+			})
+			.sortable({
+                axis: "y",
+                handle: "h3",
+                stop: function( event, ui ) {
+                    // IE doesn't register the blur when sorting
+                    // so trigger focusout handlers to remove .ui-state-focus
+                    ui.item.children( "h3" ).triggerHandler( "focusout" );
+                }
+            });
+		
+		//allow clicks on checkbox
+		$('#accordion').find('input').click(
+			function(e){
+				e.stopPropagation();
+			}
+		);
 		
 		//initialize slider
 		$( "#slider" ).slider({
@@ -83,6 +100,9 @@
 				filterRefresh();
             }
         });
+		
+		
+		
 	});
 	
 	
@@ -128,7 +148,9 @@
 
 <div id="sidebar2" style="position: relative; width:300px; float:right;">
 	<div id="accordion" style="position:relative;">
-		<h3>Selection</h3>
+		<h3>Selection
+			 <input class='header-checkbox' type='checkbox' style="float:right;"/>
+            </h3>
 			<div width="300" id="selectionTab">No Selection.</div>
 		<h3>Filter</h3>
 			<div width="300">
