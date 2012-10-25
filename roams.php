@@ -46,7 +46,10 @@
 			change: function( event, ui ) {
 				
 				filter.duration.min = ui.values[0];
-				filter.duration.max = ui.values[1];
+				if(ui.values[1]==100)
+					filter.duration.max = 9999;
+				else
+					filter.duration.max = ui.values[1];
 				
 				$( "#amount" ).val( filter.duration.min + " - " + filter.duration.max );
 				filterRefresh();

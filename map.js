@@ -171,12 +171,12 @@ function drawAPs() {
 	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
 	var apquery = 'select * from aps WHERE x<>0 AND y<>0';
 	
-	var apurl = "jsonSQL.php?db=amz_bfi1&q=" + apquery;
+	var apurl = "jsonSQL.php?db=" + site + "&q=" + apquery;
 	console.log(apurl);
 	
 	d3.json(apurl, function(error, apData) {
 		console.log("received aps "+ apData.length);
-		console.log(apData[0].x);
+
 		var aps = map.selectAll(".ap").data(apData, function (d) { return d.id;});
 		
 		aps.enter()
@@ -220,7 +220,7 @@ function drawRoams() {
 	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
 	var roamquery = 'select * from roams WHERE ' + filter.roams.where;
 	
-	var roamurl = "jsonSQL.php?db=amz_bfi1&q=" + roamquery;
+	var roamurl = "jsonSQL.php?db=" + site + "&q=" + roamquery;
 	console.log(roamurl);
 	
 	d3.json(roamurl, function(error, roamData) {
@@ -271,10 +271,9 @@ function redraw() {
 
 	var units = 1; //1 for meters, 1000 for mm
 	var scale = 1.5;
-	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
-	var mapquery = 'select floor(x/'+scale+')*'+scale+' as x, floor(y/'+scale+')*'+scale+' as y from rssi where x<>0 and y<>0 AND dataset_id = 20 group by floor(x/'+scale+'),floor(y/'+scale+');';
-		
-	var mapurl = "jsonSQL.php?db=amz_bfi1&q=" + mapquery;
+	//var mapquery = 'select floor(x/'+scale+')*'+scale+' as x, floor(y/'+scale+')*'+scale+' as y from rssi where x<>0 and y<>0 AND dataset_id = 21 group by floor(x/'+scale+'),floor(y/'+scale+');';
+	var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y from fiducials';
+	var mapurl = "jsonSQL.php?db=" + site + "&q=" + mapquery;
 	console.log(mapurl);
 	
 	d3.json(mapurl, function(error, mapData) {
@@ -309,7 +308,7 @@ function redraw() {
 		
 		var cells = map.selectAll(".cell").data(mapData, function (d) { return d.id;});
 		
-		cells.enter()
+		/*cells.enter()
 			.append("rect")
 			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
 			.attr("x", 				function(d) { return xScale(d.x); })
@@ -318,8 +317,22 @@ function redraw() {
 			.attr("width", 			cellWidth)
 			.attr("height", 		cellHeight)
 			.attr("fill", 			function(d) { return cellFill(d);})
+			.style("stroke", 			"red")
+			.style("stroke-width", 		"1px")
 			.on("mousemove", 		function(d) { return mousemove(d);});
+		*/
+		cells.enter()
+			.append("circle")
+			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
+			.attr("cx", 				function(d) { return xScale(d.x); })
+			.attr("class",			"cell")
+			.attr("cy", 				function(d) { return yScale(d.y); })
+			.attr("r", 				2)
 			
+			.attr("fill", 			function(d) { return cellFill(d);})
+			.style("stroke", 			"red")
+			.style("stroke-width", 		"1px")
+			.on("mousemove", 		function(d) { return mousemove(d);});	
 		
 		cells.exit()
 			.remove();

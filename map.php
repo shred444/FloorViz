@@ -21,6 +21,8 @@
 
 
 <script>
+	//var site = "amz_bfi1";
+	var site = "hwmhs";
 
 	$(function() {
 		$( "#accordion" ).accordion({
@@ -60,6 +62,12 @@
 				console.log("From date selected: " + selectedDate);
 				filter.timeRange.min = new Date(selectedDate);
 				filter.timeRange.min.setHours(0,0,0);
+				
+				if(document.getElementById("to").hidden){
+					filter.timeRange.max = new Date(selectedDate);
+					filter.timeRange.max.setHours(23,59,59);
+				
+				}
 				filterRefresh();
             }
         });
@@ -76,6 +84,13 @@
             }
         });
 	});
+	
+	
+	function hideDate(checkbox){
+		
+		document.getElementById("to").hidden = !checkbox.checked;
+			
+	}
 </script>
 <div id="header">
 	<form id="facility" action="roams.php" method="get">
@@ -92,23 +107,15 @@
 												
 				</select>
 			</li>
-			<li>
-				<select id="dataset" name="dataset">
-				<?php
-					mysql_data_seek( $datasets, 0);
-					while($row = mysql_fetch_array($datasets))
-					{ ?>
-						<option <?php if($dataset == $row['name']) echo "selected='selected'"; ?> value="<?php echo $row['name']; ?>"><?php echo $row['name']; ?></option>
-					<?php }?>
-				</select>
-			</li>
-			
+						
 			<li>
 			
 				<label for="from">From</label>
 				<input type="text" id="from" name="from" />
+				<input type="checkbox" onchange="hideDate(this);" value="roams" id="date-checkbox">
+						
 				<label for="to">to</label>
-				<input type="text" id="to" name="to" />
+				<input type="text" id="to" name="to" hidden="true" />
 			</li>
 			<li>
 				<input type="submit" value="Refresh"> 
@@ -122,9 +129,54 @@
 <div id="sidebar2" style="position: relative; width:300px; float:right;">
 	<div id="accordion" style="position:relative;">
 		<h3>Selection</h3>
-			<div width="300" id="selectionTab">Lorem ipsum dolor sit amet. Lore</div>
+			<div width="300" id="selectionTab">No Selection.</div>
 		<h3>Filter</h3>
-			<div width="300"><div id="slider"></div></div>
+			<div width="300">
+				<ul style="list-style-type:none; padding-left:0px;">
+					<li>
+					<div id="radioset" name="dataColumn" >
+						<input type="radio" id="radio1" name="radio" checked="checked"><label for="radio1">RSSI</label>
+						<input type="radio" id="radio2" name="radio"><label for="radio2">Bitrate</label>
+						<input type="radio" id="radio3" name="radio"><label for="radio3">Traffic</label>
+					</div>
+					</li>
+					<li>
+						<input type="checkbox" onchange="roamCheck();" checked="checked" value="roams" id="roam-checkbox">roams
+						<ul>
+							
+							<li>
+								<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
+							</li>
+							<li>
+								<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
+							</li>
+							<li>
+					
+								<label for="amount">Duration:</label>
+								<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
+								<div id="slider"></div>
+							
+							</li>
+						</ul>
+					</li>
+					
+					<li>
+						<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
+						<ul>
+							<li>
+								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
+							</li>
+							<li>
+								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
+							</li>
+						</ul>
+					</li>
+					
+					
+				</ul>
+				
+				
+				</div>
 		<h3>Details</h3>
 			<div width="300">Nam dui erat, auctor a, dignissim quis.</div>
 	</div>
