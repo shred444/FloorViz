@@ -27,6 +27,7 @@
 	$(function() {
 		$( "#accordion" )
 			.accordion({
+				header: "> div > h3",
 				autoHeight: true,
 				collapsible: true,
 				heightStyle: "content",
@@ -148,11 +149,12 @@
 
 <div id="sidebar2" style="position: relative; width:300px; float:right;">
 	<div id="accordion" style="position:relative;">
-		<h3>Selection
-			 <input class='header-checkbox' type='checkbox' style="float:right;"/>
-            </h3>
-			<div width="300" id="selectionTab">No Selection.</div>
-		<h3>Filter</h3>
+		<div class="group">
+			<h3>Selection<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+				<div width="300" id="selectionTab">No Selection.</div>
+		</div>
+		<div class="group">
+			<h3>Filter<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
@@ -199,8 +201,20 @@
 				
 				
 				</div>
-		<h3>Details</h3>
-			<div width="300">Nam dui erat, auctor a, dignissim quis.</div>
+			</div>
+		<div class="group">		
+			<h3>Drives<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+				<div width="300">Filter by Drive ID<br>
+				<input class='du_id-all' type='checkbox'>Select All<p>
+					<select name="du_id" size="5" style="width:100px">
+					  <option>text1</option>
+					  <option>text2</option>
+					  <option>text3</option>
+					  <option>text4</option>
+					  <option>text5</option>
+					</select>
+					</div>
+		</div>
 	</div>
 </div>
 

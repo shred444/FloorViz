@@ -59,7 +59,7 @@ function histRefresh()
 {
 	
 	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE ' + filter.roams.where + ' GROUP BY floor(duration/10)*10;';
-	var histurl = "jsonSQL.php?db=amz_bfi1&q=" + histquery;
+	var histurl = "jsonSQL.php?db=" + selectedSite + "&q=" + histquery;
 	//console.log(histurl);
 	
 	var roamBarData= [];

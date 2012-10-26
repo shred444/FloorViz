@@ -379,7 +379,7 @@ function roamRefresh(){
 	if(!filter.roams.enabled)
 		roamquery = 'SELECT * FROM roams WHERE 0';
 	
-	var roamurl = "jsonSQL.php?db=amz_bfi1&q=" + roamquery;
+	var roamurl = "jsonSQL.php?db=" + selectedSite + "&q=" + roamquery;
 
 	console.log(roamurl);
 	var roamData= [];
@@ -501,7 +501,7 @@ function drawTimeouts()
 	var fatalquery = 'SELECT * FROM du_errors WHERE ' + filter.timeouts.where + ';';
 	
 		
-	var fatalurl = "jsonSQL.php?db=amz_bfi1&q=" + fatalquery;
+	var fatalurl = "jsonSQL.php?db=" + selectedSite + "&q=" + fatalquery;
 	console.log(fatalurl);
 	
 	var fatalCommsData= [];

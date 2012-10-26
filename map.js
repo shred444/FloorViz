@@ -236,7 +236,8 @@ function drawRoams() {
 			.attr("fill", 				"red")
 			.style("stroke", 			"red")
 			.style("stroke-width", 		"1px")
-			.attr("fill-opacity", 		.3)
+			.attr("fill-opacity", 		.2)
+			.attr("stroke-opacity", 		.6)
 			.on("mouseup", 				function(d) { return clickRoam(d);});
 		
 		roams.exit()
@@ -257,22 +258,36 @@ function redraw() {
 	//returns a color based on a cell value
 	function cellFill(d) { 
 		var scaled;
-		/*
-		if(dataColumn=='record_count'){
-			scaled = trafficScale(d[dataColumn])*10;
-			return trafficColorScale(Math.round(scaled)-1);
-		}else{
-			scaled = rssiScale(d[dataColumn])*10;
-			return rssiColorScale(Math.round(scaled)-1); 
+		
+		switch (d.cell_type)
+		{
+		case 'K':
+			return "#00A57C"; //#007FFF";
+		case 'F':
+		case 'L':
+		case 'P':
+		case 'G':
+			return "#00FFFF"; //#007FFF";
+		case 'M':
+			return "#0000FF"; //#007FFF";
+		default:
+			return "#007FFF";
 		}
-		*/
-		return .5;
 	}
 
+	function clickCell(data){
+		//alert("clicked on ap" + data.x);
+		filter.selection = data;
+		document.getElementById("selectionTab").innerHTML = JSON.stringify(filter.selection, null, "<br>");
+		$( "#accordion" ).accordion({ active: 0 });
+	
+	}
+	
 	var units = 1; //1 for meters, 1000 for mm
 	var scale = 1.5;
 	//var mapquery = 'select floor(x/'+scale+')*'+scale+' as x, floor(y/'+scale+')*'+scale+' as y from rssi where x<>0 and y<>0 AND dataset_id = 21 group by floor(x/'+scale+'),floor(y/'+scale+');';
-	var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y from fiducials';
+	var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage';
+	
 	var mapurl = "jsonSQL.php?db=" + site + "&q=" + mapquery;
 	console.log(mapurl);
 	
@@ -298,8 +313,8 @@ function redraw() {
 		countY = maxY - minY +1; //add one more for padding
 		
 		
-		cellWidth = (drawingWidth/(countX)) * scale;
-		cellHeight = (drawingHeight/(countY)) * scale;
+		cellWidth = (drawingWidth/(countX)) * scale - 2;	//subtract 1 for border
+		cellHeight = (drawingHeight/(countY)) * scale - 2;	//subtract 1 for border
 		
 		//recalculate scales
 		mapScales(mapData);
@@ -308,7 +323,7 @@ function redraw() {
 		
 		var cells = map.selectAll(".cell").data(mapData, function (d) { return d.id;});
 		
-		/*cells.enter()
+		cells.enter()
 			.append("rect")
 			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
 			.attr("x", 				function(d) { return xScale(d.x); })
@@ -317,11 +332,12 @@ function redraw() {
 			.attr("width", 			cellWidth)
 			.attr("height", 		cellHeight)
 			.attr("fill", 			function(d) { return cellFill(d);})
-			.style("stroke", 			"red")
+			//.style("stroke", 			"white")
 			.style("stroke-width", 		"1px")
-			.on("mousemove", 		function(d) { return mousemove(d);});
-		*/
-		cells.enter()
+			.on("mousemove", 		function(d) { return mousemove(d);})
+			.on("mouseup", 			function(d) { return clickCell(d);});
+		
+		/*cells.enter()
 			.append("circle")
 			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
 			.attr("cx", 				function(d) { return xScale(d.x); })
@@ -333,7 +349,7 @@ function redraw() {
 			.style("stroke", 			"black")
 			.style("stroke-width", 		"1px")
 			.on("mousemove", 		function(d) { return mousemove(d);});	
-		
+		*/
 		cells.exit()
 			.remove();
 

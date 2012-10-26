@@ -28,6 +28,9 @@ var filter = new Object();
 		filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
 		filter.roams.where = ' duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
 		
+		//filter out certain du-ids
+		filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
+		
 		if(filter.roams.du_id)
 			filter.roams.where += ' AND du_id=' + filter.roams.du_id + ' ';
 			

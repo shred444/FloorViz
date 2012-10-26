@@ -31,7 +31,7 @@ function pieRefresh(minDuration,maxDuration){
 	//var piequery = 'SELECT du_id, count(*) as count, (select count(*) from roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ') as max FROM roams WHERE roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' group by du_id order by count desc LIMIT 6;';
 	var piequery = 'SELECT du_id, count(*) as count, (select count(*) from roams WHERE ' + filter.roams.where + ') as max FROM roams WHERE ' + filter.roams.where + ' group by du_id order by count desc LIMIT 6;';
 	
-	var pieurl = "jsonSQL.php?db=amz_bfi1&q=" + piequery;
+	var pieurl = "jsonSQL.php?db=" + selectedSite + "&q=" + piequery;
 
 	//console.log(pieurl);
 	
