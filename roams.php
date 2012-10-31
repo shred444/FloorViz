@@ -121,6 +121,7 @@
 						
 			var datasets = new Array();
 			var floor = '<?php echo $FLOOR; ?>';
+			var selectedSite = '<?php echo $site; ?>';
 			var selectedDataset = '<?php echo $dataset; ?>';
 			<?php
 			foreach ($databases as $db)

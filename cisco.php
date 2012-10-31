@@ -18,11 +18,20 @@
 <script src="date.js"></script>
 <script src="filter.js"></script>
 
-
+<?php 
+	
+	$con = mysql_connect("hwtest","jonathan","admin");
+	if (!$con)
+	{
+		die('Could not connect: ' . mysql_error());
+	}
+	mysql_select_db("hwmhs", $con);
+	?>
 
 <script>
-	var site = "amz_bfi1";
-	//var site = "hwmhs";
+	//var site = "amz_bfi1";
+	var site = "hwmhs";
+	var enabledFilters = [];
 
 	$(function() {
 		$( "#accordion" )
@@ -115,6 +124,28 @@
 		document.getElementById("to").hidden = !checkbox.checked;
 			
 	}
+	
+	function toggleFilter(checkbox){
+		enabledFilters[checkbox.id] = checkbox.checked;
+		filterRefresh();
+		
+		if(checkbox.checked){
+			
+		}else{
+			
+		}
+	}
+	function toggleAP(checkbox){
+		//if(filter.rssi.aps[checkbox.id]){
+			filter.rssi.aps[checkbox.id] = checkbox.checked;
+		//}else{
+		//array element doesnt exist
+		//	console.log(checkbox.id + "does not exist");
+		//}
+		filterRefresh();
+		
+		
+	}
 </script>
 <div id="header">
 	<form id="facility" action="roams.php" method="get">
@@ -153,11 +184,11 @@
 <div id="sidebar2" style="position: relative; width:300px; float:right;">
 	<div id="accordion" style="position:relative;">
 		<div class="group">
-			<h3>Selection<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Selection<input class='header-checkbox' type='checkbox' style="float:right; onclick="toggleFilter(this)""/></h3>
 				<div width="300" id="selectionTab">No Selection.</div>
 		</div>
 		<div class="group">
-			<h3>Filter<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Filter<input class='header-checkbox' type='checkbox' style="float:right; onclick="toggleFilter(this)""/></h3>
 			<div width="300">
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
@@ -206,7 +237,7 @@
 				</div>
 			</div>
 		<div class="group">		
-			<h3>Drives<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Drives<input class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
 			<div width="300">Filter by Drive ID<br>
 			<input class='du_id-all' type='checkbox'>Select All<p>
 			<select name="du_id" size="5" style="width:100px">
@@ -223,24 +254,37 @@
 			</div>
 		</div>
 		<div class="group">		
-			<h3>Floor Map<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Floor Map<input id="floormap" class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
 			<div width="300">Floor Map Options</div>
 		</div>
 		<div class="group">		
-			<h3>Roams<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
 			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
-			<h3>Pings<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>APs<input id="aps" class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
 			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
-			<h3>Timeouts<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Pings<input id="pings" class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
 			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
-			<h3>RSSI<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Roam Options</div>
+			<h3>Timeouts<input id="timeouts" class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
+				<div width="300">Roam Options</div>
+		</div>
+		<div class="group">		
+			<h3>RSSI<input id="rssi" class='header-checkbox' type='checkbox' style="float:right;" onclick="toggleFilter(this)"/></h3>
+			<div width="300">
+				RSSI Options<p>
+				<?php 
+				$result = mysql_query("select distinct(ap_id) from rssi");
+				while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+					echo "<input type='checkbox' id='" . $row['ap_id'] . "' onclick='toggleAP(this)'>" . $row['ap_id'] . "<br>";
+				}
+					?>
+				
+			</div>
 		</div>
 	</div>
 </div>
@@ -258,7 +302,7 @@
 </table>
 
 
-<script src="map.js"></script>
+<script src="cisco.js"></script>
 
 </body>
 </html>

@@ -13,8 +13,14 @@ Array.min = function( array ){
 
 
 //Width and height
-var w = document.getElementById("visualization").width.baseVal.value;//1000;
-var h = document.getElementById("visualization").height.baseVal.value;//700;
+if(selectedSite == "hwmhs"){
+	var w = 300;
+	var h = 700;
+
+}else{
+	var w = 1000;//document.getElementById("visualization").width.baseVal.value;//1000;
+	var h = 500;//document.getElementById("visualization").height.baseVal.value;//700;
+}
 var padding = 50;
 var axisPadding = 25;
 var innerPadding = 10;
@@ -482,7 +488,7 @@ function redraw () {
 	
 	console.log("Redraw Complete");
 	
-	drawTimeouts();
+	//drawTimeouts();
 	
 }
 // let's kick it all off!
