@@ -20,26 +20,35 @@ var filter = new Object();
 		filter.rssi.aps = [];
 		
 	function filterRefresh(){
-		if(filter.roams.atob && !filter.roams.atoa)
-			var dest = "AND origin_ap <> dest_ap";
-		else if(filter.roams.atoa && !filter.roams.atob)
-			var dest = "AND origin_ap = dest_ap";
-		else
-			var dest = "";
+		enabledFilters();
+		
+		if(filter.roams.enabled){
+			if(filter.roams.atob && !filter.roams.atoa)
+				var dest = "AND origin_ap <> dest_ap";
+			else if(filter.roams.atoa && !filter.roams.atob)
+				var dest = "AND origin_ap = dest_ap";
+			else
+				var dest = "";
+				
+			filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
+			filter.roams.where = ' duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
 			
-		filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
-		filter.roams.where = ' duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
-		
-		//filter out certain du-ids
-		//filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
-		
+			//filter out certain du-ids
+			//filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
+		}else{
+			filter.roams.where = ' 0 ';
+		}
 		
 		
 		//timeout filtering
-		if(filter.timeouts.fatalcomms)	
-			filter.timeouts.where = ' error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
-		else
+		if(filter.timeouts.enabled){
+			if(filter.timeouts.fatalcomms)	
+				filter.timeouts.where = ' error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
+			else
+				filter.timeouts.where = ' 0 ';
+		}else{
 			filter.timeouts.where = ' 0 ';
+		}
 			
 		//du_id filtering
 		if(filter.roams.du_id)
@@ -47,13 +56,17 @@ var filter = new Object();
 			
 			
 		//rssi filtering
-		filter.rssi.where = ' (';
-		for (x in filter.rssi.aps){
-			if(filter.rssi.aps[x])
-				filter.rssi.where += ' ap_id = \"' + x + '\" OR ';
+		if(filter.rssi.enabled){
+			filter.rssi.where = ' (';
+			for (x in filter.rssi.aps){
+				if(filter.rssi.aps[x])
+					filter.rssi.where += ' ap_id = \"' + x + '\" OR ';
+			}
+			filter.rssi.where += ' 0) ';
+			//alert(filter.rssi.where);
+		}else{
+			filter.rssi.where = ' 0 ';
 		}
-		filter.rssi.where += ' 0) ';
-		//alert(filter.rssi.where);
 		
 		if(typeof pieRefresh == 'function') pieRefresh();
 		if(typeof roamRefresh == 'function') roamRefresh();
@@ -79,4 +92,20 @@ var filter = new Object();
 		filter.timeouts.fatalcomms = document.getElementById('fatalcomms-checkbox').checked;
 		
 		filterRefresh();
+	}
+	
+	function enabledFilters(){
+		
+		var checkboxes  = document.getElementsByClassName('header-checkbox');
+		
+		for(i=0; i<checkboxes.length; i++){
+			//x.checked;
+			console.log(checkboxes[i].id + " = " + checkboxes[i].checked);
+			if(checkboxes[i].id == 'rssi')
+				filter.rssi.enabled = checkboxes[i].checked;
+			if(checkboxes[i].id == 'roams')
+				filter.roams.enabled = checkboxes[i].checked;
+			if(checkboxes[i].id == 'timeouts')
+				filter.timeouts.enabled = checkboxes[i].checked;
+		}
 	}

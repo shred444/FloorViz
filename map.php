@@ -40,7 +40,7 @@
                     // IE doesn't register the blur when sorting
                     // so trigger focusout handlers to remove .ui-state-focus
                     ui.item.children( "h3" ).triggerHandler( "focusout" );
-					
+					enabledFilters();
 					filterRefresh();
 					
                 }
@@ -49,7 +49,10 @@
 		//allow clicks on checkbox
 		$('#accordion').find('input').click(
 			function(e){
+				//checkbox has been toggled on accordian
 				e.stopPropagation();
+				enabledFilters();
+				filterRefresh();
 			}
 		);
 		
@@ -174,7 +177,7 @@
 				</div>
 			</div>
 		<div class="group">		
-			<h3>Drives<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Drives<input id="drives" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Filter by Drive ID<br>
 			<input class='du_id-all' type='checkbox'>Select All<p>
 			<select name="du_id" size="5" style="width:100px">
@@ -191,11 +194,11 @@
 			</div>
 		</div>
 		<div class="group">		
-			<h3>Floor Map<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Floor Map<input id="floormap" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Floor Map Options</div>
 		</div>
 		<div class="group">		
-			<h3>Roams<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Roam Options
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
@@ -217,29 +220,16 @@
 							</li>
 						</ul>
 					</li>
-					
-					<li>
-						<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
-						<ul>
-							<li>
-								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
-							</li>
-							<li>
-								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
-							</li>
-						</ul>
-					</li>
-					
-					
+										
 				</ul>
 			</div>
 		</div>
 		<div class="group">		
-			<h3>Pings<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Pings<input id="pings" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
-			<h3>Timeouts<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Timeouts<input id="timeouts" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Timeout Options
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
@@ -260,7 +250,7 @@
 			</div>
 		</div>
 		<div class="group">		
-			<h3>RSSI<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>RSSI<input id="rssi" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Roam Options</div>
 		</div>
 	</div>
