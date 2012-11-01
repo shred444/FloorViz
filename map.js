@@ -203,6 +203,12 @@ function drawAPs() {
 
 function drawTimeouts()
 {
+	function clickTimeout(data){
+		filter.selection = data;
+		document.getElementById("selectionTab").innerHTML = JSON.stringify(filter.selection, null, "<br>");
+		$( "#accordion" ).accordion({ active: 0 });
+	
+	}
 	
 	var fatalquery = 'SELECT * FROM du_errors WHERE ' + filter.timeouts.where + ';';
 	
@@ -216,16 +222,19 @@ function drawTimeouts()
 		console.log("fatal comms data received with " + fatalCommsData.length + "data");
 		
 		
-		var fataltimeout = map.selectAll("#fataltimeout").data(fatalCommsData);
+		var fataltimeout = map.selectAll(".fataltimeout").data(fatalCommsData, function (d) { return d.id;});
 
 		fataltimeout.enter()
 			.append("circle")
 			.attr("class", "fataltimeout")
 			.attr("cx", 			function(d) { return xScale(d.x/1000); })  //meters to mm
 			.attr("cy", 			function(d) { return yScale(d.y/1000); })  //meters to mm
-			.attr("r", 				function(d) { return 5; })
-			.attr("fill", 			function(d) { return "blue"; })
-			.attr("fill-opacity", 	function(d) { return .5; });
+			.attr("r", 				5)
+			.attr("fill", 			"blue")
+			.attr("fill-opacity", 	.2)
+			.attr("stroke",			"blue")
+			.attr("stroke-opacity",	.6)
+			.on("mouseup", 		function(d) { return clickTimeout(d);});
 
 		fataltimeout.exit()
 			.remove();

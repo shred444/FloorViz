@@ -167,6 +167,37 @@
 						<input type="radio" id="radio3" name="radio"><label for="radio3">Traffic</label>
 					</div>
 					</li>
+					
+				</ul>
+				
+				
+				</div>
+			</div>
+		<div class="group">		
+			<h3>Drives<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<div width="300">Filter by Drive ID<br>
+			<input class='du_id-all' type='checkbox'>Select All<p>
+			<select name="du_id" size="5" style="width:100px">
+			  <option>5001</option>
+			  <option>5002</option>
+			  <option>5003</option>
+			  <option>5004</option>
+			  <option>5005</option>
+			  <option>5006</option>
+			  <option>5007</option>
+			  <option>5008</option>
+			  <option>5009</option>
+			</select>
+			</div>
+		</div>
+		<div class="group">		
+			<h3>Floor Map<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<div width="300">Floor Map Options</div>
+		</div>
+		<div class="group">		
+			<h3>Roams<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<div width="300">Roam Options
+				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
 						<input type="checkbox" onchange="roamCheck();" checked="checked" value="roams" id="roam-checkbox">roams
 						<ul>
@@ -201,34 +232,7 @@
 					
 					
 				</ul>
-				
-				
-				</div>
 			</div>
-		<div class="group">		
-			<h3>Drives<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Filter by Drive ID<br>
-			<input class='du_id-all' type='checkbox'>Select All<p>
-			<select name="du_id" size="5" style="width:100px">
-			  <option>5001</option>
-			  <option>5002</option>
-			  <option>5003</option>
-			  <option>5004</option>
-			  <option>5005</option>
-			  <option>5006</option>
-			  <option>5007</option>
-			  <option>5008</option>
-			  <option>5009</option>
-			</select>
-			</div>
-		</div>
-		<div class="group">		
-			<h3>Floor Map<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Floor Map Options</div>
-		</div>
-		<div class="group">		
-			<h3>Roams<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
 			<h3>Pings<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
@@ -236,7 +240,24 @@
 		</div>
 		<div class="group">		
 			<h3>Timeouts<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Roam Options</div>
+			<div width="300">Timeout Options
+				<ul style="list-style-type:none; padding-left:0px;">
+					<li>
+						<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
+						<ul>
+							<li>
+								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
+							</li>
+							<li>
+								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
+							</li>
+						</ul>
+					</li>
+					
+					
+				</ul>
+				
+			</div>
 		</div>
 		<div class="group">		
 			<h3>RSSI<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>

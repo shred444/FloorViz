@@ -7,7 +7,7 @@ var filter = new Object();
 		filter.timeRange.max = new Date();
 		filter.duration = new Object();
 		filter.duration.min = 1;
-		filter.duration.max = 60;
+		filter.duration.max = 100;
 		filter.dataColumn = "rssi_val";
 		filter.roams = new Object();
 		filter.roams.enabled = true;
@@ -33,13 +33,15 @@ var filter = new Object();
 		//filter out certain du-ids
 		//filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
 		
-		if(filter.roams.du_id)
-			filter.roams.where += ' AND du_id=' + filter.roams.du_id + ' ';
-			
+		
+		
+		//timeout filtering
 		if(filter.timeouts.fatalcomms)	
 			filter.timeouts.where = ' error = 2002 AND time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
 		else
 			filter.timeouts.where = ' 0 ';
+			
+		//du_id filtering
 		if(filter.roams.du_id)
 			filter.timeouts.where += ' AND du_id=' + filter.roams.du_id + ' ';
 			
