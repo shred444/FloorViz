@@ -2,8 +2,8 @@ var barSpacing = 1;
 var barPadding = 20;
 var barWidth = 300;
 var barHeight = 100;
-var roamBarData;
-var barYScale, barXScale, barAxis2, svghist, labels, xAxis;
+var roamBarData = [];
+var barYScale, barXScale, barAxis2, svghist, labels, barxAxis;
 
 Array.max = function( array ){
     return Math.max.apply( Math, array );
@@ -14,7 +14,7 @@ Array.min = function( array ){
 
 
 
-function init()
+function histInit()
 {
 	svghist = d3.select("#roamHist")
 	.append("svg")
@@ -25,7 +25,7 @@ function init()
 	svghist.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + (barHeight - barPadding) + ")")
-      .call(xAxis);
+      .call(barxAxis);
 	
 }
 function makeScales(roamBarData)
@@ -46,23 +46,22 @@ function makeScales(roamBarData)
 		.range([barPadding,barWidth-barPadding]);
 		
 			
-	xAxis = d3.svg.axis()
+	barxAxis = d3.svg.axis()
 		.scale(barXScale)
 		.ticks(numBars)
 		.tickSubdivide(true)
 		.orient("bottom");
 }
 
-init();
+histInit();
 		
 function histRefresh()
 {
 	
-	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams WHERE ' + filter.roams.where + ' GROUP BY floor(duration/10)*10;';
+	var histquery = 'SELECT floor(duration/10)*10 as duration, count(*) as count FROM roams2 WHERE ' + filter.roams.where + ' GROUP BY floor(duration/10)*10;';
 	var histurl = "jsonSQL.php?db=" + selectedSite + "&q=" + histquery;
-	//console.log(histurl);
+	console.log(histurl);
 	
-	var roamBarData= [];
 	d3.json(histurl, function(error, roamBarData) {
 		console.log("Histogram received with " + roamBarData.length + " data");
 		
@@ -155,7 +154,7 @@ function histRefresh()
 		
 		axis.transition()
 			.duration(1000)
-			.call(xAxis);
+			.call(barxAxis);
 		
 	});
 	

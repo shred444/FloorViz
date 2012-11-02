@@ -22,6 +22,7 @@
 
 <script>
 	var site = "amz_bfi1";
+	var selectedSite = "amz_bfi1";
 	//var site = "hwmhs";
 
 	$(function() {
@@ -202,7 +203,7 @@
 			<div width="300">Roam Options
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
-						<input type="checkbox" onchange="roamCheck();" checked="checked" value="roams" id="roam-checkbox">roams
+						<input type="checkbox" onchange="roamCheck();" checked="checked" value="roams" id="roam-checkbox" checked>roams
 						<ul>
 							
 							<li>
@@ -268,6 +269,15 @@
 </td></tr>
 </table>
 
+
+		
+		<div id="roamHist" class="chart"><h2>Duration Times</h2></div>
+		
+		<div id="piechart" class="chart"><h2>Roams per Drive</h2></div>
+		
+		
+		<script src="roamhistogram.js"></script>
+		<script src="piechart.js"></script>
 
 <script src="map.js"></script>
 
