@@ -18,12 +18,14 @@
 <script src="date.js"></script>
 <script src="filter.js"></script>
 
-
+<?php
+	$databases = array("amz_bfi1","hwmhs");
+	
+	?>
 
 <script>
-	var site = "amz_bfi1";
-	var selectedSite = "amz_bfi1";
-	//var site = "hwmhs";
+	var site, selectedSite;
+	selectFacility("amz_bfi1");	//default facility to launch
 
 	$(function() {
 		$( "#accordion" )
@@ -66,7 +68,10 @@
 			change: function( event, ui ) {
 				
 				filter.duration.min = ui.values[0];
-				filter.duration.max = ui.values[1];
+				if(ui.values[1]==100)
+					filter.duration.max = 9999;
+				else
+					filter.duration.max = ui.values[1];
 				
 				$( "#amount" ).val( filter.duration.min + " - " + filter.duration.max );
 				filterRefresh();
@@ -119,6 +124,17 @@
 		document.getElementById("to").hidden = !checkbox.checked;
 			
 	}
+	
+	function selectFacility(name){
+		site = name;
+		selectedSite = site;
+		console.log("Facility set to: " + site);
+		
+		
+		filterRefresh();
+		//document.getElementById('facilitySelector').value = site;
+	
+	}
 </script>
 <div id="header">
 	<form id="facility" action="roams.php" method="get">
@@ -128,9 +144,9 @@
 				Facility:
 			</li>
 			<li>
-				<select id="site" name="site" onchange="populateDatasets('facility')">
+				<select id="facilitySelector" name="facility" onchange="selectFacility(this.value)">
 					<?php foreach ($databases as $db){ ?>
-						<option  <?php if($site == $db) echo "selected='selected'"; ?> value="<?php echo $db ?>"><?php echo $db ?></option>
+						<option value="<?php echo $db ?>"><?php echo $db ?></option>
 					<?php }?>
 												
 				</select>
