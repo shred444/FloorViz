@@ -94,7 +94,7 @@ function mapScales(mapData){
 
 
 init();
-redraw();
+drawFloor();
 
 
 // runs once when the visualisation loads
@@ -169,7 +169,7 @@ function drawAPs() {
 	
 	
 	//var mapquery = 'select floor(x/('+scale+'*1000))*'+scale+' as x, floor(y/('+scale+'*1000))*'+scale+' as y from rssi WHERE x<>0 and y<>0 GROUP BY floor(x/('+scale+'*1000)),floor(y/('+scale+'*1000));';
-	var apquery = 'select * from aps WHERE x<>0 AND y<>0';
+	var apquery = 'select * from aps WHERE x<>0 AND y<>0 AND ' + filter.aps.enabled;
 	
 	var apurl = "jsonSQL.php?db=" + site + "&q=" + apquery;
 	console.log(apurl);
@@ -289,7 +289,7 @@ function drawRoams() {
 }
 
 
-function redraw() {
+function drawFloor() {
 		
 	that = this;
 	
@@ -323,7 +323,7 @@ function redraw() {
 	
 	var units = 1; //1 for meters, 1000 for mm
 	var scale = 1.5;
-	var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage';
+	var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
 	//var mapquery = 'select * from (select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage UNION select loc_x/1000 as x, loc_y/1000 as y, @dummy from fiducials)a group by a.x,a.y ;';
 	var mapurl = "jsonSQL.php?db=" + site + "&q=" + mapquery;
 	console.log(mapurl);

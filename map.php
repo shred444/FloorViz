@@ -74,7 +74,8 @@
 					filter.duration.max = ui.values[1];
 				
 				$( "#amount" ).val( filter.duration.min + " - " + filter.duration.max );
-				filterRefresh();
+				//filterRefresh();
+				roamCheck();
 			},
 			slide: function( event, ui ) {
 				var myMin = ui.values[0];
@@ -211,11 +212,11 @@
 			</div>
 		</div>
 		<div class="group">		
-			<h3>Floor Map<input id="floormap" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Floor Map<input id="floormap-checkbox" checked class='header-checkbox' type='checkbox' style="float:right;" onchange="floormapCheck()"/></h3>
 			<div width="300">Floor Map Options</div>
 		</div>
 		<div class="group">		
-			<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;" onchange="roamCheck()"/></h3>
 			<div width="300">Roam Options
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
@@ -246,7 +247,7 @@
 			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
-			<h3>Timeouts<input id="timeouts" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+			<h3>Timeouts<input id="timeouts" class='header-checkbox' type='checkbox' style="float:right;" onchange="timeoutCheck()"/></h3>
 			<div width="300">Timeout Options
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
@@ -270,6 +271,11 @@
 			<h3>RSSI<input id="rssi" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Roam Options</div>
 		</div>
+		<div class="group">		
+			<h3>Access Points<input id="aps-checkbox" class='header-checkbox' type='checkbox' style="float:right;" onchange="apsCheck()"/></h3>
+			<div width="300">Access Point Options</div>
+		</div>
+		
 	</div>
 </div>
 

@@ -18,6 +18,10 @@ var filter = new Object();
 		filter.timeouts.fatalcomms = true;
 		filter.rssi = new Object();
 		filter.rssi.aps = [];
+		filter.floormap = new Object();
+		filter.floormap.enabled = true;
+		filter.aps = new Object();
+		filter.aps.enabled = false;
 		
 	function filterRefresh(){
 		enabledFilters();
@@ -68,12 +72,9 @@ var filter = new Object();
 			filter.rssi.where = ' 0 ';
 		}
 		
-		if(typeof pieRefresh == 'function') pieRefresh();
-		if(typeof roamRefresh == 'function') roamRefresh();
-		if(typeof drawRoams == 'function') drawRoams();
-		if(typeof histRefresh == 'function') histRefresh();
-		if(typeof drawTimeouts == 'function') drawTimeouts();
-		if(typeof redraw == 'function') redraw();
+		//if(typeof pieRefresh == 'function') pieRefresh();
+		//if(typeof histRefresh == 'function') histRefresh();
+		//if(typeof redraw == 'function') redraw();
 	}
 	
 	function roamCheck(){
@@ -82,9 +83,10 @@ var filter = new Object();
 		filter.roams.atob = document.getElementById('AtoB-checkbox').checked;
 		document.getElementById('AtoA-checkbox').disabled = !filter.roams.enabled;
 		document.getElementById('AtoB-checkbox').disabled = !filter.roams.enabled
-		
 			
 		filterRefresh();
+		if(typeof drawRoams == 'function') drawRoams();
+		if(typeof roamRefresh == 'function') roamRefresh();
 	}
 	
 	function timeoutCheck(){
@@ -92,6 +94,23 @@ var filter = new Object();
 		filter.timeouts.fatalcomms = document.getElementById('fatalcomms-checkbox').checked;
 		
 		filterRefresh();
+		if(typeof drawTimeouts == 'function') drawTimeouts();
+	}
+	
+	function floormapCheck(){
+		
+		filter.floormap.enabled = document.getElementById('floormap-checkbox').checked;
+		
+		filterRefresh();
+		if(typeof drawFloor == 'function') drawFloor();
+	}
+	
+	function apsCheck(){
+		
+		filter.aps.enabled = document.getElementById('aps-checkbox').checked;
+		
+		filterRefresh();
+		if(typeof drawAPs == 'function') drawAPs();
 	}
 	
 	function enabledFilters(){
