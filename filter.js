@@ -132,17 +132,25 @@ var filter = new Object();
 	function enabledFilters(){
 		
 		var checkboxes  = document.getElementsByClassName('header-checkbox');
+		var selectedFilters = [];
 		
 		for(i=0; i<checkboxes.length; i++){
-			//x.checked;
-			console.log(checkboxes[i].id + " = " + checkboxes[i].checked);
-			if(checkboxes[i].id == 'rssi')
+			var name = checkboxes[i].id;
+			if(checkboxes[i].checked){
+				selectedFilters.push(name);
+			}
+			console.log(name + " = " + checkboxes[i].checked);
+			if(name == 'rssi')
 				filter.rssi.enabled = checkboxes[i].checked;
-			if(checkboxes[i].id == 'roams')
+			if(name == 'roams')
 				filter.roams.enabled = checkboxes[i].checked;
-			if(checkboxes[i].id == 'timeouts')
+			if(name == 'timeouts')
 				filter.timeouts.enabled = checkboxes[i].checked;
+			if(name == 'floormap')
+				filter.floormap.enabled = checkboxes[i].checked;
 		}
+		
+		return selectedFilters;
 	}
 	
 	function dateChange(){
@@ -151,5 +159,39 @@ var filter = new Object();
 		floormapCheck();
 		apsCheck();
 		//if(typeof redraw == 'function') redraw();
+		
+	}
+	
+	function loading(status){
+		document.getElementById('loader').hidden = !status;
+	}
+	
+	function selectFacility(name){
+		site = name;
+		selectedSite = site;
+		console.log("Facility set to: " + site);
+		
+		var selectedFilters = enabledFilters();
+		
+		//refresh individual filters
+		for(i=0; i<selectedFilters.length; i++)
+		{
+			console.log(selectedFilters[i]);
+			switch(selectedFilters[i])
+			{
+				case 'floormap':
+					drawFloor();
+					break;
+				case 'roams':
+					drawRoams();
+					break;
+				case 'aps':
+					drawAPs();
+					break;
+				case 'timeouts':
+					drawTimeouts();
+					break;
+			}
+		}
 		
 	}

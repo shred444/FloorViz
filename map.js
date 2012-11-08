@@ -245,6 +245,7 @@ function drawTimeouts()
 }
 
 function drawRoams() {
+	loading(true);
 	
 	function clickRoam(data){
 		//alert("clicked on ap" + data.x);
@@ -289,13 +290,15 @@ function drawRoams() {
 		/*roams.transition()
 			.duration(1000);
 		*/
+		
+		loading(false);
 	});
 	
 }
 
 
 function drawFloor() {
-		
+	
 	that = this;
 	
 	//returns a color based on a cell value
@@ -314,7 +317,7 @@ function drawFloor() {
 		case 'M':
 			return "#0000FF"; //#007FFF";
 		default:
-			return "yellow";
+			return "gray";
 		}
 	}
 
@@ -416,9 +419,9 @@ function drawFloor() {
 	
 	
 		console.log("Redraw Complete");
-		drawRoams();
-		drawTimeouts();
-		drawAPs();
+		//drawRoams();
+		//drawTimeouts();
+		//drawAPs();
 	})
 	
 }

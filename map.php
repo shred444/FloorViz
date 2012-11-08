@@ -134,18 +134,10 @@
 			
 	}
 	
-	function selectFacility(name){
-		site = name;
-		selectedSite = site;
-		console.log("Facility set to: " + site);
-		
-		
-		filterRefresh();
-		//document.getElementById('facilitySelector').value = site;
 	
-	}
 </script>
 <div id="header">
+	<div id="loader"></div>
 	<form id="facility" action="roams.php" method="get">
 			
 		<ul style="list-style-type:none">
@@ -185,23 +177,7 @@
 			<h3>Selection<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 				<div width="300" id="selectionTab">No Selection.</div>
 		</div>
-		<div class="group">
-			<h3>Filter<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">
-				<ul style="list-style-type:none; padding-left:0px;">
-					<li>
-					<div id="radioset" name="dataColumn" >
-						<input type="radio" id="radio1" name="radio" checked="checked"><label for="radio1">RSSI</label>
-						<input type="radio" id="radio2" name="radio"><label for="radio2">Bitrate</label>
-						<input type="radio" id="radio3" name="radio"><label for="radio3">Traffic</label>
-					</div>
-					</li>
-					
-				</ul>
-				
-				
-				</div>
-			</div>
+		
 		<div class="group">		
 			<h3>Drives<input id="drives" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Filter by Drive ID<br>

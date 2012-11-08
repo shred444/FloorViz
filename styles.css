@@ -1,4 +1,11 @@
-
+#loader {
+	background-image:url('ajax-loader.gif');
+	background-repeat:no-repeat;
+	background-position:left top;
+	float:right;
+	width:30px;
+	height:30px;
+}
 
 #roamHist {
 }
