@@ -54,8 +54,8 @@
 			function(e){
 				//checkbox has been toggled on accordian
 				e.stopPropagation();
-				enabledFilters();
-				filterRefresh();
+				//enabledFilters();
+				//filterRefresh();
 			}
 		);
 		
@@ -68,10 +68,14 @@
 			change: function( event, ui ) {
 				
 				filter.duration.min = ui.values[0];
-				if(ui.values[1]==100)
+				filter.roams.min = ui.values[0];
+				if(ui.values[1]==100){
 					filter.duration.max = 9999;
-				else
+					filter.roams.max = 9999;
+				}else{
 					filter.duration.max = ui.values[1];
+					filter.roams.max = ui.values[1];
+				}
 				
 				$( "#amount" ).val( filter.duration.min + " - " + filter.duration.max );
 				//filterRefresh();
@@ -99,7 +103,8 @@
 					filter.timeRange.max.setHours(23,59,59);
 				
 				}
-				filterRefresh();
+				//filterRefresh();
+				dateChange();
             }
         });
         $( "#to" ).datepicker({
@@ -111,11 +116,14 @@
 				console.log("To date selected: " + selectedDate);
 				filter.timeRange.max = new Date(selectedDate);
 				filter.timeRange.max.setHours(23,59,59);
-				filterRefresh();
+				//filterRefresh();
+				dateChange();
             }
         });
 		
-		
+		$( ".selector" ).slider({ values: [filter.roams.min,filter.roams.max] });
+		$( "#amount" ).val( $( "#slider" ).slider( "values", 0 ) +
+            " - " + $( "#slider" ).slider( "values", 1 ) );
 		
 	});
 	
@@ -212,7 +220,7 @@
 			</div>
 		</div>
 		<div class="group">		
-			<h3>Floor Map<input id="floormap-checkbox" checked class='header-checkbox' type='checkbox' style="float:right;" onchange="floormapCheck()"/></h3>
+			<h3>Floor Map<input id="floormap" checked class='header-checkbox' type='checkbox' style="float:right;" onchange="floormapCheck()"/></h3>
 			<div width="300">Floor Map Options</div>
 		</div>
 		<div class="group">		
@@ -220,25 +228,19 @@
 			<div width="300">Roam Options
 				<ul style="list-style-type:none; padding-left:0px;">
 					<li>
-						<input type="checkbox" onchange="roamCheck();" checked="checked" value="roams" id="roam-checkbox" checked>roams
-						<ul>
-							
-							<li>
-								<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
-							</li>
-							<li>
-								<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
-							</li>
-							<li>
-					
-								<label for="amount">Duration:</label>
-								<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
-								<div id="slider"></div>
-							
-							</li>
-						</ul>
+						<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
 					</li>
-										
+					<li>
+						<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
+					</li>
+					<li>
+					
+						<label for="amount">Duration:</label>
+						<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
+						<div id="slider"></div>
+							
+					</li>
+															
 				</ul>
 			</div>
 		</div>
@@ -272,7 +274,7 @@
 			<div width="300">Roam Options</div>
 		</div>
 		<div class="group">		
-			<h3>Access Points<input id="aps-checkbox" class='header-checkbox' type='checkbox' style="float:right;" onchange="apsCheck()"/></h3>
+			<h3>Access Points<input id="aps" class='header-checkbox' type='checkbox' style="float:right;" onchange="apsCheck()"/></h3>
 			<div width="300">Access Point Options</div>
 		</div>
 		

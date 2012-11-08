@@ -14,6 +14,8 @@ var filter = new Object();
 		filter.roams.atoa = true;
 		filter.roams.atob = true;
 		filter.roams.where = "0";
+		filter.roams.min = 1;
+		filter.roams.max = 100;
 		filter.timeouts = new Object();
 		filter.timeouts.fatalcomms = true;
 		filter.rssi = new Object();
@@ -26,22 +28,7 @@ var filter = new Object();
 	function filterRefresh(){
 		enabledFilters();
 		
-		if(filter.roams.enabled){
-			if(filter.roams.atob && !filter.roams.atoa)
-				var dest = "AND origin_ap <> dest_ap";
-			else if(filter.roams.atoa && !filter.roams.atob)
-				var dest = "AND origin_ap = dest_ap";
-			else
-				var dest = "";
-				
-			filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
-			filter.roams.where = ' duration BETWEEN ' + filter.duration.min + ' AND ' + filter.duration.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
-			
-			//filter out certain du-ids
-			//filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
-		}else{
-			filter.roams.where = ' 0 ';
-		}
+		
 		
 		
 		//timeout filtering
@@ -78,15 +65,35 @@ var filter = new Object();
 	}
 	
 	function roamCheck(){
-		filter.roams.enabled = document.getElementById('roam-checkbox').checked;
+		filter.roams.enabled = document.getElementById('roams').checked;
 		filter.roams.atoa = document.getElementById('AtoA-checkbox').checked;
 		filter.roams.atob = document.getElementById('AtoB-checkbox').checked;
 		document.getElementById('AtoA-checkbox').disabled = !filter.roams.enabled;
 		document.getElementById('AtoB-checkbox').disabled = !filter.roams.enabled
 			
-		filterRefresh();
+		if(filter.roams.enabled){
+			if(filter.roams.atob && !filter.roams.atoa)
+			var dest = "AND origin_ap <> dest_ap";
+			else if(filter.roams.atoa && !filter.roams.atob)
+				var dest = "AND origin_ap = dest_ap";
+			else
+				var dest = "";
+				
+			filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
+			filter.roams.where = ' duration BETWEEN ' + filter.roams.min + ' AND ' + filter.roams.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
+			
+			//filter out certain du-ids
+			//filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
+		}else{
+			filter.roams.where = ' 0 ';
+		}	
+			
+			
+		//filterRefresh();
 		if(typeof drawRoams == 'function') drawRoams();
-		if(typeof roamRefresh == 'function') roamRefresh();
+		//if(typeof roamRefresh == 'function') roamRefresh();
+		//if(typeof pieRefresh == 'function') pieRefresh();
+		//if(typeof histRefresh == 'function') histRefresh();
 	}
 	
 	function timeoutCheck(){
@@ -99,7 +106,7 @@ var filter = new Object();
 	
 	function floormapCheck(){
 		
-		filter.floormap.enabled = document.getElementById('floormap-checkbox').checked;
+		filter.floormap.enabled = document.getElementById('floormap').checked;
 		
 		filterRefresh();
 		if(typeof drawFloor == 'function') drawFloor();
@@ -107,7 +114,7 @@ var filter = new Object();
 	
 	function apsCheck(){
 		
-		filter.aps.enabled = document.getElementById('aps-checkbox').checked;
+		filter.aps.enabled = document.getElementById('aps').checked;
 		
 		filterRefresh();
 		if(typeof drawAPs == 'function') drawAPs();
@@ -127,4 +134,13 @@ var filter = new Object();
 			if(checkboxes[i].id == 'timeouts')
 				filter.timeouts.enabled = checkboxes[i].checked;
 		}
+	}
+	
+	function dateChange(){
+		roamCheck();
+		timeoutCheck();
+		floormapCheck();
+		apsCheck();
+		//if(typeof redraw == 'function') redraw();
+		
 	}

@@ -259,9 +259,10 @@ function drawRoams() {
 	var roamquery = 'select * from roams2 WHERE ' + filter.roams.where;
 	
 	var roamurl = "jsonSQL.php?db=" + site + "&q=" + roamquery;
-	console.log(roamurl);
+	console.log("Roams: " + roamurl);
 	
 	d3.json(roamurl, function(error, roamData) {
+	
 		console.log("received roams "+ roamData.length);
 		var roams = map.selectAll(".roam").data(roamData, function (d) { return d.id;});
 				
@@ -283,7 +284,7 @@ function drawRoams() {
 
 		roams.transition()
 			.duration(1000);
-			
+		
 	});
 	
 }
