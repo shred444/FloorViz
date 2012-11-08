@@ -335,7 +335,7 @@ function drawFloor() {
 	if(filter.floormap.type == 'fiducials')
 		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y from fiducials WHERE ' + filter.floormap.enabled;
 	else if(filter.floormap.type == 'traffic')
-		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
+		var mapquery = 'select x/1000 as x, y/1000 as y, count(*) from du_errors where date(time) BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND ' + filter.floormap.enabled + ' group by x,y';
 	else
 		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
 	
@@ -388,19 +388,6 @@ function drawFloor() {
 			.on("mousemove", 		function(d) { return mousemove(d);})
 			.on("mouseup", 			function(d) { return clickCell(d);});
 		
-		/*cells.enter()
-			.append("circle")
-			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
-			.attr("cx", 				function(d) { return xScale(d.x); })
-			.attr("class",			"cell")
-			.attr("cy", 				function(d) { return yScale(d.y); })
-			.attr("r", 				2)
-			
-			.attr("fill", 			"grey")
-			.style("stroke", 			"black")
-			.style("stroke-width", 		"1px")
-			.on("mousemove", 		function(d) { return mousemove(d);});	
-		*/
 		cells.exit()
 			.remove();
 
@@ -419,9 +406,7 @@ function drawFloor() {
 	
 	
 		console.log("Redraw Complete");
-		//drawRoams();
-		//drawTimeouts();
-		//drawAPs();
+		
 	})
 	
 }
