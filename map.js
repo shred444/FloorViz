@@ -271,7 +271,11 @@ function drawRoams() {
 			.attr("cx", 				function(d) { return xScale(Number(d.x)); })
 			.attr("class",				"roam")
 			.attr("cy", 				function(d) { return yScale(d.y); })
-			.attr("r",					function(d) { return d.duration; })
+			.attr("r",					function(d) { 
+														if(d.duration>100)
+															return 100;
+														return d.duration; 
+													})
 			.attr("fill", 				"red")
 			.style("stroke", 			"red")
 			.style("stroke-width", 		"1px")
@@ -282,9 +286,9 @@ function drawRoams() {
 		roams.exit()
 			.remove();
 
-		roams.transition()
+		/*roams.transition()
 			.duration(1000);
-		
+		*/
 	});
 	
 }
@@ -324,8 +328,14 @@ function drawFloor() {
 	
 	var units = 1; //1 for meters, 1000 for mm
 	var scale = 1.5;
-	var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
-	//var mapquery = 'select * from (select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage UNION select loc_x/1000 as x, loc_y/1000 as y, @dummy from fiducials)a group by a.x,a.y ;';
+		
+	if(filter.floormap.type == 'fiducials')
+		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y from fiducials WHERE ' + filter.floormap.enabled;
+	else if(filter.floormap.type == 'traffic')
+		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
+	else
+		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
+	
 	var mapurl = "jsonSQL.php?db=" + site + "&q=" + mapquery;
 	console.log(mapurl);
 	

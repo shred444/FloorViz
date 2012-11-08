@@ -6,7 +6,7 @@ var filter = new Object();
 		filter.timeRange.min = new Date();
 		filter.timeRange.max = new Date();
 		filter.duration = new Object();
-		filter.duration.min = 1;
+		filter.duration.min = 40;
 		filter.duration.max = 100;
 		filter.dataColumn = "rssi_val";
 		filter.roams = new Object();
@@ -14,7 +14,7 @@ var filter = new Object();
 		filter.roams.atoa = true;
 		filter.roams.atob = true;
 		filter.roams.where = "0";
-		filter.roams.min = 1;
+		filter.roams.min = 40;
 		filter.roams.max = 100;
 		filter.timeouts = new Object();
 		filter.timeouts.fatalcomms = true;
@@ -22,6 +22,7 @@ var filter = new Object();
 		filter.rssi.aps = [];
 		filter.floormap = new Object();
 		filter.floormap.enabled = true;
+		filter.floormap.type = 'cell_types';
 		filter.aps = new Object();
 		filter.aps.enabled = false;
 		
@@ -91,9 +92,9 @@ var filter = new Object();
 			
 		//filterRefresh();
 		if(typeof drawRoams == 'function') drawRoams();
-		//if(typeof roamRefresh == 'function') roamRefresh();
-		//if(typeof pieRefresh == 'function') pieRefresh();
-		//if(typeof histRefresh == 'function') histRefresh();
+		
+		if(typeof pieRefresh == 'function') pieRefresh();
+		if(typeof histRefresh == 'function') histRefresh();
 	}
 	
 	function timeoutCheck(){
@@ -107,6 +108,14 @@ var filter = new Object();
 	function floormapCheck(){
 		
 		filter.floormap.enabled = document.getElementById('floormap').checked;
+		
+		if(document.getElementById('pod_types').checked)
+			filter.floormap.type = 'pod_types';
+		else if(document.getElementById('traffic').checked)
+			filter.floormap.type = 'traffic';
+		else if(document.getElementById('fiducials').checked)
+			filter.floormap.type = 'fiducials';
+		
 		
 		filterRefresh();
 		if(typeof drawFloor == 'function') drawFloor();

@@ -221,7 +221,19 @@
 		</div>
 		<div class="group">		
 			<h3>Floor Map<input id="floormap" checked class='header-checkbox' type='checkbox' style="float:right;" onchange="floormapCheck()"/></h3>
-			<div width="300">Floor Map Options</div>
+			<div width="300">
+				<ul style="list-style-type:none; padding-left:0px;">
+					<li>
+						<input type="radio" id="pod_types" name="cell_type" value="pod_types" onchange="floormapCheck()" checked>Pod Types
+					</li>
+					<li>
+						<input type="radio" id="traffic"  name="cell_type" value="traffic" onchange="floormapCheck()">Traffic
+					</li>
+					<li>
+						<input type="radio" id="fiducials"  name="cell_type" value="fiducials" onchange="floormapCheck()">Fiducials
+					</li>
+															
+				</ul></div>
 		</div>
 		<div class="group">		
 			<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;" onchange="roamCheck()"/></h3>
