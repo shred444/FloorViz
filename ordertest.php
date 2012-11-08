@@ -143,13 +143,13 @@
 	var map = d3.select("#map").append("svg");
 	
 	//create g layers
-	var layer = map.selectAll("g").data(layers)
+	/*var layer = map.selectAll("g").data(layers)
 		.enter().append("g")
 			.attr("id", function(d){ return d; })
 			.attr("class" , "layer")
 			.attr("width", 500)
 			.attr("height", 300);
-			
+		*/	
 	//populate each layer
 	layer.selectAll("rect").data(mapData)
 		.enter().append("rect")

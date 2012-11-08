@@ -27,6 +27,7 @@ var yScale, xScale, xAxis, yAxis;
 var yAxis, yAxisR, xAxis, xAxisTop;
 var minX, maxX, minY, maxY;
 var map;
+var cellLayer, roamLayer;
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
@@ -112,6 +113,12 @@ function init () {
 	.attr("width", mapWidth)
 	.attr("height", mapHeight);
 	
+	//-------------------------------------------------------------
+	//Create Layers
+	//-------------------------------------------------------------
+	cellLayer = map.append("g").attr("id", "cells").attr("class", "layer");
+	roamLayer = map.append("g").attr("id", "roams").attr("class", "layer");
+		
 		
 	//-------------------------------------------------------------
 	//Create X axis - bottom
@@ -263,9 +270,10 @@ function drawRoams() {
 	console.log("Roams: " + roamurl);
 	
 	d3.json(roamurl, function(error, roamData) {
-	
+		
+		
 		console.log("received roams "+ roamData.length);
-		var roams = map.selectAll(".roam").data(roamData, function (d) { return d.id;});
+		var roams = roamLayer.selectAll(".roam").data(roamData, function (d) { return d.id;});
 				
 		roams.enter()
 			.append("circle")
@@ -371,8 +379,7 @@ function drawFloor() {
 		mapScales(mapData);
 		
 		
-		
-		var cells = map.selectAll(".cell").data(mapData, function (d) { return d.id;});
+		var cells = cellLayer.selectAll(".cell").data(mapData, function (d) { return d.id;});
 		
 		cells.enter()
 			.append("rect")

@@ -171,6 +171,11 @@ var filter = new Object();
 		selectedSite = site;
 		console.log("Facility set to: " + site);
 		
+		refreshAll();
+		
+	}
+	
+	function refreshAll(){
 		var selectedFilters = enabledFilters();
 		
 		//refresh individual filters
@@ -193,5 +198,4 @@ var filter = new Object();
 					break;
 			}
 		}
-		
 	}
