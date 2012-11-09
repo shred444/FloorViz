@@ -203,9 +203,7 @@
 					<li>
 						<input type="radio" id="pod_types" name="cell_type" value="pod_types" onchange="floormapCheck()" checked>Pod Types
 					</li>
-					<li>
-						<input type="radio" id="traffic"  name="cell_type" value="traffic" onchange="floormapCheck()">Traffic
-					</li>
+					
 					<li>
 						<input type="radio" id="fiducials"  name="cell_type" value="fiducials" onchange="floormapCheck()">Fiducials
 					</li>
@@ -265,6 +263,10 @@
 		<div class="group">		
 			<h3>Access Points<input id="aps" class='header-checkbox' type='checkbox' style="float:right;" onchange="apsCheck()"/></h3>
 			<div width="300">Access Point Options</div>
+		</div>
+		<div class="group">		
+			<h3>Traffic<input id="traffic" class='header-checkbox' type='checkbox' style="float:right;" onchange="trafficCheck()"/></h3>
+			<div width="300">Traffic Options</div>
 		</div>
 		
 	</div>

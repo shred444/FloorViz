@@ -20,10 +20,11 @@ var axisPadding = 25;
 var innerPadding = 10;
 var drawingData;
 var roamData = [];
+var trafficData = [];
 var roamsChecked;
 var dataColumn = 'br_val';		//data to filter on and display
 var mapData = [];
-var yScale, xScale, xAxis, yAxis;
+var yScale, xScale, xAxis, yAxis, trafficScale;
 var yAxis, yAxisR, xAxis, xAxisTop;
 var minX, maxX, minY, maxY;
 var map;
@@ -52,6 +53,11 @@ function mapScales(mapData){
 			maxY//Math.max.apply(Math,mapData.map(function(o){return Number(o.y);})) 	
 		])
 		.range([mapHeight - (axisPadding + innerPadding)*2, padding - innerPadding]);
+		
+		
+	trafficScale = d3.scale.linear()
+		.domain([ 0, 75 ])
+		.range([0,1]);
 		
 	xAxis = d3.svg.axis()
 		.scale(xScale)
@@ -118,6 +124,7 @@ function init () {
 	//-------------------------------------------------------------
 	cellLayer = map.append("g").attr("id", "cells").attr("class", "layer");
 	roamLayer = map.append("g").attr("id", "roams").attr("class", "layer");
+	trafficLayer = map.append("g").attr("id", "traffics").attr("class", "layer");
 		
 		
 	//-------------------------------------------------------------
@@ -343,7 +350,7 @@ function drawFloor() {
 	if(filter.floormap.type == 'fiducials')
 		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y from fiducials WHERE ' + filter.floormap.enabled;
 	else if(filter.floormap.type == 'traffic')
-		var mapquery = 'select x/1000 as x, y/1000 as y, count(*) from du_errors where date(time) BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND ' + filter.floormap.enabled + ' group by x,y';
+		var mapquery = 'select * from rssi2 where date(collect_time) BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND ' + filter.floormap.enabled + ';';
 	else
 		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
 	
@@ -390,6 +397,12 @@ function drawFloor() {
 			.attr("width", 			cellWidth)
 			.attr("height", 		cellHeight)
 			.attr("fill", 			function(d) { return cellFill(d);})
+			.attr("fill-opacity",	function(d) { 
+												if(filter.floormap.type == 'traffic')
+													return trafficScale(d.record_count);
+												else
+													return 1;
+												})
 			//.style("stroke", 			"white")
 			.style("stroke-width", 		"1px")
 			.on("mousemove", 		function(d) { return mousemove(d);})
@@ -418,6 +431,66 @@ function drawFloor() {
 	
 }
 
+
+
+
+function drawTraffic() {
+	
+	
+	function clickCell(data){
+		//alert("clicked on ap" + data.x);
+		filter.selection = data;
+		document.getElementById("selectionTab").innerHTML = JSON.stringify(filter.selection, null, "<br>");
+		$( "#accordion" ).accordion({ active: 0 });
+	
+	}
+	
+	var units = 1; //1 for meters, 1000 for mm
+	var scale = 1.5;
+		
+	var trafficquery = 'select * from rssi2 where record_count > 1 AND date(collect_time) BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND ' + filter.traffic.enabled + ';';
+	
+	var trafficurl = "jsonSQL.php?db=" + site + "&q=" + trafficquery;
+	console.log(trafficurl);
+	
+	d3.json(trafficurl, function(error, trafficData) {
+	
+		console.log("trafficData received: " + trafficData.length);
+		
+		/*if(document.getElementById("cellCount"))
+			document.getElementById("cellCount").innerHTML = mapData.length;
+		*/
+				
+		
+		var traffics = trafficLayer.selectAll(".traffic").data(trafficData, function (d) { return d.id;});
+		
+		traffics.enter()
+			.append("rect")
+			.attr("id",				function(d) { return "Cell_" + d.x + "-" + d.y;})
+			.attr("x", 				function(d) { return xScale(d.x); })
+			.attr("class",			"traffic")
+			.attr("y", 				function(d) { return yScale(d.y); })
+			.attr("width", 			cellWidth)
+			.attr("height", 		cellHeight)
+			.attr("fill", 			function(d) { return '#680CF3';})
+			.attr("fill-opacity",	function(d) { return trafficScale(d.record_count);})
+			//.style("stroke", 			"white")
+			.style("stroke-width", 		"1px")
+			.on("mouseup", 			function(d) { return clickCell(d);});
+		
+		traffics.exit()
+			.remove();
+
+		
+		//-------------------------------------------------------------
+		// update axis
+		//-------------------------------------------------------------
+		
+		console.log("Traffic Redraw Complete");
+		
+	})
+	
+}
 
 function mousemove(d){
 	if(document.getElementById("xPos"))

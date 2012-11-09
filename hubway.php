@@ -36,36 +36,12 @@
 <div id="txtHint"></div>
 <script>
 var myData;
-function showUser(){
-	
-	if (window.XMLHttpRequest)	{// code for IE7+, Firefox, Chrome, Opera, Safari
-		xmlhttp=new XMLHttpRequest();
-	}
-	else {// code for IE6, IE5
-		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	
-	xmlhttp.onreadystatechange=function()
-	{
-		if (xmlhttp.readyState==4 && xmlhttp.status==200){
-			//state is ready and data is good
-			document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
-			myData = JSON.parse(xmlhttp.responseText);
-			redraw();
-		}
-	}
-	
-	//call function to get data
-	xmlhttp.open("GET","http://hubwaydatachallenge.org/api/v1/station/?format=json&username=shred444&api_key=fa798c85d5ad57a1c3010fa916953d9407596349",true);
-	xmlhttp.send();
-}
 
-showUser();
 
 var w = 500;
 var h = 400;
 
-
+redraw();
 
 
 
@@ -73,38 +49,6 @@ var h = 400;
 function redraw(){
 			
 	
-	xMin = Math.min.apply(Math, myData.objects.map(function(o){ return o.point.coordinates[0]; }));
-	xMax = Math.max.apply(Math, myData.objects.map(function(o){ return o.point.coordinates[0]; }));
-	var xScale = d3.scale.linear()
-	.domain([xMin, xMax])
-	.range([0,w]);
-	
-	yMin = Math.min.apply(Math, myData.objects.map(function(o){ return o.point.coordinates[1]; }));
-	yMax = Math.max.apply(Math, myData.objects.map(function(o){ return o.point.coordinates[1]; }));
-	var yScale = d3.scale.linear()
-	.domain([yMin, yMax])
-	.range([h,0]);
-	
-
-	var hub = d3.select("#visualization")
-		.append("svg")
-		.attr("width", w)
-		.attr("height", h);		
-			
-	hub.selectAll("circle")
-		.data(myData.objects)
-		.enter()
-		.append("circle")
-		.attr("cx", function(d){
-			return xScale(d.point.coordinates[0]);
-		})
-		.attr("cy", function(d){
-			return yScale(d.point.coordinates[1]);
-		})
-		.attr("r", 5)
-		.attr("fill", "red");
-		
-		
 			
 		
 	var width = 720,

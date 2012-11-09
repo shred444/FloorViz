@@ -23,6 +23,8 @@ var filter = new Object();
 		filter.floormap = new Object();
 		filter.floormap.enabled = true;
 		filter.floormap.type = 'cell_types';
+		filter.traffic = new Object();
+		filter.traffic.enabled = false;
 		filter.aps = new Object();
 		filter.aps.enabled = false;
 		
@@ -111,14 +113,18 @@ var filter = new Object();
 		
 		if(document.getElementById('pod_types').checked)
 			filter.floormap.type = 'pod_types';
-		else if(document.getElementById('traffic').checked)
-			filter.floormap.type = 'traffic';
 		else if(document.getElementById('fiducials').checked)
 			filter.floormap.type = 'fiducials';
 		
 		
 		filterRefresh();
 		if(typeof drawFloor == 'function') drawFloor();
+	}
+	
+	function trafficCheck(){
+		filter.traffic.enabled = document.getElementById('traffic').checked;
+		filterRefresh();
+		if(typeof drawTraffic == 'function') drawTraffic();
 	}
 	
 	function apsCheck(){
@@ -192,6 +198,9 @@ var filter = new Object();
 					break;
 				case 'aps':
 					drawAPs();
+					break;
+				case 'traffic':
+					drawTraffic();
 					break;
 				case 'timeouts':
 					drawTimeouts();
