@@ -224,8 +224,10 @@ function drawTimeouts()
 	
 	}
 	
-	var fatalquery = 'SELECT * FROM du_errors WHERE ' + filter.timeouts.where + ';';
-	
+	if(selectedSite == 'quid_gou')
+		var fatalquery = 'SELECT x as x,y as y FROM du_errors WHERE ' + filter.timeouts.where + ';';
+	else
+		var fatalquery = 'SELECT x/1000 as x, y/1000 as y FROM du_errors WHERE ' + filter.timeouts.where + ';';
 		
 	var fatalurl = "jsonSQL.php?db=" + site + "&q=" + fatalquery;
 	console.log(fatalurl);
@@ -241,8 +243,8 @@ function drawTimeouts()
 		fataltimeout.enter()
 			.append("circle")
 			.attr("class", "fataltimeout")
-			.attr("cx", 			function(d) { return xScale(d.x/1000); })  //meters to mm
-			.attr("cy", 			function(d) { return yScale(d.y/1000); })  //meters to mm
+			.attr("cx", 			function(d) { return xScale(d.x); })  //meters to mm
+			.attr("cy", 			function(d) { return yScale(d.y); })  //meters to mm
 			.attr("r", 				5)
 			.attr("fill", 			"blue")
 			.attr("fill-opacity", 	.2)
@@ -351,8 +353,10 @@ function drawFloor() {
 		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y from fiducials WHERE ' + filter.floormap.enabled;
 	else if(filter.floormap.type == 'traffic')
 		var mapquery = 'select * from rssi2 where date(collect_time) BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" AND ' + filter.floormap.enabled + ';';
-	else
+	else{
 		var mapquery = 'select loc_x/1000 as x, loc_y/1000 as y, cell_type from pod_storage WHERE ' + filter.floormap.enabled;
+		
+	}
 	
 	var mapurl = "jsonSQL.php?db=" + site + "&q=" + mapquery;
 	console.log(mapurl);

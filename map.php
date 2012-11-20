@@ -19,8 +19,9 @@
 <script src="filter.js"></script>
 
 <?php
-	$databases = array("amz_bfi1","hwmhs");
-	
+	$databases = array("amz_bfi1","amz_bfi1_cisco", "hwmhs", "quid_gou");
+	$aps = array ("00:13:A6:23:82:B0", "00:13:A6:23:75:61", "00:13:A6:23:CD:B0", "00:13:A6:23:E4:50");
+
 	?>
 
 <script>
@@ -97,10 +98,12 @@
                 //$( "#to" ).datepicker( "option", "minDate", selectedDate );
 				console.log("From date selected: " + selectedDate);
 				filter.timeRange.min = new Date(selectedDate);
+				//filter.timeRange.min.setHours(3,0,0);
 				filter.timeRange.min.setHours(0,0,0);
 				
 				if(document.getElementById("to").hidden){
 					filter.timeRange.max = new Date(selectedDate);
+					//filter.timeRange.max.setHours(5,59,59);
 					filter.timeRange.max.setHours(23,59,59);
 				
 				}
@@ -182,17 +185,12 @@
 		<div class="group">		
 			<h3>Drives<input id="drives" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
 			<div width="300">Filter by Drive ID<br>
-			<input class='du_id-all' type='checkbox'>Select All<p>
-			<select name="du_id" size="5" style="width:100px">
-			  <option>5001</option>
-			  <option>5002</option>
-			  <option>5003</option>
-			  <option>5004</option>
-			  <option>5005</option>
-			  <option>5006</option>
-			  <option>5007</option>
-			  <option>5008</option>
-			  <option>5009</option>
+			<input class='du_id-all' type='checkbox' id="du_id-all" onchange="driveSelectAll(this)">Select All<p>
+			<select id="du_id" name="du_id" size="5" multiple="multiple" style="width:100px" onchange="driveChange(this)">
+				<?php for($i=5000; $i<6000; $i++){
+					echo "<option>" . $i . "</option><br>";
+				}?>
+			  
 			</select>
 			</div>
 		</div>
@@ -226,6 +224,17 @@
 						<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
 						<div id="slider"></div>
 							
+					</li>
+					
+					<li>
+						<table style="font-size: 8px;">
+						<tr><td>Origin</td><td>Dest</td></tr>
+						<?php foreach ($aps as $ap){ ?>
+							<tr><td><input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox"><?php echo $ap ?></td><td><input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox"><?php echo $ap ?></td></tr>
+							
+						<?php }?>
+						</table>
+					
 					</li>
 															
 				</ul>

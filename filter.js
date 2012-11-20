@@ -27,6 +27,8 @@ var filter = new Object();
 		filter.traffic.enabled = false;
 		filter.aps = new Object();
 		filter.aps.enabled = false;
+		filter.drives = new Object();
+		filter.drives.selected = [];
 		
 	function filterRefresh(){
 		enabledFilters();
@@ -83,7 +85,10 @@ var filter = new Object();
 				var dest = "";
 				
 			filter.timeRange.where = ' roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ';
-			filter.roams.where = ' duration BETWEEN ' + filter.roams.min + ' AND ' + filter.roams.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' ';
+			filter.roams.where = ' duration BETWEEN ' + filter.roams.min + ' AND ' + filter.roams.max + ' AND roam_time BETWEEN \"' + filter.timeRange.min.format(Date.SQL) + '\" AND \"' + filter.timeRange.max.format(Date.SQL) + '\" ' + dest + ' AND ' + driveList() + ' ';
+			//filter.roams.where += ' AND origin_ap = \'00:13:A6:23:E4:50\' AND dest_ap = \'00:13:A6:23:75:61\' ';
+			//filter.roams.where += ' AND origin_ap = \'00:13:A6:23:75:61\' AND dest_ap = \'00:13:A6:23:E4:50\' ';  //1B to 1A
+			//filter.roams.where += ' AND origin_ap = \'00:13:A6:23:E4:50\' AND dest_ap = \'00:13:A6:23:75:61\' ';  //1A to 1B
 			
 			//filter out certain du-ids
 			//filter.roams.where += ' AND du_id <> 5517 AND du_id <> 5519 AND du_id <> 5552 AND du_id <> 5610 AND du_id <> 5612 AND du_id <>5627 AND du_id <> 5659 AND du_id <> 5670 AND du_id <> 5683 AND du_id <> 5687 AND du_id <> 5720 AND du_id <> 5736 ';
@@ -168,6 +173,30 @@ var filter = new Object();
 		
 	}
 	
+	function driveChange(selector){
+	
+		//clear the array
+		filter.drives.selected = [];
+		
+		for(i=0; i<selector.selectedOptions.length; i++){
+			//console.log(selector.selectedOptions[i].value);
+			var du_id = selector.selectedOptions[i].value;
+			filter.drives.selected.push(du_id);
+		}
+		
+		//call a major refresh
+		dateChange();
+		
+	}
+	
+	function driveSelectAll(checkbox){
+		var selectBox = document.getElementById('du_id');
+		for (var i = 0; i < selectBox.options.length; i++) { 
+             selectBox.options[i].selected = checkbox.checked; 
+        }
+		
+		driveChange(selectBox);
+	}
 	function loading(status){
 		document.getElementById('loader').hidden = !status;
 	}
@@ -207,4 +236,21 @@ var filter = new Object();
 					break;
 			}
 		}
+	}
+	
+	function driveList(){
+		var str = "(0 ";
+		
+		for(i=0; i<filter.drives.selected.length; i++){
+			var id = filter.drives.selected[i];
+			
+			str += 'OR du_id=' + id + ' ';
+		}
+		
+		str += ') ';
+		
+		if(filter.drives.selected.length == 0)
+			str = (1);
+		
+		return str;
 	}
