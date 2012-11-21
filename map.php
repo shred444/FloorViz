@@ -174,136 +174,136 @@
 		</ul>
 	</form>
 </div>
-
-<div id="sidebar2" style="position: relative; width:300px; float:right;">
-	<div id="accordion" style="position:relative;">
-		<div class="group">
-			<h3>Selection<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-				<div width="300" id="selectionTab">No Selection.</div>
-		</div>
-		
-		<div class="group">		
-			<h3>Drives<input id="drives" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Filter by Drive ID<br>
-			<input class='du_id-all' type='checkbox' id="du_id-all" onchange="driveSelectAll(this)">Select All<p>
-			<select id="du_id" name="du_id" size="5" multiple="multiple" style="width:100px" onchange="driveChange(this)">
-				<?php for($i=5000; $i<6000; $i++){
-					echo "<option>" . $i . "</option><br>";
-				}?>
-			  
-			</select>
+<div id="content">
+	<div id="sidebar2" style="position: relative; width:300px; float:right;">
+		<div id="accordion" style="position:relative;">
+			<div class="group">
+				<h3>Selection<input class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+					<div width="300" id="selectionTab">No Selection.</div>
 			</div>
-		</div>
-		<div class="group">		
-			<h3>Floor Map<input id="floormap" checked class='header-checkbox' type='checkbox' style="float:right;" onchange="floormapCheck()"/></h3>
-			<div width="300">
-				<ul style="list-style-type:none; padding-left:0px;">
-					<li>
-						<input type="radio" id="pod_types" name="cell_type" value="pod_types" onchange="floormapCheck()" checked>Pod Types
-					</li>
-					
-					<li>
-						<input type="radio" id="fiducials"  name="cell_type" value="fiducials" onchange="floormapCheck()">Fiducials
-					</li>
-															
-				</ul></div>
-		</div>
-		<div class="group">		
-			<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;" onchange="roamCheck()"/></h3>
-			<div width="300">Roam Options
-				<ul style="list-style-type:none; padding-left:0px;">
-					<li>
-						<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
-					</li>
-					<li>
-						<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
-					</li>
-					<li>
-					
-						<label for="amount">Duration:</label>
-						<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
-						<div id="slider"></div>
-							
-					</li>
-					
-					<li>
-						<table style="font-size: 8px;">
-						<tr><td>Origin</td><td>Dest</td></tr>
-						<?php foreach ($aps as $ap){ ?>
-							<tr><td><input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox"><?php echo $ap ?></td><td><input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox"><?php echo $ap ?></td></tr>
-							
-						<?php }?>
-						</table>
-					
-					</li>
-															
-				</ul>
+			
+			<div class="group">		
+				<h3>Drives<input id="drives" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+				<div width="300">Filter by Drive ID<br>
+				<input class='du_id-all' type='checkbox' id="du_id-all" onchange="driveSelectAll(this)">Select All<p>
+				<select id="du_id" name="du_id" size="5" multiple="multiple" style="width:100px" onchange="driveChange(this)">
+					<?php for($i=5000; $i<6000; $i++){
+						echo "<option>" . $i . "</option><br>";
+					}?>
+				  
+				</select>
+				</div>
 			</div>
-		</div>
-		<div class="group">		
-			<h3>Pings<input id="pings" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Roam Options</div>
-		</div>
-		<div class="group">		
-			<h3>Timeouts<input id="timeouts" class='header-checkbox' type='checkbox' style="float:right;" onchange="timeoutCheck()"/></h3>
-			<div width="300">Timeout Options
-				<ul style="list-style-type:none; padding-left:0px;">
-					<li>
-						<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
-						<ul>
-							<li>
-								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
-							</li>
-							<li>
-								<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
-							</li>
-						</ul>
-					</li>
-					
-					
-				</ul>
-				
+			<div class="group">		
+				<h3>Floor Map<input id="floormap" checked class='header-checkbox' type='checkbox' style="float:right;" onchange="floormapCheck()"/></h3>
+				<div width="300">
+					<ul style="list-style-type:none; padding-left:0px;">
+						<li>
+							<input type="radio" id="pod_types" name="cell_type" value="pod_types" onchange="floormapCheck()" checked>Pod Types
+						</li>
+						
+						<li>
+							<input type="radio" id="fiducials"  name="cell_type" value="fiducials" onchange="floormapCheck()">Fiducials
+						</li>
+																
+					</ul></div>
 			</div>
+			<div class="group">		
+				<h3>Roams<input id="roams" class='header-checkbox' type='checkbox' style="float:right;" onchange="roamCheck()"/></h3>
+				<div width="300">Roam Options
+					<ul style="list-style-type:none; padding-left:0px;">
+						<li>
+							<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox">A->B
+						</li>
+						<li>
+							<input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoA" id="AtoA-checkbox">A->A
+						</li>
+						<li>
+						
+							<label for="amount">Duration:</label>
+							<input type="text" id="amount" class="hi" style="border: 0; color: #f6931f; font-weight: bold;" />
+							<div id="slider"></div>
+								
+						</li>
+						
+						<li>
+							<table style="font-size: 8px;">
+							<tr><td>Origin</td><td>Dest</td></tr>
+							<?php foreach ($aps as $ap){ ?>
+								<tr><td><input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox"><?php echo $ap ?></td><td><input type="checkbox" onchange="roamCheck()" checked="checked" value="AtoB" id="AtoB-checkbox"><?php echo $ap ?></td></tr>
+								
+							<?php }?>
+							</table>
+						
+						</li>
+																
+					</ul>
+				</div>
+			</div>
+			<div class="group">		
+				<h3>Pings<input id="pings" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+				<div width="300">Roam Options</div>
+			</div>
+			<div class="group">		
+				<h3>Timeouts<input id="timeouts" class='header-checkbox' type='checkbox' style="float:right;" onchange="timeoutCheck()"/></h3>
+				<div width="300">Timeout Options
+					<ul style="list-style-type:none; padding-left:0px;">
+						<li>
+							<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="timeouts" id="timeout-checkbox">timeouts
+							<ul>
+								<li>
+									<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="ping" id="ping-checkbox">Ping Failed
+								</li>
+								<li>
+									<input type="checkbox" onchange="timeoutCheck()" checked="checked" value="fatalcomms" id="fatalcomms-checkbox">Fatal Comms
+								</li>
+							</ul>
+						</li>
+						
+						
+					</ul>
+					
+				</div>
+			</div>
+			<div class="group">		
+				<h3>RSSI<input id="rssi" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
+				<div width="300">Roam Options</div>
+			</div>
+			<div class="group">		
+				<h3>Access Points<input id="aps" class='header-checkbox' type='checkbox' style="float:right;" onchange="apsCheck()"/></h3>
+				<div width="300">Access Point Options</div>
+			</div>
+			<div class="group">		
+				<h3>Traffic<input id="traffic" class='header-checkbox' type='checkbox' style="float:right;" onchange="trafficCheck()"/></h3>
+				<div width="300">Traffic Options</div>
+			</div>
+			
 		</div>
-		<div class="group">		
-			<h3>RSSI<input id="rssi" class='header-checkbox' type='checkbox' style="float:right;"/></h3>
-			<div width="300">Roam Options</div>
-		</div>
-		<div class="group">		
-			<h3>Access Points<input id="aps" class='header-checkbox' type='checkbox' style="float:right;" onchange="apsCheck()"/></h3>
-			<div width="300">Access Point Options</div>
-		</div>
-		<div class="group">		
-			<h3>Traffic<input id="traffic" class='header-checkbox' type='checkbox' style="float:right;" onchange="trafficCheck()"/></h3>
-			<div width="300">Traffic Options</div>
-		</div>
-		
 	</div>
+
+	<div id="map"></div>
+
+
+	<table>
+	<tr><td>
+	<label>X</label><div id="xPos"></div>
+	</td><td>
+	<label>Y</label><div id="yPos"></div></td><td>
+	<label>Cells</label><div id="cellCount"></div>
+	</td></tr>
+	</table>
+
+
+			
+			<div id="roamHist" class="chart"><h2>Duration Times</h2></div>
+			
+			<div id="piechart" class="chart"><h2>Roams per Drive</h2></div>
+			
+			
+			<script src="roamhistogram.js"></script>
+			<script src="piechart.js"></script>
+
+	<script src="map.js"></script>
 </div>
-
-<div id="map"></div>
-
-
-<table>
-<tr><td>
-<label>X</label><div id="xPos"></div>
-</td><td>
-<label>Y</label><div id="yPos"></div></td><td>
-<label>Cells</label><div id="cellCount"></div>
-</td></tr>
-</table>
-
-
-		
-		<div id="roamHist" class="chart"><h2>Duration Times</h2></div>
-		
-		<div id="piechart" class="chart"><h2>Roams per Drive</h2></div>
-		
-		
-		<script src="roamhistogram.js"></script>
-		<script src="piechart.js"></script>
-
-<script src="map.js"></script>
-
 </body>
 </html>

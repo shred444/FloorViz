@@ -10,6 +10,10 @@
 #roamHist {
 }
 
+#content {
+	 width:1300px;
+}
+
 #header li{
 	display:inline;
 	list-style-type:none;

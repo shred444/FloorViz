@@ -28,12 +28,13 @@ var yScale, xScale, xAxis, yAxis, trafficScale;
 var yAxis, yAxisR, xAxis, xAxisTop;
 var minX, maxX, minY, maxY;
 var map;
+var aspectRatio = 1;
 var cellLayer, roamLayer;
 //-------------------------------------------------------------
 //Create scale functions
 //-------------------------------------------------------------
-var drawingWidth = mapWidth - ((axisPadding + innerPadding ) *2);
-var drawingHeight = mapHeight - (padding - innerPadding) * 2;
+var drawingWidth;
+var drawingHeight;
 
 
 
@@ -377,11 +378,29 @@ function drawFloor() {
 		minX = Math.min.apply(Math, mapData.map(function(o){ return o.x; }));
 		maxY = Math.max.apply(Math, mapData.map(function(o){ return o.y; }));
 		minY = Math.min.apply(Math, mapData.map(function(o){ return o.y; }));
-				
+		aspectRatio = (maxX-minX) / (maxY-minY);
+		console.log("Aspect Ratio: " + aspectRatio);
+		mapHeight = mapWidth / aspectRatio;
+		
+		if(mapHeight > 800){
+			mapHeight = 800;
+			mapWidth = mapHeight * aspectRatio;
+		
+		
+		}else{
+			mapWidth = 1000;
+			mapHeight = mapWidth / aspectRatio;
+		}
+		
+		console.log("MapWidth: " + mapWidth + "     MapHeight: " + mapHeight);
+		map.attr("height", mapHeight);
+		map.attr("width", mapWidth);
 		
 		countX = maxX - minX +1; //add one more for padding
 		countY = maxY - minY +1; //add one more for padding
 		
+		drawingWidth = mapWidth - ((axisPadding + innerPadding ) *2);
+		drawingHeight = mapHeight - (padding - innerPadding) * 2;
 		
 		cellWidth = (drawingWidth/(countX)) * scale - 2;	//subtract 1 for border
 		cellHeight = (drawingHeight/(countY)) * scale - 2;	//subtract 1 for border
